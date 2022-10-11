@@ -1,0 +1,1 @@
+import sxRequest from '../request'
