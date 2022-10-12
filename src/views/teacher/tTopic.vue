@@ -1,6 +1,6 @@
 <template>
-  <div class="student">
-    <h2>student</h2>
+  <div class="topic">
+    <h2>topic</h2>
   </div>
 </template>
 

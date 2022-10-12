@@ -1,6 +1,6 @@
-const student = {
+const tTest = {
   state: () => ({
-    name: 'student-name'
+    name: 'tTest'
   }),
   mutations: {
 
@@ -13,4 +13,4 @@ const student = {
   }
 }
 
-export default student
+export default tTest
