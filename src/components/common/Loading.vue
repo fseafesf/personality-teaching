@@ -1,0 +1,34 @@
+<template>
+  <div class="loading" v-if="$store.state.isLoading">
+    <i class="el-icon-loading"></i>
+    <span class="title">加载中</span>
+  </div>
+  <!-- <el-button v-show="false" type="primary" v-loading.fullscreen.lock="$store.state.isLoading" background="#333333">
+    指令方式
+  </el-button> -->
+</template>
+
+<script>
+
+</script>
+
+<style lang="less" scoped>
+.loading {
+  position: fixed;
+  z-index: 999;
+  // 全部为0为了让loading占满整个页面
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, .2);
+
+  .el-icon-loading,
+  .title {
+    color: #409EFF;
+  }
+}
+</style>

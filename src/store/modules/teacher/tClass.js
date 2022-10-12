@@ -1,6 +1,6 @@
-const ptClass = {
+const tClass = {
   state: () => ({
-
+    name: 'tClass'
   }),
   mutations: {
 
@@ -13,4 +13,4 @@ const ptClass = {
   }
 }
 
-export default ptClass
+export default tClass

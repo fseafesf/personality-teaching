@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { BASE_URL, TIMEOUT } from './config'
+import store from '../../store'
 
 class PtRequest {
   constructor(baseURL, timeout = 5000) {
@@ -10,12 +11,16 @@ class PtRequest {
     })
 
     this.instance.interceptors.request.use(config => {
+      store.commit('changeIsLoading', true)
+      // console.log(store.state.isLoading);
       return config
     }, err => {
       return err
     })
 
     this.instance.interceptors.response.use(res => {
+      store.commit('changeIsLoading', false)
+      // console.log(store.state.isLoading);
       return res
     }, err => {
       return err

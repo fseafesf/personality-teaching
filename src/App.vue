@@ -2,15 +2,17 @@
   <div id="app">
     <NavBar />
     <router-view class="wrap-v1" />
+    <Loading />
   </div>
 </template>
 
 <script>
-import NavBar from './components/nav-bar.vue'
+import NavBar from './components/common/nav-bar.vue'
+import Loading from './components/common/Loading.vue'
 
 export default {
   name: "App",
-  components: { NavBar }
+  components: { NavBar, Loading }
 }
 </script>
 

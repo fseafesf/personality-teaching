@@ -1,4 +1,4 @@
-import sxRequest from '../request'
+import sxRequest from '../../request'
 
 export function test() {
   return sxRequest.get({

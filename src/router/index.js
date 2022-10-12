@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const Home = () => import('../views/Home.vue')
-const Test = () => import('../views/Test.vue')
-const Class = () => import('../views/Class.vue')
-const Student = () => import('../views/Student.vue')
+const Home = () => import('../views/common/Home.vue')
+const tAnalysis = () => import('../views/teacher/tAnalysis.vue')
+const tClass = () => import('../views/teacher/tClass.vue')
+const tKnowledge = () => import('../views/teacher/tKnowledge.vue')
+const tReview = () => import('../views/teacher/tReview.vue')
+const tTest = () => import('../views/teacher/tTest.vue')
+const tTopic = () => import('../views/teacher/tTopic.vue')
 
 Vue.use(VueRouter)
 
@@ -19,19 +22,34 @@ const routes = [
     component: Home
   },
   {
-    path: '/test',
-    name: 'Test',
-    component: Test
+    path: '/teacher/analysis',
+    name: 'tAnalysis',
+    component: tAnalysis
   },
   {
-    path: '/class',
-    name: 'Class',
-    component: Class
+    path: '/teacher/class',
+    name: 'tClass',
+    component: tClass
   },
   {
-    path: '/student',
-    name: 'Student',
-    component: Student
+    path: '/teacher/knowledge',
+    name: 'tKnowledge',
+    component: tKnowledge
+  },
+  {
+    path: '/teacher/review',
+    name: 'tReview',
+    component: tReview
+  },
+  {
+    path: '/teacher/test',
+    name: 'tTest',
+    component: tTest
+  },
+  {
+    path: '/teacher/topic',
+    name: 'tTopic',
+    component: tTopic
   },
 ]
 

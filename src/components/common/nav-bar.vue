@@ -21,16 +21,28 @@ export default {
           path: '/home'
         },
         {
-          name: '组卷',
-          path: '/test'
+          name: '知识点管理',
+          path: '/teacher/knowledge'
+        },
+        {
+          name: '题目管理',
+          path: '/teacher/topic'
         },
         {
           name: '班级管理',
-          path: '/class'
+          path: '/teacher/class'
         },
         {
-          name: '学生管理',
-          path: '/student'
+          name: '试卷管理',
+          path: '/teacher/test'
+        },
+        {
+          name: '试卷评阅',
+          path: '/teacher/review'
+        },
+        {
+          name: '学情分析',
+          path: '/teacher/analysis'
         },
       ],
       currentIndex: 0
