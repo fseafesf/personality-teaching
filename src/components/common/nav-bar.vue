@@ -22,7 +22,7 @@ export default {
         },
         {
           name: '知识点管理',
-          path: '/teacher/knowledge'
+          path: '/teacher/knowledge/tree'
         },
         {
           name: '题目管理',

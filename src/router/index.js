@@ -1,14 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const Home = () => import('../views/common/Home.vue')
-const tAnalysis = () => import('../views/teacher/tAnalysis.vue')
-const tClass = () => import('../views/teacher/tClass.vue')
-const tKnowledge = () => import('../views/teacher/tKnowledge.vue')
-const tReview = () => import('../views/teacher/tReview.vue')
-const tTest = () => import('../views/teacher/tTest.vue')
-const tTopic = () => import('../views/teacher/tTopic.vue')
-
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,37 +11,43 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: Home
-  },
-  {
-    path: '/teacher/analysis',
-    name: 'tAnalysis',
-    component: tAnalysis
-  },
-  {
-    path: '/teacher/class',
-    name: 'tClass',
-    component: tClass
+    component: () => import('../views/common/Home.vue')
   },
   {
     path: '/teacher/knowledge',
     name: 'tKnowledge',
-    component: tKnowledge
-  },
-  {
-    path: '/teacher/review',
-    name: 'tReview',
-    component: tReview
-  },
-  {
-    path: '/teacher/test',
-    name: 'tTest',
-    component: tTest
+    component: () => import('../views/teacher/tKnowledge/tKnowledge.vue'),
+    children: [
+      { path: '', redirect: '/teacher/knowledge/tree' },
+      { path: 'tree', component: () => import('../views/teacher/tKnowledge/children/tKnowledgeTree.vue') },
+      { path: 'contact', component: () => import('../views/teacher/tKnowledge/children/tKnowledgeContact.vue') },
+    ]
   },
   {
     path: '/teacher/topic',
     name: 'tTopic',
-    component: tTopic
+    component: () => import('../views/teacher/tTopic/tTopic.vue')
+  },
+
+  {
+    path: '/teacher/class',
+    name: 'tClass',
+    component: () => import('../views/teacher/tClass/tClass.vue')
+  },
+  {
+    path: '/teacher/test',
+    name: 'tTest',
+    component: () => import('../views/teacher/tTest/tTest.vue')
+  },
+  {
+    path: '/teacher/review',
+    name: 'tReview',
+    component: () => import('../views/teacher/tReview/tReview.vue')
+  },
+  {
+    path: '/teacher/analysis',
+    name: 'tAnalysis',
+    component: () => import('../views/teacher/tAnalysis/tAnalysis.vue')
   },
 ]
 
