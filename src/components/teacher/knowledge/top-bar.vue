@@ -1,6 +1,6 @@
 <template>
   <div class="top-bar">
-    <template v-for="(item,index) in navBarData">
+    <template v-for="(item,index) in topBarData">
       <div class="title" :class="{ active: currentIndex === index}" @click="itemClick(index)">
         <router-link :to="item.path">{{item.name}}</router-link>
       </div>
@@ -12,7 +12,7 @@
 export default {
   data() {
     return {
-      navBarData: [
+      topBarData: [
         {
           name: '知识点树',
           path: '/teacher/knowledge/tree'
@@ -33,7 +33,7 @@ export default {
   watch: {
     $route: {
       handler(to, from) {
-        this.currentIndex = this.navBarData.findIndex(item => item.path === to.path)
+        this.currentIndex = this.topBarData.findIndex(item => item.path === to.path)
       },
       immediate: true
     }

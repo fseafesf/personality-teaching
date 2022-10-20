@@ -1,5 +1,5 @@
 <template>
-  <div class="loading" v-if="$store.state.isLoading">
+  <div class="loading" v-if="$store.state.isLoading" @click="loadingClick">
     <i class="el-icon-loading"></i>
     <span class="title">加载中</span>
   </div>
@@ -9,7 +9,13 @@
 </template>
 
 <script>
-
+export default {
+  methods: {
+    loadingClick() {
+      this.$store.commit('changeIsLoading', false)
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

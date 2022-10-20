@@ -22,7 +22,17 @@ export default {
         },
         {
           name: '知识点管理',
-          path: '/teacher/knowledge/tree'
+          path: '/teacher/knowledge',
+          children: [
+            {
+              name: '知识点树',
+              path: '/teacher/knowledge/tree',
+            },
+            {
+              name: '知识点联系',
+              path: '/teacher/knowledge/contact',
+            }
+          ]
         },
         {
           name: '题目管理',
@@ -55,7 +65,15 @@ export default {
   },
   watch: {
     $route(to, from) {
-      this.currentIndex = this.navBarData.findIndex(item => item.path === to.path)
+      const index = this.navBarData.findIndex(item => {
+        if (!item.children) return item.path === to.path
+        for (const iten of item.children) {
+          if (iten.path === to.path) {
+            return iten.path === to.path
+          }
+        }
+      })
+      this.currentIndex = index
     }
   }
 }
