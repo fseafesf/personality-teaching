@@ -11,55 +11,18 @@
 </template>
 
 <script>
+import store from '../../store'
 
 export default {
   data() {
     return {
-      navBarData: [
-        {
-          name: '首页',
-          path: '/home'
-        },
-        {
-          name: '知识点管理',
-          path: '/teacher/knowledge',
-          children: [
-            {
-              name: '知识点树',
-              path: '/teacher/knowledge/tree',
-            },
-            {
-              name: '知识点联系',
-              path: '/teacher/knowledge/contact',
-            }
-          ]
-        },
-        {
-          name: '题目管理',
-          path: '/teacher/topic'
-        },
-        {
-          name: '班级管理',
-          path: '/teacher/class'
-        },
-        {
-          name: '试卷管理',
-          path: '/teacher/test'
-        },
-        {
-          name: '试卷评阅',
-          path: '/teacher/review'
-        },
-        {
-          name: '学情分析',
-          path: '/teacher/analysis'
-        },
-      ],
-      currentIndex: 0
+      navBarData: store.state.navBarData,
+      currentIndex: store.state.currentIndex
     }
   },
   methods: {
     itemClick(index) {
+      store.commit("changeCurrentIndex", index)
       this.currentIndex = index
     }
   },
@@ -73,6 +36,8 @@ export default {
           }
         }
       })
+      store.commit("changeCurrentIndex", index)
+      store.commit("changeCurrentNavBarData", index)
       this.currentIndex = index
     }
   }
