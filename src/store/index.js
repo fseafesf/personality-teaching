@@ -14,12 +14,79 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isLoading: false
+    isLoading: false,
+    navBarData: [
+      {
+        name: '首页',
+        path: '/home'
+      },
+      {
+        name: '知识点管理',
+        path: '/teacher/knowledge',
+        children: [
+          {
+            name: '知识点树',
+            path: '/teacher/knowledge/tree',
+          },
+          {
+            name: '知识点联系',
+            path: '/teacher/knowledge/contact',
+          }
+        ]
+      },
+      {
+        name: '题目管理',
+        path: '/teacher/topic'
+      },
+      {
+        name: '班级管理',
+        path: '/teacher/class'
+      },
+      {
+        name: '试卷管理',
+        path: '/teacher/examHome',
+        children: [
+          {
+            name: '试卷列表',
+            path: '/teacher/examHome/eaxmPaper'
+          }, 
+          {
+            name:'新增试卷',
+            path:'/teacher/examHome/test'
+          },
+          {
+            name:'预览试卷',
+            path:'/teacher/examHome/preview'
+          }
+        ]
+      },
+      {
+        name: '试卷评阅',
+        path: '/teacher/review'
+      },
+      {
+        name: '学情分析',
+        path: '/teacher/analysis'
+      },
+    ],
+    currentIndex: 0,
+    currentNavBarData: {}
+  },
+  getters: {
+    // currentNavBarData(state) {
+    //   const index = state.currentIndex
+    //   return state.navBarData[index];
+    // }
   },
   mutations: {
     changeIsLoading(state, status) {
-      // 变更状态
       state.isLoading = status
+    },
+    changeCurrentIndex(state, index) {
+      state.currentIndex = index
+    },
+    changeCurrentNavBarData(state, index) {
+      state.currentNavBarData = state.navBarData[index]
     }
   },
   actions: {

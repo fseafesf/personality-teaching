@@ -41,7 +41,7 @@ const routes = [
     redirect: '/teacher/examHome/examPaper',
     children: [
       {
-        path: 'texamPaper',
+        path: 'examPaper',
         component: () => import('../views/teacher/tTestPage/tExamPaper.vue')
       },
       {
@@ -56,7 +56,7 @@ const routes = [
       }
     ]
   },
-  
+
   {
     path: '/teacher/review',
     name: 'tReview',
@@ -69,7 +69,7 @@ const routes = [
     component: () => import('../views/teacher/tAnalysis/tAnalysis.vue')
 
   },
-  
+
 ]
 
 const router = new VueRouter({

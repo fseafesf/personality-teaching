@@ -16,55 +16,39 @@
 </template>
 
 <script>
+
+import store from '../../store'
+
 export default {
   data() {
     return {
-      navBarData: [
-        {
-          name: "首页",
-          path: "/home",
-        },
-        {
-          name: '知识点管理',
-          path: '/teacher/knowledge/tree'
-        },
-        {
-          name: '题目管理',
-          path: '/teacher/topic'
-        },
-        {
-          name: '班级管理',
-          path: '/teacher/class'
-        },
-        {
-          name: '试卷管理',
-          path: '/teacher/examHome/examPaper'
-        },
-        {
-          name: '试卷评阅',
-          path: '/teacher/review'
-        },
-        {
-          name: '学情分析',
-          path: '/teacher/analysis'
-        }
-      ],
-      currentIndex: 0,
-    };
+      navBarData: store.state.navBarData,
+      currentIndex: store.state.currentIndex
+    }
   },
   methods: {
     itemClick(index) {
-      this.currentIndex = index;
-    },
+      store.commit("changeCurrentIndex", index)
+      this.currentIndex = index
+    }
   },
   watch: {
     $route(to, from) {
-      this.currentIndex = this.navBarData.findIndex(
-        (item) => item.path === to.path
-      );
-    },
-  },
-};
+      const index = this.navBarData.findIndex(item => {
+        if (!item.children) return item.path === to.path
+        for (const iten of item.children) {
+          if (iten.path === to.path) {
+            return iten.path === to.path
+          }
+        }
+      })
+      store.commit("changeCurrentIndex", index)
+      store.commit("changeCurrentNavBarData", index)
+      this.currentIndex = index
+    }
+  }
+}
+
 </script>
 
 <style lang="less" scoped>
