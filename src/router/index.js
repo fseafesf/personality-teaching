@@ -17,8 +17,8 @@ const routes = [
     path: '/teacher/knowledge',
     name: 'tKnowledge',
     component: () => import('../views/teacher/tKnowledge/tKnowledge.vue'),
+    redirect: '/teacher/knowledge/tree',
     children: [
-      { path: '', redirect: '/teacher/knowledge/tree' },
       { path: 'tree', component: () => import('../views/teacher/tKnowledge/children/tKnowledgeTree.vue') },
       { path: 'contact', component: () => import('../views/teacher/tKnowledge/children/tKnowledgeContact.vue') },
     ]
@@ -35,20 +35,41 @@ const routes = [
     component: () => import('../views/teacher/tClass/tClass.vue')
   },
   {
-    path: '/teacher/test',
-    name: 'tTest',
-    component: () => import('../views/teacher/tTest/tTest.vue')
+    path: '/teacher/examHome',
+    name: 'tExamHome',
+    component: () => import('../views/teacher/tTestPage/index'),
+    redirect: '/teacher/examHome/examPaper',
+    children: [
+      {
+        path: 'texamPaper',
+        component: () => import('../views/teacher/tTestPage/tExamPaper.vue')
+      },
+      {
+        path: 'test',
+        name: 'tTest',
+        component: () => import('../views/teacher/tTestPage/tTest.vue')
+      },
+      {
+        path: 'preview',
+        name: 'tPreview',
+        component: () => import('../views/teacher/tTestPage/tPreview.vue')
+      }
+    ]
   },
+  
   {
     path: '/teacher/review',
     name: 'tReview',
     component: () => import('../views/teacher/tReview/tReview.vue')
   },
   {
+
     path: '/teacher/analysis',
     name: 'tAnalysis',
     component: () => import('../views/teacher/tAnalysis/tAnalysis.vue')
+
   },
+  
 ]
 
 const router = new VueRouter({

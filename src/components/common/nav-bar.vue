@@ -1,24 +1,28 @@
 <template>
   <div class="nav-bar">
     <div class="content wrap-v1">
-      <template v-for="(item,index) in navBarData">
-        <div class="title" :class="{ active: currentIndex === index}" @click="itemClick(index)">
-          <router-link :to="item.path">{{item.name}}</router-link>
+      <div v-for="(item, index) in navBarData" :key="index">
+        <div
+         
+          class="title"
+          :class="{ active: currentIndex === index }"
+          @click="itemClick(index)"  
+        >
+          <router-link :to="item.path">{{ item.name }}</router-link>
         </div>
-      </template>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
   data() {
     return {
       navBarData: [
         {
-          name: '首页',
-          path: '/home'
+          name: "首页",
+          path: "/home",
         },
         {
           name: '知识点管理',
@@ -34,7 +38,7 @@ export default {
         },
         {
           name: '试卷管理',
-          path: '/teacher/test'
+          path: '/teacher/examHome/examPaper'
         },
         {
           name: '试卷评阅',
@@ -43,29 +47,31 @@ export default {
         {
           name: '学情分析',
           path: '/teacher/analysis'
-        },
+        }
       ],
-      currentIndex: 0
-    }
+      currentIndex: 0,
+    };
   },
   methods: {
     itemClick(index) {
-      this.currentIndex = index
-    }
+      this.currentIndex = index;
+    },
   },
   watch: {
     $route(to, from) {
-      this.currentIndex = this.navBarData.findIndex(item => item.path === to.path)
-    }
-  }
-}
+      this.currentIndex = this.navBarData.findIndex(
+        (item) => item.path === to.path
+      );
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
 .nav-bar {
   width: 100%;
   height: 50px;
-  background-color: #4498EE;
+  background-color: #4498ee;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -90,7 +96,7 @@ export default {
 
       &.active,
       &:hover {
-        background-color: #3982CE;
+        background-color: #3982ce;
       }
     }
   }
