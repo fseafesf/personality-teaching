@@ -8,7 +8,7 @@
 </template>
 
 <script >
-import Tree from '../../../../components/teacher/knowledge/tree.vue';
+import Tree from 'components/teacher/knowledge/tree.vue';
 
 export default {
   data() {

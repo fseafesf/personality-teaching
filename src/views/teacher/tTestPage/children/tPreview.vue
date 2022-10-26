@@ -20,8 +20,8 @@
 </template>
   
   <script>
-import Card from "../../../components/Test/tCard.vue";
-import { group } from "../../../utils/groupByType";
+import Card from "components/teacher/Test/tCard.vue";
+import { group } from "utils/groupByType";
 export default {
   name: "preview",
   data() {

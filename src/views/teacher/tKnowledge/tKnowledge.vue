@@ -6,7 +6,7 @@
 </template>
 
 <script >
-import TopBar from '../../../components/teacher/knowledge/top-bar.vue';
+import TopBar from 'components/teacher/knowledge/top-bar.vue';
 
 export default {
   data() {

@@ -78,7 +78,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { groupByType } from "../../utils/groupByType";
+import { groupByType } from "@/utils/groupByType";
 export default {
   name: "right-drawer",
   data() {

@@ -1,6 +1,11 @@
 <template>
   <div class="tool-menu">
     <div class="tool-content">
+      <div class="tool-operation">
+        <span>收藏</span>
+        <span>纠错</span>
+        <span>分析</span>
+      </div>
       <el-button
         :class="!btnHide ? 'hide' : ''"
         type="primary"
@@ -67,6 +72,14 @@ export default {
     height: 40px;
     width: 300px;
     line-height: 40px;
+    padding: 5px;
+    display: flex;
+    .tool-operation{
+      color:  #23589e;
+      span{
+        margin-left: 15px;
+      }
+    }
     .el-button--primary {
       margin-left: 10px;
     }
@@ -74,7 +87,10 @@ export default {
       display: none;
     }
     .el-button {
+      margin-left: 200px;
       position: absolute;
+      height: 25px;
+      padding-bottom: 25px;
     }
   }
 }

@@ -20,11 +20,43 @@
       ></el-tree>
     </div>
     <div class="middle_content wrap-v4">
-      <div class="filter-box"></div>
+      <div class="filter-box">
+        <div class="filter-item">
+          <span class="mt">题型:</span>
+          <div class="filter-option">
+            <ul class="filter-item-wrap">
+              <li class="active">全部</li>
+              <li>单选</li>
+              <li>多选</li>
+              <li>简答</li>
+              <li>填空</li>
+            </ul>
+          </div>
+        </div>
+        <div class="filter-item">
+          <span class="mt">难度:</span>
+          <div class="filter-option">
+            <ul class="filter-item-wrap">
+              <li class="active">全部</li>
+              <li>简单</li>
+              <li>中等</li>
+              <li>困难</li>
+            </ul>
+          </div>
+        </div>
+        <div class="filter-item">
+          <span class="mt">方式:</span>
+          <div class="filter-option">
+            <ul class="filter-item-wrap">
+              <li class="active">全部</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div class="handle-line"></div>
 
       <div class="content-box" v-for="(item, index) in seList" :key="index">
-        <ProblemHead></ProblemHead>
+        <ProblemHead :Problem="item"></ProblemHead>
         <Problem>{{ item.content }}</Problem>
         <ToolMenu :Knp_id="item.id"></ToolMenu>
       </div>
@@ -34,10 +66,10 @@
 </template>
 
 <script>
-import Problem from "../../../components/Test/tproblem.vue";
-import ProblemHead from "../../../components/Test/tproblemHead.vue";
-import ToolMenu from "../../../components/Test/toolMenu.vue";
-import RightDrawer from "../../../components/Test/trightDrawer.vue";
+import Problem from "components/teacher/Test/tproblem.vue";
+import ProblemHead from "components/teacher/Test/tproblemHead.vue";
+import ToolMenu from "components/teacher/Test/toolMenu.vue";
+import RightDrawer from "components/teacher/Test/trightDrawer.vue";
 export default {
   data() {
     return {
@@ -188,10 +220,38 @@ export default {
   .middle_content {
     min-height: 800px;
     margin: 50px 50px 0 0;
-    background: #f5f5f5;
+    // background: #f5f5f5;
     .filter-box {
       background: white;
       height: 200px;
+      .filter-item {
+        padding: 10px 0 10px 10px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        .mt{
+          color: #999;
+          font-size: 14px;
+        }
+        .filter-item-wrap {
+          display: flex;
+          gap: 20px;
+          font-size: 14px;
+          margin-left: 10px;
+          li{
+            padding: 5px;
+            border-radius: 5px;
+            &:hover{
+              background-color: #4498ee;
+              color: #fff;
+            }
+          }
+          .active{
+            background-color: #4498ee;
+            color: #fff;
+          }
+        }
+      }
     }
     .handle-line {
       margin-top: 20px;
