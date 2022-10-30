@@ -4,7 +4,7 @@
       <div class="tool-operation">
         <span>收藏</span>
         <span>纠错</span>
-        <span>分析</span>
+        <span>查看解析</span>
       </div>
       <el-button
         :class="!btnHide ? 'hide' : ''"
@@ -20,14 +20,14 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "tool-menu",
   data() {
     return {
       list: [1, 2, 3],
-      btnHide: true,
+      btnHide: Boolean,
     };
   },
   props: {
@@ -35,26 +35,34 @@ export default {
       type: Number,
     },
   },
+  mounted() {
+    this.btnHide = !this.page.selectProblem.includes(
+      this.problems.find(
+        (item) => item.id === this.$props.Knp_id
+      )
+    );
+  },
+  computed:{
+   ...mapState("tTest",["page","problems"])
+  },
   methods: {
     ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
     handleMneu() {
       console.log(this.$props.Knp_id);
       this.btnHide = false;
-      let problem = this.$store.state.tTest.problems.find(
+      let problem = this.problems.find(
         (item) => item.id === this.$props.Knp_id
       );
       this.addProblem(problem);
-      console.log('tool-menu',this.$store.state.tTest.selectProblem);
+      console.log("tool-menu", this.page.selectProblem);
     },
 
     deleteMenu() {
-      // console.log(this.$props.Knp_id);
       this.btnHide = true;
-      let index = this.$store.state.tTest.selectProblem.findIndex(
+      let index = this.page.selectProblem.findIndex(
         (item) => item.id === this.$props.Knp_id
       );
       this.deleteProblem(index);
-      // console.log(this.$store.state.tTest.selectProblem);
     },
   },
 };
@@ -74,9 +82,9 @@ export default {
     line-height: 40px;
     padding: 5px;
     display: flex;
-    .tool-operation{
-      color:  #23589e;
-      span{
+    .tool-operation {
+      color: #23589e;
+      span {
         margin-left: 15px;
       }
     }
@@ -87,7 +95,7 @@ export default {
       display: none;
     }
     .el-button {
-      margin-left: 200px;
+      margin-left: 180px;
       position: absolute;
       height: 25px;
       padding-bottom: 25px;

@@ -13,7 +13,7 @@
 <script>
 export default {
   name: "ProblemHead",
-  data() {},
+  data() {return{}},
   methods: {
     toType(key) {
       switch (key) {

@@ -5,9 +5,9 @@
         <div class="drawer-preview">试卷预览</div>
       </div>
       <div class="drawer-basket" :class="basketShow ? 'basket' : ''">
-        <div class="basket-content" v-if="this.selectProblem.length !== 0">
+        <div class="basket-content" v-if="this.page.selectProblem.length !== 0">
           <div class="basket-head">
-            题目总数:{{ this.selectProblem.length }}
+            题目总数:{{ this.page.selectProblem.length }}
           </div>
           <div class="basket-list">
             <div class="basket-radio unified" v-show="this.problemData['1']">
@@ -35,7 +35,7 @@
             <div class="basket-calcul unified" v-show="this.problemData['3']">
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
-                  <span>计算题</span>
+                  <span>填空题</span>
                   <span ><em class="numColor">{{
                     this.problemData["3"]?.length
                   }}</em>题</span>
@@ -46,7 +46,7 @@
             <div class="basket-read unified" v-show="this.problemData['4']">
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
-                  <span>阅读题</span>
+                  <span>判断题</span>
                   <span ><em class="numColor">{{
                     this.problemData["4"]?.length
                   }}</em>题</span>
@@ -57,7 +57,7 @@
             <div class="basket-program unified" v-show="this.problemData['5']">
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
-                  <span>编程题</span>
+                  <span>简答题</span>
                   <span
                     ><em class="numColor">{{
                       this.problemData["5"]?.length
@@ -97,14 +97,14 @@ export default {
       });
     },
     getData() {
-      this.problemData = groupByType(this.$store.state.tTest.selectProblem);
+      this.problemData = groupByType(this.$store.state.tTest.page.selectProblem);
       console.log("根据type分类的题目", this.problemData);
     },
   },
   computed: {
-    ...mapState("tTest", ["selectProblem"]),
+    ...mapState("tTest", ["page"]),
     params() {
-      return JSON.parse(JSON.stringify(this.selectProblem));
+      return JSON.parse(JSON.stringify(this.page.selectProblem));
     },
   },
   watch: {
@@ -126,6 +126,7 @@ export default {
   right: 0;
   z-index: 999;
   height: 100%;
+  cursor: pointer;
 
   .drawer-box {
     height: 100%;
@@ -145,7 +146,8 @@ export default {
       }
     }
     .basket-else {
-      padding: 20px 0 0 45px;
+      padding: 40px 0 0 80px;
+      
     }
     .drawer-basket {
       //题目数目预览

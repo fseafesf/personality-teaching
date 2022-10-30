@@ -42,6 +42,7 @@ const routes = [
     children: [
       {
         path: 'examPaper',
+        name:'tEaxmPaper',
         component: () => import('@/views/teacher/tTestPage/children/tExamPaper.vue')
       },
       {

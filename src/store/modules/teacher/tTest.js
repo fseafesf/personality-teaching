@@ -13,15 +13,21 @@ const tTest = {
       { id: 8, content: '这是第八道题目', type: 2, difficultType: 1 },
       { id: 9, content: '这是第九道题目', type: 3, difficultType: 3 },
     ],
-    selectProblem: []
-
+    page: {
+      title: '',
+      selectProblem: [],
+      id: Number,
+      difficultType: '',
+      createTime: '',
+      score: Number
+    }
   }),
   mutations: {
     addProblem(state, problem) {
-      state.selectProblem.push(problem)
+      state.page.selectProblem.push(problem)
     },
     deleteProblem(state, index) {
-      state.selectProblem.splice(index, 1)
+      state.page.selectProblem.splice(index, 1)
     },
     deleteProblemType(state, type) {
 

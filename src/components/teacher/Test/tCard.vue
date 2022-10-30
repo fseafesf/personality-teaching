@@ -30,11 +30,11 @@ export default {
         case 2:
           return "多选";
         case 3:
-          return "计算";
+          return "填空";
         case 4:
-          return "阅读";
+          return "判断";
         case 5:
-          return "编程";
+          return "简答";
         default:
           break;
       }

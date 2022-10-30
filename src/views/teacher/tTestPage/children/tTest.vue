@@ -75,6 +75,7 @@ export default {
     return {
       list: [],
       seList: [],
+      pageId:Number,
       show: false,
       data: [
         {
