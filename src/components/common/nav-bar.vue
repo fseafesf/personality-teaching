@@ -2,12 +2,7 @@
   <div class="nav-bar">
     <div class="content wrap-v1">
       <div v-for="(item, index) in navBarData" :key="index">
-        <div
-         
-          class="title"
-          :class="{ active: currentIndex === index }"
-          @click="itemClick(index)"  
-        >
+        <div class="title" :class="{ active: currentIndex === index }" @click="itemClick(index)">
           <router-link :to="item.path">{{ item.name }}</router-link>
         </div>
       </div>
@@ -36,6 +31,8 @@ export default {
     $route(to, from) {
       const index = this.navBarData.findIndex(item => {
         if (!item.children) return item.path === to.path
+        if (item.path === to.path) return item.path === to.path
+
         for (const iten of item.children) {
           if (iten.path === to.path) {
             return iten.path === to.path
@@ -44,6 +41,7 @@ export default {
       })
       store.commit("changeCurrentIndex", index)
       store.commit("changeCurrentNavBarData", index)
+      console.log(index)
       this.currentIndex = index
     }
   }

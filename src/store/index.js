@@ -36,7 +36,17 @@ export default new Vuex.Store({
       },
       {
         name: '题目管理',
-        path: '/teacher/topic'
+        path: '/teacher/topic',
+        children: [
+          {
+            name: '添加题目',
+            path: '/teacher/topic/add',
+          },
+          {
+            name: '编辑题目',
+            path: '/teacher/topic/edit',
+          }
+        ]
       },
       {
         name: '班级管理',
@@ -48,15 +58,15 @@ export default new Vuex.Store({
         children: [
           {
             name: '试卷列表',
-            path: '/teacher/examHome/eaxmPaper'
-          }, 
-          {
-            name:'新增试卷',
-            path:'/teacher/examHome/test'
+            path: '/teacher/examHome/examPaper'
           },
           {
-            name:'预览试卷',
-            path:'/teacher/examHome/preview'
+            name: '新增试卷',
+            path: '/teacher/examHome/test'
+          },
+          {
+            name: '预览试卷',
+            path: '/teacher/examHome/preview'
           }
         ]
       },
