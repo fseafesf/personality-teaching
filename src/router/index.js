@@ -79,7 +79,17 @@ const routes = [
   {
     path: '/teacher/review',
     name: 'tReview',
-    component: () => import('@/views/teacher/tReview/tReview.vue')
+    component: () => import('@/views/teacher/tReview/tReview.vue'),
+    children: [
+      {
+        // name: 'correctPaper',
+        path: 'correctPaper',
+        component: () => import('@/views/teacher/tReview/children/correctPaper.vue'),
+        meta: {
+          isChildren: true,         
+        }
+      }
+    ]
   },
   {
 
