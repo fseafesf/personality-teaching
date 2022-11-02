@@ -1,22 +1,19 @@
 <template>
-  <div>
-    <el-table :data="paperList" style="width: 100%" border stripe>
-      <el-table-column type="index" label="序号" width="100"></el-table-column>
-      <el-table-column prop="topicContent" label="题目内容"></el-table-column>
-      <el-table-column label="操作" width="100">
-        <template v-slot="scope">
-          <el-button type="primary" size="small" @click="showExamPaperDialogFn">批阅</el-button>        
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 显示试卷 -->
-    <el-dialog :title="paperList.topicContent"
-      :visible.sync="examDialogVisible"
-      fullscreen   
-    >
-      <h2>这是试卷内容</h2>
-    </el-dialog>
+  <div id="table">
+    <!-- 试卷评阅界面 -->
+    <template v-if="!$route.meta.isChildren">
+      <el-table :data="paperList" style="width: 100%" border stripe>
+        <el-table-column type="index" label="序号" width="100"></el-table-column>
+        <el-table-column prop="topicContent" label="题目内容"></el-table-column>
+        <el-table-column label="操作" width="100">
+          <template v-slot="scope">
+            <el-button type="primary" size="small" @click="correctPaperFn">批阅</el-button>        
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    
+    <router-view></router-view>
   </div>
 </template>
 
@@ -51,18 +48,19 @@ export default {
           topicType: "队列",
           complexity: "难",
         },
-      ],
-      examDialogVisible: false,  // 控制试卷是否显示
+      ],      
     }
   },
-  methods: {
-    showExamPaperDialogFn() {
-      this.examDialogVisible = true
+  methods: {    
+    correctPaperFn() {
+      this.$router.push('/teacher/review/correctPaper')
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+  #table {
+    margin-top: 10px;
+  }
 </style>
