@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Problem from "./tproblem.vue";
+import Problem from "components/teacher/Test/tTest/tproblem.vue";
 export default {
   name: "card",
   data() {

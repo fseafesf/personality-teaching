@@ -50,8 +50,8 @@
 </template>
   
   <script>
-import Card from "components/teacher/Test/tCard.vue";
-import EditTitle from "components/teacher/Test/tEditTitle.vue";
+import Card from "components/teacher/Test/tPreview/tCard.vue";
+import EditTitle from "components/teacher/Test/tPreview/tEditTitle.vue";
 import { group } from "utils/groupByType";
 import { mapState } from "vuex";
 export default {

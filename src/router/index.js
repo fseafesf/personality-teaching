@@ -72,6 +72,11 @@ const routes = [
         path: 'preview',
         name: 'tPreview',
         component: () => import('@/views/teacher/tTestPage/children/tPreview.vue')
+      },
+      {
+        path:'release',
+        name:'tRelease',
+        component:() => import('@/views/teacher/tTestPage/children/tRelease.vue')
       }
     ]
   },

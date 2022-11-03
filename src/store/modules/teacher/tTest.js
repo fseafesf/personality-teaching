@@ -13,14 +13,18 @@ const tTest = {
       { id: 8, content: '这是第八道题目', type: 2, difficultType: 1 },
       { id: 9, content: '这是第九道题目', type: 3, difficultType: 3 },
     ],
+    // 模拟试卷数据结构
     page: {
       title: '',
       selectProblem: [],
       id: Number,
       difficultType: '',
       createTime: '',
-      score: Number
-    }
+      score: Number,
+      status: Number
+    },
+    // 所有的试卷
+    pages: []
   }),
   mutations: {
     addProblem(state, problem) {

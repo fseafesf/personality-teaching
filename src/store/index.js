@@ -67,6 +67,10 @@ export default new Vuex.Store({
           {
             name: '预览试卷',
             path: '/teacher/examHome/preview'
+          },
+          {
+            name:'发布试卷',
+            path:'/teacher/examHome/release'
           }
         ]
       },
