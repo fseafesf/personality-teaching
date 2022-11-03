@@ -27,7 +27,7 @@
       </el-form-item>
 
       <el-form-item label="知识点联系:" label-width="100px">
-        <Tree class="tree" />
+        <Tree class="tree" :operation="false" :show-checkbox="true" />
       </el-form-item>
 
       <el-form-item label="难度">
@@ -99,7 +99,7 @@ export default {
 
   .tree {
     width: 300px;
-    border: 1px solid #000;
+    border: 1px solid #fff;
   }
 }
 </style>

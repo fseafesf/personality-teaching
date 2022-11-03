@@ -30,6 +30,7 @@
         <el-input type="textarea" v-model="editForm.analysis"></el-input>
       </el-form-item>
       <el-form-item label="知识点联系:" label-width="100px">
+        <Tree :operation="false" :show-checkbox="true" />
       </el-form-item>
       <el-form-item label="难度">
         <el-select v-model="editForm.difficulty" placeholder="难度">
@@ -47,8 +48,10 @@
 </template>
 
 <script>
+import Tree from '../knowledge/tree.vue';
 
 export default {
+  components: { Tree },
   props: {
     typeValue: {
       type: String,

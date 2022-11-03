@@ -2,20 +2,23 @@
   <div class="tree">
     <div class="custom-tree-container">
       <div class="block">
-        <el-tree :data="data" show-checkbox node-key="id" default-expand-all :expand-on-click-node="false">
+        <el-tree :data="data" :show-checkbox="showCheckbox" node-key="id" default-expand-all
+          :expand-on-click-node="false">
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
-            <span>
-              <el-button type="text" size="mini" @click="() => append(data)">
-                添加
-              </el-button>
-              <el-button type="text" size="mini" @click="() => append(data)">
-                编辑
-              </el-button>
-              <el-button type="text" size="mini" @click="() => remove(node, data)">
-                删除
-              </el-button>
-            </span>
+            <template v-if="operation">
+              <span>
+                <el-button type="text" size="mini" @click="() => append(data)">
+                  添加
+                </el-button>
+                <el-button type="text" size="mini" @click="() => edit(node, data)">
+                  编辑
+                </el-button>
+                <el-button type="text" size="mini" @click="() => remove(node, data)">
+                  删除
+                </el-button>
+              </span>
+            </template>
           </span>
         </el-tree>
       </div>
@@ -27,6 +30,20 @@
 let id = 1000
 
 export default {
+  props: {
+    operation: {
+      type: Boolean,
+      default: true
+    },
+    height: {
+      type: Number,
+      default: 0
+    },
+    showCheckbox: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     const data = [{
       id: 1,
@@ -73,6 +90,24 @@ export default {
       }
       data.children.push(newChild);
     },
+    edit(node, data) {
+      console.log(node, data);
+      this.$prompt('', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: data.label
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: value
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+    },
     remove(node, data) {
       const parent = node.parent;
       const children = parent.data.children || parent.data;
@@ -89,10 +124,8 @@ export default {
 
   .custom-tree-container {
     width: 300px;
-    // max-height: 900px;
-    height: 800px;
+    // min-height: 800px;
     border-radius: 5px;
-    background-color: #fff;
 
     .block {
       padding: 10px;

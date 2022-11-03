@@ -41,7 +41,6 @@ export default {
       })
       store.commit("changeCurrentIndex", index)
       store.commit("changeCurrentNavBarData", index)
-      console.log(index)
       this.currentIndex = index
     }
   }

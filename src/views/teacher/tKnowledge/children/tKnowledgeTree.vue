@@ -1,6 +1,8 @@
 <template>
   <div class="knowledge-tree">
-    <Tree />
+    <div class="left">
+      <Tree />
+    </div>
     <div class="content">
       知识点内容
     </div>
@@ -28,10 +30,15 @@ export default {
   display: flex;
   gap: 10px;
 
+  .left,
+  .content {
+    min-height: 800px;
+    background-color: #fff;
+  }
+
   .content {
     flex: 1;
     padding: 10px;
-    background-color: #fff;
   }
 }
 </style>
