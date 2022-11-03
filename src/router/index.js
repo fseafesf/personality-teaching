@@ -43,7 +43,7 @@ const routes = [
           isChildren: true,
           // hideTabBar: true
         }
-      },
+      }
     ]
   },
 

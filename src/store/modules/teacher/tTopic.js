@@ -41,7 +41,8 @@ const tTopic = {
         difficulty: "中等"
       }
     ],
-    currentTopicEditData: {}
+    currentTopicEditData: {},
+    test: "123"
   }),
   mutations: {
     changeCurrentTopicEditData(state, data) {
