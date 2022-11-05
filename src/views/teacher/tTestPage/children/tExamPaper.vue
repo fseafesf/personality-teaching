@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import nanoid from 'nanoid'
 export default {
   name: "tExamPaper",
   data() {
@@ -61,32 +62,35 @@ export default {
           date: "2022-10-29",
           difficultType: 1,
           score: 60,
-          id: 13,
+          id:1
         },
         {
           title: "试卷二",
           date: "2022-10-29",
           difficultType: 1,
           score: 60,
+          id:2
         },
         {
           title: "试卷三",
           date: "2022-10-29",
           difficultType: 1,
           score: 60,
+          id:3
         },
         {
           title: "试卷四",
           date: "2022-10-29",
           difficultType: 1,
           score: 60,
+          id:4
         },
       ],
     };
   },
   methods: {
     composePaper() {
-      this.$router.push({
+      this.$router.replace({
         path: "/teacher/examHome/test",
       });
     },

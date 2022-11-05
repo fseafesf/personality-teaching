@@ -24,7 +24,7 @@
           ></EditTitle>
         </div>
         <Card
-          v-for="(item, index) in this.problemsList"
+          v-for="(item, index) in problemsList"
           :key="index"
           :typeProblem="item"
           :index="index"
@@ -39,11 +39,23 @@
             </div>
             <div class="operation-continue ounifed" @click="back">
               <i class="el-icon-menu"></i>
-              <span>新增分卷</span>
+              <span>保存草稿</span>
             </div>
           </div>
         </div>
-        <div class="preview-score"></div>
+        <div class="preview-score">
+          <div class="score-head"></div>
+          <vuedraggable class="wrapper" v-model="problemsList">
+            <transition-group>
+              <Score
+                v-for="(item, index) in this.problemsList"
+                :key="index"
+                :typeProblem="item"
+                :index="index"
+              ></Score>
+            </transition-group>
+          </vuedraggable>
+        </div>
       </div>
     </div>
   </div>
@@ -52,8 +64,11 @@
   <script>
 import Card from "components/teacher/Test/tPreview/tCard.vue";
 import EditTitle from "components/teacher/Test/tPreview/tEditTitle.vue";
+import Score from "components/teacher/Test/tPreview/tScore.vue";
 import { group } from "utils/groupByType";
 import { mapState } from "vuex";
+import vuedraggable from "vuedraggable";
+
 export default {
   name: "preview",
   data() {
@@ -65,6 +80,7 @@ export default {
   },
   created() {
     this.getProblems();
+    console.log(this.problemsList);
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
       console.log("编辑的卷子");
@@ -95,6 +111,8 @@ export default {
   components: {
     Card,
     EditTitle,
+    Score,
+    vuedraggable,
   },
 };
 </script>
@@ -161,6 +179,9 @@ export default {
           flex-wrap: wrap;
           .ounifed {
             width: 110px;
+            span{
+              margin-left: 5px;
+            }
           }
         }
       }
@@ -168,6 +189,10 @@ export default {
         min-height: 200px;
         background: #fff;
         margin-top: 15px;
+        .score-head{
+          height: 32px;
+          padding: 10px 0;
+        }
       }
     }
   }

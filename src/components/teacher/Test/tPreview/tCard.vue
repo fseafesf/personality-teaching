@@ -2,42 +2,54 @@
   <div class="card">
     <div class="card-type">
       <h3>
-        <span>{{ this.index + 1 }}、</span>
-        <span>{{ this.toType(this.typeProblem.type) }}</span>
+        <span>{{ index + 1 }}、</span>
+        <span>{{ this.toType(typeProblem.type) }}</span>
       </h3>
     </div>
     <div class="card-list">
-      <Problem v-for="(item, index) in this.typeProblem.data" :key="index">{{
-        item.content
-      }}</Problem>
+      <vuedraggable class="wrapper" v-model="typeProblem.data" @end="this.end">
+        <transition-group>
+          <div
+            class="drag-individual"
+            :is="currentView"
+            v-for="(item, index) in typeProblem.data"
+            :key="index"
+            :index="index"
+            v-show="typeProblem.data.length !== 0"
+            :typeProblem="item"
+          ></div>
+        </transition-group>
+      </vuedraggable>
     </div>
   </div>
 </template>
 
 <script>
 import Problem from "components/teacher/Test/tTest/tproblem.vue";
+import vuedraggable from "vuedraggable";
 export default {
   name: "card",
   data() {
-    return {};
+    return {
+      currentView: "",
+      typeArr: ["单选", "多选", "填空", "判断", "简答"],
+      typeComponent: ["Radio", "Multi", "Fill", "Judge", "Answer"],
+    };
   },
-  mounted() {},
+  created() {
+    console.log(this.typeProblem);
+    document.body.ondrop = (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+    };
+    this.currentView = this.typeComponent[this.typeProblem.type - 1];
+  },
   methods: {
     toType(key) {
-      switch (key) {
-        case 1:
-          return "单选";
-        case 2:
-          return "多选";
-        case 3:
-          return "填空";
-        case 4:
-          return "判断";
-        case 5:
-          return "简答";
-        default:
-          break;
-      }
+      return this.typeArr[key - 1];
+    },
+    end() {
+      console.log(this.typeProblem.data);
     },
   },
   props: {
@@ -53,6 +65,12 @@ export default {
   },
   components: {
     Problem,
+    vuedraggable,
+    Radio: () => import("@/components/teacher/Test/tQuestion/tRadio.vue"),
+    Multi: () => import("@/components/teacher/Test/tQuestion/tMulti.vue"),
+    Judge: () => import("@/components/teacher/Test/tQuestion/tJudge.vue"),
+    Fill: () => import("@/components/teacher/Test/tQuestion/tFill.vue"),
+    Answer: () => import("@/components/teacher/Test/tQuestion/tAnswer.vue"),
   },
 };
 </script>
@@ -71,7 +89,13 @@ export default {
     margin: 15px 0 0 25px;
     line-height: 80px;
   }
-
-  
+  .drag-individual {
+    border: 1px solid transparent;
+    padding: 10px;
+    &:hover {
+      cursor: move;
+      border-color: #4498ee;
+    }
+  }
 }
 </style>
