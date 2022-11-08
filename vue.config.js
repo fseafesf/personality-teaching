@@ -10,5 +10,16 @@ module.exports = {
             .set('@', resolve('src'))
             .set('components', resolve('src/components'))
             .set('utils', resolve('src/utils'))
+    },
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://47.102.42.113:8880',
+                changeOrigin: true,
+                pathRewrite: {
+                    '/api': ''
+                }
+            }
+        }
     }
 }

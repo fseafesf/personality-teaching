@@ -12,7 +12,7 @@ import Loading from './components/common/Loading.vue'
 
 export default {
   name: "App",
-  components: { NavBar, Loading }
+  components: { NavBar, Loading },
 }
 </script>
 

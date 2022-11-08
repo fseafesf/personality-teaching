@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { test } from '../../services';
+import { test } from '@/services';
 
 export default {
   name: "Home",

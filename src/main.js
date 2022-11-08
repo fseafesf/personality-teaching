@@ -9,6 +9,12 @@ import "./assets/css/index.css"
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
+import { login } from '@/services'
+login({
+  username: 'cs',
+  password: '123456'
+}).then(res => console.log(res))
+
 Vue.use(ElementUI);
 
 Vue.config.productionTip = false
