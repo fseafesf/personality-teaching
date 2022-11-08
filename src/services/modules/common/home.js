@@ -1,7 +1,7 @@
-import sxRequest from '../../request'
+import ptRequest from '../../request'
 
 export function login(data) {
-  return sxRequest.post({
+  return ptRequest.post({
     url: '/api/login',
     data: {
       ...data
@@ -9,8 +9,11 @@ export function login(data) {
   })
 }
 
-export function test() {
-  return sxRequest.get({
-    url: '/api/teacher/exam/list',
+export function test(question_id) {
+  return ptRequest.get({
+    url: '/question/question_detail',
+    params: {
+      question_id
+    }
   })
 }
