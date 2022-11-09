@@ -1,7 +1,15 @@
 import axios from 'axios'
+<<<<<<< Updated upstream
 
 
 import { BASE_URL, TIMEOUT } from './config'
+=======
+//引入nprogress进度条
+import nprogress from 'nprogress'
+//引入nprogress进度条样式
+import "nprogress/nprogress.css";
+import { TIMEOUT } from './config'
+>>>>>>> Stashed changes
 import store from '../../store'
 
 class PtRequest {
@@ -10,17 +18,23 @@ class PtRequest {
       baseURL,
       timeout
     })
-
+//请求拦截器
     this.instance.interceptors.request.use(config => {
       store.commit('changeIsLoading', true)
       // console.log(store.state.isLoading);
+      nprogress.start();
       return config
     }, err => {
       return err
     })
-
+//响应拦截器
     this.instance.interceptors.response.use(res => {
       store.commit('changeIsLoading', false)
+<<<<<<< Updated upstream
+=======
+      // console.log(store.state.isLoading);
+      nprogress.done();
+>>>>>>> Stashed changes
       return res
     }, err => {
       return err
@@ -39,7 +53,7 @@ class PtRequest {
 
   get(config) {
     return this.request({ ...config, method: 'get' })
-  }
+  } 
 
   post(config) {
     return this.request({ ...config, method: 'post' })
