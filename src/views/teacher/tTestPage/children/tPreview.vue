@@ -1,5 +1,9 @@
 <template>
   <div class="preview">
+    <div class="back" @click="this.pBack">
+      <i class="el-icon-back"></i>
+      <span class="back-content">返回试卷列表</span>
+    </div>
     <div class="preview-head">
       <div class="head-left">
         <span class="left-lab">试卷结构:</span>
@@ -34,9 +38,9 @@
               <i class="el-icon-circle-plus-outline"></i>
               <span>继续选题</span>
             </div>
-            <div class="operation-continue ounifed" @click="back">
+            <div class="operation-continue ounifed" v-show="pageId">
               <i class="el-icon-menu"></i>
-              <span>保存草稿</span>
+              <span>完成修改</span>
             </div>
           </div>
         </div>
@@ -88,6 +92,11 @@ export default {
     getProblems() {
       this.problemsList = group(this.page.selectProblem);
     },
+    pBack(){
+      this.$router.replace({
+        path: "/teacher/examHome",
+      });
+    },
     back() {
       if (!this.pageId) {
         this.$router.go(-1);
@@ -129,7 +138,20 @@ export default {
   
   <style lang="less" scoped>
 .preview {
-  margin-top: 50px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  .back {
+    display: flex;
+    align-items: center;
+    width: 20%;
+    height: 50px;
+    margin: 10px 0 10px 0;
+    cursor: pointer;
+    .back-content {
+      margin-left: 10px;
+    }
+  }
   .preview-head {
     height: 56px;
     background: #fff;

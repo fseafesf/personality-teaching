@@ -58,7 +58,12 @@
 
         <div class="content-box" v-for="(item, index) in seList" :key="index">
           <ProblemHead :Problem="item"></ProblemHead>
-          <Problem>{{ item.content }}</Problem>
+          <div
+            :is="typeComponent[item.type-1]"
+            :typeProblem="item"
+            :index="Number(index)"
+            class="content-problem"
+          ></div>
           <ToolMenu :Knp_id="item.id"></ToolMenu>
         </div>
       </div>
@@ -73,7 +78,7 @@ import Problem from "components/teacher/Test/tTest/tproblem.vue";
 import ProblemHead from "components/teacher/Test/tTest/tproblemHead.vue";
 import ToolMenu from "components/teacher/Test/tTest/toolMenu.vue";
 import RightDrawer from "components/teacher/Test/tTest/trightDrawer.vue";
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -81,6 +86,8 @@ export default {
       seList: [],
       pageId: Number,
       show: false,
+      typeComponent: ["Radio", "Multi", "Fill", "Judge", "Answer"],
+      currentView: "",
       data: [
         {
           label: "一级 1",
@@ -165,21 +172,26 @@ export default {
     handleMouse() {
       this.show = !this.show;
     },
-    back(){
+    back() {
       this.$router.push({
-        path:"/teacher/examHome/examPaper"
-      })
-      this.page.selectProblem = []
-    }
+        path: "/teacher/examHome/examPaper",
+      });
+      this.page.selectProblem = [];
+    },
   },
-  computed:{
-    ...mapState("tTest",["page"])
+  computed: {
+    ...mapState("tTest", ["page"]),
   },
   components: {
     Problem,
     ProblemHead,
     ToolMenu,
     RightDrawer,
+    Radio: () => import("@/components/teacher/Test/tQuestion/tRadio.vue"),
+    Multi: () => import("@/components/teacher/Test/tQuestion/tMulti.vue"),
+    Judge: () => import("@/components/teacher/Test/tQuestion/tJudge.vue"),
+    Fill: () => import("@/components/teacher/Test/tQuestion/tFill.vue"),
+    Answer: () => import("@/components/teacher/Test/tQuestion/tAnswer.vue"),
   },
 };
 </script>
@@ -188,14 +200,14 @@ export default {
 .test {
   display: flex;
   flex-direction: column;
-  .back{
+  .back {
     display: flex;
     align-items: center;
     width: 20%;
     height: 50px;
     margin: 10px 0 0 0;
     cursor: pointer;
-    .back-content{
+    .back-content {
       margin-left: 10px;
     }
   }
@@ -292,6 +304,9 @@ export default {
         background: white;
         &:last-child {
           margin-bottom: 40px;
+        }
+        .content-problem{
+          padding: 15px 0 0 5px;
         }
       }
     }

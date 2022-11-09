@@ -17,14 +17,15 @@ const tTest = {
     page: {
       title: '',
       selectProblem: [],
-      id: Number,
+      exam_id: Number,
       difficultType: '',
       createTime: '',
       score: Number,
       status: Number
     },
     // 所有的试卷
-    pages: []
+    pages: [],
+    currentCookie:''
   }),
   mutations: {
     addProblem(state, problem) {

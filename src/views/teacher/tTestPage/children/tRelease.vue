@@ -47,7 +47,7 @@
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
-                :value="item.value"   
+                :value="item.value"
               >
               </el-option>
             </el-select>
@@ -81,6 +81,27 @@
           </div>
         </div>
       </div>
+      <div class="release-time">
+        <span>发送时间:</span>
+        <div>
+          <el-date-picker
+            v-model="value1"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </div>
+      </div>
+      <div class="release-comment">
+        <el-input placeholder="输入备注" v-model="comment" clearable>
+        </el-input>
+      </div>
+      <div class="release-btn">
+        <el-button type="primary">发布</el-button>
+        <el-button type="info">取消</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -113,7 +134,7 @@ export default {
       ],
       value: "",
       input: "",
-      seTableData:[],
+      seTableData: [],
       tableData: [
         {
           date: "2016-05-03",
@@ -139,9 +160,11 @@ export default {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1518 弄",
-        }
+        },
       ],
       multipleSelection: [],
+      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      comment: "",
     };
   },
   created() {
@@ -169,8 +192,17 @@ export default {
         checkedCount > 0 && checkedCount < this.cities.length;
     },
 
-    selectChange(){
-      console.log(this.value)
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+    selectChange() {
+      console.log(this.value);
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -199,7 +231,7 @@ export default {
   .content {
     background-color: #fff;
     margin-top: 10px;
-    min-height: 300px;
+    // min-height: 300px;
     padding: 20px;
     .release-title {
       font-weight: 300;
@@ -214,7 +246,7 @@ export default {
     }
     .release-content {
       padding: 20px;
-      min-height: 250px;
+      // min-height: 250px;
       .release-student {
         .student-head {
           display: flex;
@@ -225,6 +257,16 @@ export default {
           }
         }
       }
+    }
+    .release-time {
+      margin: 20px 0 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .release-comment{
+      width: 30%;
+      margin: 20px 0 20px 0;
     }
   }
 }

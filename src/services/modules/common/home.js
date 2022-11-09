@@ -3,7 +3,7 @@ import ptRequest from '../../request'
 export function login(data) {
 
   return ptRequest.post({
-    url: '/api/login',
+    url: '/login',
     data: {
       ...data
     }

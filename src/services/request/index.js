@@ -6,7 +6,6 @@ import store from '../../store'
 
 class PtRequest {
   constructor(baseURL, timeout = 5000) {
-    // console.log(baseURL, timeout);
     this.instance = axios.create({
       baseURL,
       timeout
@@ -15,7 +14,6 @@ class PtRequest {
     this.instance.interceptors.request.use(config => {
       store.commit('changeIsLoading', true)
       // console.log(store.state.isLoading);
-
       return config
     }, err => {
       return err
@@ -23,7 +21,6 @@ class PtRequest {
 
     this.instance.interceptors.response.use(res => {
       store.commit('changeIsLoading', false)
-      // console.log(store.state.isLoading);
       return res
     }, err => {
       return err
@@ -47,6 +44,7 @@ class PtRequest {
   post(config) {
     return this.request({ ...config, method: 'post' })
   }
+
 
   delete(config) {
     return this.request({ ...config, method: 'delete' })
