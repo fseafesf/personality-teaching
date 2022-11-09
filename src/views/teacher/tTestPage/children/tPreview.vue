@@ -11,17 +11,14 @@
         </div>
       </div>
       <div class="head-right">
-        <el-button type="primary">保存试卷</el-button>
+        <el-button type="primary" @click="save">保存试卷</el-button>
         <el-button type="primary" plain>下载试题</el-button>
       </div>
     </div>
     <div class="preview-content">
       <div class="preview-list wrap-v4">
         <div class="preview-title">
-          <EditTitle
-            :editTitle="this.pageTitle"
-            @emitTitle="this.setTitle"
-          ></EditTitle>
+          <EditTitle :editTitle.sync="pageTitle"></EditTitle>
         </div>
         <Card
           v-for="(item, index) in problemsList"
@@ -48,7 +45,7 @@
           <vuedraggable class="wrapper" v-model="problemsList">
             <transition-group>
               <Score
-                v-for="(item, index) in this.problemsList"
+                v-for="(item, index) in problemsList"
                 :key="index"
                 :typeProblem="item"
                 :index="index"
@@ -68,6 +65,7 @@ import Score from "components/teacher/Test/tPreview/tScore.vue";
 import { group } from "utils/groupByType";
 import { mapState } from "vuex";
 import vuedraggable from "vuedraggable";
+import { createPage } from "@/services";
 
 export default {
   name: "preview",
@@ -94,15 +92,27 @@ export default {
       if (!this.pageId) {
         this.$router.go(-1);
       }
-      this.$router.push({
-        path: "/teacher/examHome/test",
-        id: this.pageId,
-      });
-      // this.$store.state.tTest.selectProblem = []
+      this.$router
+        .push({
+          path: "/teacher/examHome/test",
+          id: this.pageId,
+        })
+        .catch((err) => console.log(err));
     },
-    setTitle(title) {
-      console.log(title);
-      this.pageTitle = title;
+    save() {
+      let data = new FormData();
+      data.append("exam_name", this.pageTitle);
+      data.append("questions", "<questions>");
+      data.append("comment", "<comment>");
+      createPage(this.$cookies.get('session_key'),data).then((res) => {
+        console.log(res , "创建试卷")
+        if(res.code === 0){
+          this.page.selectProblem = []
+          this.$router.replace({
+            path:'/teacher/examHome/examPaper'
+          })
+        }
+      });
     },
   },
   computed: {
@@ -179,7 +189,7 @@ export default {
           flex-wrap: wrap;
           .ounifed {
             width: 110px;
-            span{
+            span {
               margin-left: 5px;
             }
           }
@@ -189,7 +199,7 @@ export default {
         min-height: 200px;
         background: #fff;
         margin-top: 15px;
-        .score-head{
+        .score-head {
           height: 32px;
           padding: 10px 0;
         }

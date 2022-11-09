@@ -35,14 +35,14 @@ export default {
     blur() {
       this.focus = true;
       if (this.value.trim() !== "") {
-        this.$emit('emitTitle',this.value)
+        this.$emit('update:editTitle',this.value)
       }
     },
   },
   props: {
     editTitle: {
       type: String,
-      default: () => "请输入表单标题",
+      default: () => "",
     },
   },
 };

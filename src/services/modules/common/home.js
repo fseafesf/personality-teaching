@@ -2,15 +2,14 @@ import sxRequest from '../../request'
 
 export function login(data) {
   return sxRequest.post({
-    url: '/api/login',
-    data: {
-      ...data
-    }
+    url: '/login',
+    data
   })
 }
 
-export function test() {
+export function test(data) {
   return sxRequest.get({
-    url: '/api/teacher/exam/list',
-  })
+    url: '/teacher/exam/list',
+    data
+  }).then(res => res)
 }

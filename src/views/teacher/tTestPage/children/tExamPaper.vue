@@ -13,16 +13,25 @@
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column label="序号" width="100" align="center" type="index">
         </el-table-column>
-        <el-table-column label="试卷标题" align="center" width="300" prop="title">
+        <el-table-column
+          label="试卷标题"
+          align="center"
+          width="300"
+          prop="exam_name"
+        >
         </el-table-column>
-        <el-table-column label="创建时间" align="center" width="150">
+        <el-table-column
+          label="创建时间"
+          align="center"
+          width="250"
+          prop="update_time"
+        >
         </el-table-column>
         <el-table-column label="难易度" align="center" width="100">
         </el-table-column>
         <el-table-column label="分值" align="center" width="100">
         </el-table-column>
-        <el-table-column label="状态" align="center" width="100">
-        </el-table-column>
+        
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -50,45 +59,37 @@
 </template>
 
 <script>
-import nanoid from 'nanoid'
+import { getPageList } from "@/services";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "tExamPaper",
   data() {
     return {
       input: "",
-      tableData: [
-        {
-          title: "试卷一",
-          date: "2022-10-29",
-          difficultType: 1,
-          score: 60,
-          id:1
-        },
-        {
-          title: "试卷二",
-          date: "2022-10-29",
-          difficultType: 1,
-          score: 60,
-          id:2
-        },
-        {
-          title: "试卷三",
-          date: "2022-10-29",
-          difficultType: 1,
-          score: 60,
-          id:3
-        },
-        {
-          title: "试卷四",
-          date: "2022-10-29",
-          difficultType: 1,
-          score: 60,
-          id:4
-        },
-      ],
+      tableData: [],
+      param: {
+        page: "1",
+        page_size: "10",
+      },
     };
   },
+  created() {
+    this.getPages();
+  },
+  mounted() {
+    
+  },
   methods: {
+    ...mapMutations("tTest", ["initPages"]),
+    async getPages() {
+      await getPageList(this.$cookies.get("session_key"), this.param).then(
+        (res) => {
+          console.log(res);
+          this.initPages(res.data);
+          this.tableData = this.pages;
+        }
+      );
+    },
     composePaper() {
       this.$router.replace({
         path: "/teacher/examHome/test",
@@ -104,7 +105,7 @@ export default {
       });
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      console.log(row.exam_id);
     },
     handleRelease(index, row) {
       console.log(row.id);
@@ -115,6 +116,9 @@ export default {
         },
       });
     },
+  },
+  computed: {
+    ...mapState("tTest", ["pages"]),
   },
 };
 </script>

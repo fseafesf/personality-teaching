@@ -1,17 +1,19 @@
 import axios from 'axios'
 
-import { TIMEOUT } from './config'
+import { TIMEOUT ,BASE_URL} from './config'
 import store from '../../store'
 
 class PtRequest {
-  constructor(timeout = 5000) {
+  constructor(baseURL , timeout = 5000) {
     this.instance = axios.create({
+      baseURL,
       timeout
     })
 
     this.instance.interceptors.request.use(config => {
       store.commit('changeIsLoading', true)
       // console.log(store.state.isLoading);
+      
       return config
     }, err => {
       return err
@@ -45,4 +47,4 @@ class PtRequest {
   }
 }
 
-export default new PtRequest( TIMEOUT)
+export default new PtRequest(BASE_URL, TIMEOUT)
