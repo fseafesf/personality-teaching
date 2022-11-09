@@ -1,10 +1,12 @@
 import axios from 'axios'
 
-import { TIMEOUT ,BASE_URL} from './config'
+
+import { BASE_URL, TIMEOUT } from './config'
 import store from '../../store'
 
 class PtRequest {
-  constructor(baseURL , timeout = 5000) {
+  constructor(baseURL, timeout = 5000) {
+    // console.log(baseURL, timeout);
     this.instance = axios.create({
       baseURL,
       timeout

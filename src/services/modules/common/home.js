@@ -1,15 +1,20 @@
-import sxRequest from '../../request'
+import ptRequest from '../../request'
 
 export function login(data) {
-  return sxRequest.post({
-    url: '/login',
-    data
+
+  return ptRequest.post({
+    url: '/api/login',
+    data: {
+      ...data
+    }
   })
 }
 
-export function test(data) {
-  return sxRequest.get({
-    url: '/teacher/exam/list',
-    data
-  }).then(res => res)
+export function test(question_id) {
+  return ptRequest.get({
+    url: '/question/question_detail',
+    params: {
+      question_id
+    }
+  })
 }
