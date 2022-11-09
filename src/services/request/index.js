@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+
 import { BASE_URL, TIMEOUT } from './config'
 import store from '../../store'
 
@@ -14,6 +15,7 @@ class PtRequest {
     this.instance.interceptors.request.use(config => {
       store.commit('changeIsLoading', true)
       // console.log(store.state.isLoading);
+      
       return config
     }, err => {
       return err

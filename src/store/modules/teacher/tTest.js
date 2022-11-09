@@ -35,6 +35,9 @@ const tTest = {
     },
     deleteProblemType(state, type) {
 
+    },
+    initPages(state,data){
+      state.pages = [...data]
     }
   },
   actions: {
