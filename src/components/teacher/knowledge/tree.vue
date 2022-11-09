@@ -2,8 +2,8 @@
   <div class="tree">
     <div class="custom-tree-container">
       <div class="block">
-        <el-tree :data="data" :show-checkbox="showCheckbox" node-key="id" default-expand-all
-          :expand-on-click-node="false">
+        <el-tree :data="treeData" :show-checkbox="showCheckbox" node-key="id" default-expand-all
+          :expand-on-click-node="false" :default-checked-keys="[defaultChecked]" @check-change="handleNodeClick">
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <template v-if="operation">
@@ -27,7 +27,7 @@
 </template>
 
 <script >
-let id = 1000
+// let id = 1000
 
 export default {
   props: {
@@ -42,45 +42,20 @@ export default {
     showCheckbox: {
       type: Boolean,
       default: false
+    },
+    defaultChecked: {
+      type: String,
+      default: ''
     }
   },
+  emits: ['nodeClick'],
   data() {
-    const data = [{
-      id: 1,
-      label: "数据结构",
-      children: [
-        {
-          id: 4,
-          label: "线性链表",
-          children: [
-            {
-              id: 9,
-              label: "单链表"
-            },
-            {
-              id: 10,
-              label: "循环链表"
-            },
-            {
-              id: 11,
-              label: "双向链表"
-            }
-          ]
-        },
-        {
-          id: 5,
-          label: "栈",
-        },
-        {
-          id: 6,
-          label: "队列"
-        },
-      ]
-    }];
     return {
-      data: JSON.parse(JSON.stringify(data)),
       data: JSON.parse(JSON.stringify(data))
     };
+  },
+  mounted() {
+    this.$store.dispatch('PointListActive')
   },
   methods: {
     append(data) {
@@ -102,10 +77,10 @@ export default {
           message: value
         });
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
+        // this.$message({
+        //   type: 'info',
+        //   message: '取消输入'
+        // });
       });
     },
     remove(node, data) {
@@ -113,6 +88,36 @@ export default {
       const children = parent.data.children || parent.data;
       const index = children.findIndex(d => d.id === data.id);
       children.splice(index, 1);
+    },
+    handleNodeClick(data) {
+      this.$emit('nodeClick', data)
+    }
+  },
+  computed: {
+    treeData() {
+      const level1 = []
+      const level2 = []
+      this.$store.state.tKnowledge.points.list.forEach(item => {
+        if (item.level == 1) {
+          const newItem = {}
+          newItem.id = item.knp_id
+          newItem.label = item.name
+          level1.push(newItem)
+        }
+        if (item.level == 2) {
+          const newItem = {}
+          newItem.id = item.knp_id
+          newItem.label = item.name
+          newItem.parent_knp_id = item.parent_knp_id
+          level2.push(newItem)
+        }
+      })
+
+      for (const item of level1) {
+        const arr = level2.filter(iten => iten.parent_knp_id)
+        item.children = arr
+      }
+      return level1
     }
   },
 };

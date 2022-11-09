@@ -69,8 +69,8 @@ export default new Vuex.Store({
             path: '/teacher/examHome/preview'
           },
           {
-            name:'发布试卷',
-            path:'/teacher/examHome/release'
+            name: '发布试卷',
+            path: '/teacher/examHome/release'
           }
         ]
       },
@@ -84,7 +84,41 @@ export default new Vuex.Store({
       },
     ],
     currentIndex: 0,
-    currentNavBarData: {}
+    currentNavBarData: {},
+    typeOptions: [
+      {
+        value: 1,
+        label: '单选题'
+      },
+      {
+        value: 2,
+        label: '多选题'
+      },
+      {
+        value: 3,
+        label: '判断题'
+      },
+      {
+        value: 4,
+        label: '填空题'
+      },
+      {
+        value: 5,
+        label: '简答题'
+      }
+    ],
+    levelOptions: [{
+      value: 1,
+      label: '简单'
+    },
+    {
+      value: 2,
+      label: '中等'
+    },
+    {
+      value: 3,
+      label: '困难'
+    }]
   },
   getters: {
     // currentNavBarData(state) {

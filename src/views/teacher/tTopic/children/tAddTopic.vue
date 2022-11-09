@@ -1,13 +1,5 @@
 <template>
   <div class="add-topic">
-    <div class="topic-type">
-      <div class="type">题型: </div>
-      <el-select class="search-item" v-model="typeValue" placeholder="题型" size="small">
-        <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-    </div>
-
     <div class="add-content">
       <tAddForm :type-value="typeValue" />
     </div>
@@ -21,29 +13,7 @@ export default {
   components: { tAddForm },
   data() {
     return {
-      typeOptions: [
-        {
-          value: '1',
-          label: '单选题'
-        },
-        {
-          value: '2',
-          label: '多选题'
-        },
-        {
-          value: '3',
-          label: '判断题'
-        },
-        {
-          value: '4',
-          label: '填空题'
-        },
-        {
-          value: '5',
-          label: '简答题'
-        }
-      ],
-      typeValue: '1'
+
     }
   },
   methods: {

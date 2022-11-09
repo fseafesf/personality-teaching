@@ -13,13 +13,16 @@
 import Tree from 'components/teacher/knowledge/tree.vue';
 
 export default {
+  components: { Tree },
   data() {
     return {
     };
   },
+  // mounted() {
+  //   this.$store.dispatch('PointListActive')
+  // },
   methods: {
   },
-  components: { Tree }
 };
 </script>
 
