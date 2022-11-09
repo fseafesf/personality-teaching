@@ -5,14 +5,10 @@
 </template>
 
 <script>
-import { login, test } from '@/services';
 
 export default {
   name: "Home",
   mounted() {
-    test('1589535594390761472').then(res => {
-      console.log(res);
-    })
 
   }
 }

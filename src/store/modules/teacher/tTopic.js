@@ -1,56 +1,56 @@
+import { getQuestionList, getQuestionById, deleteQuestion, addQuestion } from '@/services'
+import { questionType } from '@/utils/questionType'
+import { questionLevel } from '@/utils/questLevel'
+
 const tTopic = {
   state: () => ({
-    topicTableData: [
-      {
-        type: {
-          value: '1',
-          label: '单选题'
-        },
-        content: '题目内容',
-        A: 'a',
-        B: 'b',
-        C: 'c',
-        D: 'd',
-        analysis: '123',
-        difficulty: "简单"
-      },
-      {
-        type: {
-          value: '3',
-          label: '判断题'
-        },
-        content: '题目内容',
-        A: 'a',
-        B: 'b',
-        C: 'c',
-        D: 'd',
-        analysis: '123',
-        difficulty: "中等"
-      },
-      {
-        type: {
-          value: '1',
-          label: '单选题'
-        },
-        content: '题目内容',
-        A: 'a',
-        B: 'b',
-        C: 'c',
-        D: 'd',
-        analysis: '123',
-        difficulty: "中等"
-      }
-    ],
+    topicTableData: [],
     currentTopicEditData: {},
-    test: "123"
   }),
   mutations: {
     changeCurrentTopicEditData(state, data) {
       state.currentTopicEditData = data
+    },
+    ChangeTopicTableData(state, data) {
+      const mapData = data.list.map(item => {
+        item.type = questionType(item.type)
+        item.level = questionLevel(item.level)
+        return item
+      })
+
+      state.topicTableData = mapData
     }
   },
   actions: {
+    QuestionListActive(context) {
+      getQuestionList().then(res => {
+        context.commit('ChangeTopicTableData', res.data)
+      })
+    },
+    QuestionByIdActive(context, id) {
+      getQuestionById(id).then(res => {
+        context.commit('changeCurrentTopicEditData', res.data)
+      })
+    },
+    QuestionDeleteActive(context, id) {
+      return new Promise((resolve, reject) => {
+        deleteQuestion(id).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    QuestionAddActive(context, form) {
+      return new Promise((resolve, reject) => {
+        addQuestion(form).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
 
+    }
   },
   getters: {
 

@@ -33,7 +33,11 @@ export default {
         if (!item.children) return item.path === to.path
         if (item.path === to.path) return item.path === to.path
 
+
         for (const iten of item.children) {
+          // let regexp = `/{#${iten.path}}/ig`
+          // console.log(regexp.exec(`${to.path}`));
+
           if (iten.path === to.path) {
             return iten.path === to.path
           }

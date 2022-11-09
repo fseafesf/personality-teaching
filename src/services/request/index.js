@@ -15,7 +15,7 @@ class PtRequest {
     this.instance.interceptors.request.use(config => {
       store.commit('changeIsLoading', true)
       // console.log(store.state.isLoading);
-      
+
       return config
     }, err => {
       return err
@@ -46,6 +46,14 @@ class PtRequest {
 
   post(config) {
     return this.request({ ...config, method: 'post' })
+  }
+
+  delete(config) {
+    return this.request({ ...config, method: 'delete' })
+  }
+
+  put(config) {
+    return this.request({ ...config, method: 'put' })
   }
 }
 

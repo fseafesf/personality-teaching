@@ -38,6 +38,7 @@ const routes = [
       },
       {
         path: 'edit',
+        // path: 'edit/:id',
         component: () => import('../views/teacher/tTopic/children/tEditTopic.vue'),
         meta: {
           isChildren: true,
@@ -74,9 +75,9 @@ const routes = [
         component: () => import('@/views/teacher/tTestPage/children/tPreview.vue')
       },
       {
-        path:'release',
-        name:'tRelease',
-        component:() => import('@/views/teacher/tTestPage/children/tRelease.vue')
+        path: 'release',
+        name: 'tRelease',
+        component: () => import('@/views/teacher/tTestPage/children/tRelease.vue')
       }
     ]
   },
@@ -91,7 +92,7 @@ const routes = [
         path: 'correctPaper',
         component: () => import('@/views/teacher/tReview/children/correctPaper.vue'),
         meta: {
-          isChildren: true,         
+          isChildren: true,
         }
       }
     ]
