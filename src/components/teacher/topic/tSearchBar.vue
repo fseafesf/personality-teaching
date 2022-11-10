@@ -5,11 +5,12 @@
       </el-option>
     </el-select>
     <el-select class="search-item" v-model="difficultyValue" placeholder="难度" size="small">
-      <el-option v-for="item in difficultyOptions" :key="item.value" :label="item.label" :value="item.value">
+      <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value">
       </el-option>
     </el-select>
-    <el-input v-model="input" placeholder="请输入内容" size="small"></el-input>
-    <el-button type="primary" size="small">查询</el-button>
+    <el-input v-model="keyword" placeholder="请输入内容" size="small"></el-input>
+    <el-button type="primary" size="small" @click="searchClick">查询</el-button>
+    <el-button type="warning" size="small" @click="resetClick">重置</el-button>
   </div>
 </template>
 
@@ -17,48 +18,21 @@
 export default {
   data() {
     return {
-      typeOptions: [
-        {
-          value: '1',
-          label: '单选题'
-        },
-        {
-          value: '2',
-          label: '多选题'
-        },
-        {
-          value: '3',
-          label: '判断题'
-        },
-        {
-          value: '4',
-          label: '填空题'
-        },
-        {
-          value: '5',
-          label: '简答题'
-        }
-      ],
+      typeOptions: this.$store.state.typeOptions,
       typeValue: '',
-      difficultyOptions: [{
-        value: '1',
-        label: '简单'
-      },
-      {
-        value: '2',
-        label: '中等'
-      },
-      {
-        value: '3',
-        label: '困难'
-      }
-      ],
+      levelOptions: this.$store.state.levelOptions,
       difficultyValue: '',
-      input: ''
+      keyword: ''
     }
   },
   methods: {
-
+    searchClick() {
+      this.$store.dispatch('QuestionListActive', { keyword: this.keyword })
+    },
+    resetClick() {
+      this.$store.dispatch('QuestionListActive')
+      this.keyword = ''
+    }
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="table">
-    <el-table :data="$store.state.tTopic.topicTableData" border style="width: 100%" size="small">
+    <el-table :data="$store.state.tTopic.topicTableData" border style="width: 100%">
       <el-table-column label="序号" width="60" type="index">
       </el-table-column>
       <el-table-column label="题目内容" width="600" prop="context">

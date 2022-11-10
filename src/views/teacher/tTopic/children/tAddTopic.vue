@@ -1,7 +1,7 @@
 <template>
   <div class="add-topic">
     <div class="add-content">
-      <tAddForm :type-value="typeValue" />
+      <tAddForm />
     </div>
   </div>
 </template>

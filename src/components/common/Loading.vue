@@ -3,9 +3,6 @@
     <i class="el-icon-loading"></i>
     <span class="title">加载中</span>
   </div>
-  <!-- <el-button v-show="false" type="primary" v-loading.fullscreen.lock="$store.state.isLoading" background="#333333">
-    指令方式
-  </el-button> -->
 </template>
 
 <script>

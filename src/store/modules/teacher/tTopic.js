@@ -1,10 +1,11 @@
-import { getQuestionList, getQuestionById, deleteQuestion, addQuestion } from '@/services'
+import { getQuestionList, getQuestionById, deleteQuestion, addQuestion, updataQuestion } from '@/services'
 import { questionType } from '@/utils/questionType'
 import { questionLevel } from '@/utils/questLevel'
 
 const tTopic = {
   state: () => ({
     topicTableData: [],
+    total: '',
     currentTopicEditData: {},
   }),
   mutations: {
@@ -17,14 +18,16 @@ const tTopic = {
         item.level = questionLevel(item.level)
         return item
       })
-
       state.topicTableData = mapData
+      state.total = data.total
     }
   },
   actions: {
-    QuestionListActive(context) {
-      getQuestionList().then(res => {
+    QuestionListActive(context, payload) {
+      getQuestionList(payload?.keyword, payload?.size, payload?.page).then(res => {
         context.commit('ChangeTopicTableData', res.data)
+      }).catch(err => {
+        console.log(err);
       })
     },
     QuestionByIdActive(context, id) {
@@ -49,7 +52,15 @@ const tTopic = {
           reject(err)
         })
       })
-
+    },
+    QuestionUpdataActive(context, form) {
+      return new Promise((resolve, reject) => {
+        updataQuestion(form).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
     }
   },
   getters: {
