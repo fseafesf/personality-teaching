@@ -14,9 +14,12 @@
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
                   <span>单选题</span>
-                  <span><em class="numColor">{{
-                    this.problemData["1"]?.length
-                  }}</em>题</span>
+                  <span
+                    ><em class="numColor">{{
+                      this.problemData["1"]?.length
+                    }}</em
+                    >题</span
+                  >
                 </div>
                 <div class="radio-right"><i class="el-icon-delete"></i></div>
               </div>
@@ -25,9 +28,12 @@
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
                   <span>多选题</span>
-                  <span><em class="numColor">{{
-                    this.problemData["2"]?.length
-                  }}</em>题</span>
+                  <span
+                    ><em class="numColor">{{
+                      this.problemData["2"]?.length
+                    }}</em
+                    >题</span
+                  >
                 </div>
                 <div class="radio-right"><i class="el-icon-delete"></i></div>
               </div>
@@ -36,9 +42,12 @@
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
                   <span>填空题</span>
-                  <span ><em class="numColor">{{
-                    this.problemData["3"]?.length
-                  }}</em>题</span>
+                  <span
+                    ><em class="numColor">{{
+                      this.problemData["3"]?.length
+                    }}</em
+                    >题</span
+                  >
                 </div>
                 <div class="radio-right"><i class="el-icon-delete"></i></div>
               </div>
@@ -47,9 +56,12 @@
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
                   <span>判断题</span>
-                  <span ><em class="numColor">{{
-                    this.problemData["4"]?.length
-                  }}</em>题</span>
+                  <span
+                    ><em class="numColor">{{
+                      this.problemData["4"]?.length
+                    }}</em
+                    >题</span
+                  >
                 </div>
                 <div class="radio-right"><i class="el-icon-delete"></i></div>
               </div>
@@ -61,7 +73,8 @@
                   <span
                     ><em class="numColor">{{
                       this.problemData["5"]?.length
-                    }}</em>题</span
+                    }}</em
+                    >题</span
                   >
                 </div>
                 <div class="radio-right"><i class="el-icon-delete"></i></div>
@@ -87,6 +100,8 @@ export default {
       problemData: [],
     };
   },
+  created() {
+  },
   methods: {
     drawer() {
       this.basketShow = !this.basketShow;
@@ -97,7 +112,9 @@ export default {
       });
     },
     getData() {
-      this.problemData = groupByType(this.$store.state.tTest.page.selectProblem);
+      this.problemData = groupByType(
+        this.$store.state.tTest.page.selectProblem
+      );
       console.log("根据type分类的题目", this.problemData);
     },
   },
@@ -147,7 +164,6 @@ export default {
     }
     .basket-else {
       padding: 40px 0 0 80px;
-      
     }
     .drawer-basket {
       //题目数目预览
@@ -175,7 +191,7 @@ export default {
             margin-bottom: 15px;
             padding: 5px;
             font-size: 14px;
-            
+
             .content-unifed {
               display: flex;
               width: 90%;

@@ -38,7 +38,11 @@
               <i class="el-icon-circle-plus-outline"></i>
               <span>继续选题</span>
             </div>
-            <div class="operation-continue ounifed" v-show="pageId">
+            <div
+              class="operation-continue ounifed"
+              v-if="!!this.page.exam_id"
+              @click="modify"
+            >
               <i class="el-icon-menu"></i>
               <span>完成修改</span>
             </div>
@@ -46,7 +50,7 @@
         </div>
         <div class="preview-score">
           <div class="score-head"></div>
-          <vuedraggable class="wrapper" v-model="problemsList">
+          <vuedraggable class="wrapper" v-model="problemsList" @end="end">
             <transition-group>
               <Score
                 v-for="(item, index) in problemsList"
@@ -69,33 +73,49 @@ import Score from "components/teacher/Test/tPreview/tScore.vue";
 import { group } from "utils/groupByType";
 import { mapState } from "vuex";
 import vuedraggable from "vuedraggable";
-import { createPage } from "@/services";
+import { createPage, searchPage, modifyPage } from "@/services";
 
 export default {
   name: "preview",
   data() {
     return {
       pageTitle: "请输入标题",
-      pageId: Number,
+      pageId: "",
       problemsList: [],
     };
   },
   created() {
-    this.getProblems();
-    console.log(this.problemsList);
+    if (!!this.page.title) {
+      this.pageTitle = this.page.title;
+    }
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
-      console.log("编辑的卷子");
+      searchPage(this.$cookies.get("session_key"), this.pageId).then((res) => {
+        console.log(res);
+        this.page.title = res.data.exam_name;
+        this.pageTitle = this.page.title;
+        this.page.exam_id = this.pageId;
+        this.page.selectProblem = JSON.parse(res.data.questions);
+        this.getProblems();
+      });
+    } else {
+      this.getProblems();
     }
   },
   methods: {
+    end(){
+     console.log(this.problemsList)
+    },
     getProblems() {
       this.problemsList = group(this.page.selectProblem);
     },
-    pBack(){
+    pBack() {
       this.$router.replace({
         path: "/teacher/examHome",
       });
+      this.page.selectProblem = [];
+      this.page.exam_id = "";
+      this.page.title = '';
     },
     back() {
       if (!this.pageId) {
@@ -104,25 +124,55 @@ export default {
       this.$router
         .push({
           path: "/teacher/examHome/test",
-          id: this.pageId,
+          query: {
+            id: this.pageId,
+          },
         })
         .catch((err) => console.log(err));
     },
     save() {
       let data = new FormData();
+      console.log(this.pageTitle);
       data.append("exam_name", this.pageTitle);
-      data.append("questions", "<questions>");
+      data.append("questions", JSON.stringify(this.page.selectProblem));
       data.append("comment", "<comment>");
-      createPage(this.$cookies.get('session_key'),data).then((res) => {
-        console.log(res , "创建试卷")
-        if(res.code === 0){
-          this.page.selectProblem = []
+      createPage(this.$cookies.get("session_key"), data).then((res) => {
+        console.log(res, "创建试卷");
+        if (res.code === 0) {
+          this.page.selectProblem = [];
+          this.page.id = '';
+          this.page.title = '';
           this.$router.replace({
-            path:'/teacher/examHome/examPaper'
-          })
+            path: "/teacher/examHome/examPaper",
+          });
         }
       });
     },
+    modify() {
+      let data = new FormData();
+      data.append("exam_name", this.pageTitle);
+      data.append("exam_id", this.page.exam_id);
+      data.append("questions", JSON.stringify(this.page.selectProblem));
+      data.append("comment", "<comment>");
+      modifyPage(this.$cookies.get("session_key"), data).then((res) => {
+        console.log(res);
+        if (res.code === 0) {
+          this.page.selectProblem = [];
+          this.page.id = '';
+          this.page.title = '';
+          this.$router.replace({
+            path: "/teacher/examHome/examPaper",
+          });
+        }
+      });
+    },
+  },
+  watch:{
+    pageTitle:{
+      handler(newVal,oldVal){
+        this.page.title = newVal
+      }
+    }
   },
   computed: {
     ...mapState("tTest", ["page"]),
