@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <NavBar />
+    <Login/>
     <router-view class="wrap-v1" />
     <Loading />
   </div>
@@ -9,10 +10,11 @@
 <script>
 import NavBar from './components/common/nav-bar.vue'
 import Loading from './components/common/Loading.vue'
+import Login from './components/common/Login.vue'
 
 export default {
   name: "App",
-  components: { NavBar, Loading },
+  components: { NavBar, Loading,Login },
 }
 </script>
 

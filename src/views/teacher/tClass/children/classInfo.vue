@@ -1,10 +1,13 @@
 <template>
   <div>
     <!-- 班级信息 -->
-    <div class="classInfo">
-      <span><strong>班级名称：</strong>{{classInfo.name}}</span>
-      <span><strong>班级描述：</strong>{{classInfo.major}}</span>
-      <span><strong>任课老师：</strong>{{teacherInfo.name}}</span>
+    <div class="header">
+      <div class="classInfo">
+        <span><strong>班级名称：</strong>{{classInfo.name}}</span>
+        <span><strong>班级描述：</strong>{{classInfo.major}}</span>
+        <span><strong>任课老师：</strong>{{teacherInfo.name}}</span>
+      </div>
+      <el-button type="success" size="mini" @click="$router.go(-1)">退出</el-button>
     </div>
 
     <!-- 学生信息 -->
@@ -63,14 +66,26 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  // 班级信息
-  .classInfo {
-    display: flex;
-    flex-direction: column;
-    height: 100px;
-    margin: 20px 0;
-    span:nth-child(2) {
-      margin: 16px 0;
+  .header {
+    position: relative;
+    // 班级信息
+    .classInfo {
+      display: flex;
+      flex-direction: column;
+      height: 120px;
+      margin: 10px 0;
+      justify-content: center;
+      padding-left: 20px;
+      border-radius: 4px;
+      background-color: #fff;
+      span:nth-child(2) {
+        margin: 16px 0;
+      }
+    }
+    .el-button {
+      position: absolute;
+      right: 20px;
+      top: 10px;
     }
   }
 

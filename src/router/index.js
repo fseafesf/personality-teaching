@@ -51,7 +51,16 @@ const routes = [
   {
     path: '/teacher/class',
     name: 'tClass',
-    component: () => import('@/views/teacher/tClass/tClass.vue')
+    component: () => import('@/views/teacher/tClass/tClass.vue'),
+    children: [
+      {       
+        path: 'classInfo',
+        component: () => import('@/views/teacher/tClass/children/classInfo.vue'),
+        meta: {
+          isChildren: true,
+        }
+      }
+    ]
   },
   {
     path: '/teacher/examHome',
