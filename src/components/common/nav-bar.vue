@@ -7,6 +7,7 @@
         </div>
       </div>
     </div>
+    <div id="login"><el-avatar icon="el-icon-user-solid"></el-avatar><p>点击登录</p></div>
   </div>
 </template>
 
@@ -60,7 +61,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  #login{
+    display: flex;
+    align-items: center;
+    p{
+      cursor: pointer;
+      margin-left: 10px;
+      color: white;
+    }
+  }
   .content {
     display: flex;
     height: 100%;
