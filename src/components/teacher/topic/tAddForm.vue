@@ -1,49 +1,57 @@
 <template>
   <div class="add">
-    <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="题型: ">
+    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form-item label="题型: " prop="type">
         <div class="topic-type">
-          <el-select class="search-item" v-model="form.type" placeholder="题型" size="small">
+          <el-select class="search-item" v-model="form.type" placeholder="题型">
             <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </div>
       </el-form-item>
 
-      <el-form-item label="题目名称:">
+      <el-form-item label="题目名称:" prop="question_name">
         <el-input v-model="form.question_name"></el-input>
       </el-form-item>
 
-      <el-form-item label="题干:">
+      <el-form-item label="题干:" prop="context">
         <el-input type="textarea" v-model="form.context"></el-input>
       </el-form-item>
 
       <template v-if="form.type == 1 || form.type == 2">
         <el-form-item label="选项:">
         </el-form-item>
-        <el-form-item label="A">
+        <el-form-item label="A" prop="question_option_list[0].Context" :rules="[
+          { required: true, message: '选项不能为空' },
+        ]">
           <el-input v-model="form.question_option_list[0].Context"></el-input>
         </el-form-item>
-        <el-form-item label="B">
+        <el-form-item label="B" prop="question_option_list[1].Context" :rules="[
+          { required: true, message: '选项不能为空' },
+        ]">
           <el-input v-model="form.question_option_list[1].Context"></el-input>
         </el-form-item>
-        <el-form-item label="C">
+        <el-form-item label="C" prop="question_option_list[2].Context" :rules="[
+          { required: true, message: '选项不能为空' },
+        ]">
           <el-input v-model="form.question_option_list[2].Context"></el-input>
         </el-form-item>
-        <el-form-item label="D">
+        <el-form-item label="D" prop="question_option_list[3].Context" :rules="[
+          { required: true, message: '选项不能为空' },
+        ]">
           <el-input v-model="form.question_option_list[3].Context"></el-input>
         </el-form-item>
       </template>
 
-      <el-form-item label="答案解析:">
+      <el-form-item label="答案解析:" prop="answer">
         <el-input type="textarea" v-model="form.answer"></el-input>
       </el-form-item>
 
-      <el-form-item label="知识点联系:" label-width="100px">
+      <el-form-item label="知识点联系:">
         <Tree class="tree" @nodeClick="nodeClick" :operation="false" :show-checkbox="true" />
       </el-form-item>
 
-      <el-form-item label="难度">
+      <el-form-item label="难度" prop="level">
         <el-select v-model="form.level" placeholder="难度">
           <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
@@ -82,25 +90,50 @@ export default {
         answer: '',
         context: '',
         knp_id: ''
+      },
+      rules: {
+        type: [
+          { required: true, message: '请选择难度' },
+        ],
+        question_name: [
+          { required: true, message: '请输入题目名称' },
+        ],
+        context: [
+          { required: true, message: '请输入题目内容' },
+        ],
+        answer: [
+          { required: true, message: '请输入答案解析' },
+        ],
+        level: [
+          { required: true, message: '请选择难度' },
+        ],
       }
     }
   },
   methods: {
     onSubmit() {
-      this.$store.dispatch('QuestionAddActive', this.form).then(res => {
-        this.$router.push({ path: '/teacher/topic' })
-        this.$message({
-          type: 'success',
-          message: '创建成功!'
-        });
-      })
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.$store.dispatch('QuestionAddActive', this.form).then(res => {
+            this.$message({
+              type: 'success',
+              message: '创建成功!'
+            });
+            this.$router.push({ path: '/teacher/topic' })
+          })
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+
     },
     cancelHandleClick() {
       this.$router.push({ path: '/teacher/topic' })
     },
-    nodeClick(data) {
+    nodeClick(data, checked) {
       // console.log(data);
-      this.form.knp_id = data.id
+      checked ? this.form.knp_id = data.id : this.form.knp_id = ''
     }
   }
 }
@@ -135,7 +168,7 @@ export default {
   }
 
   .tree {
-    width: 300px;
+    // width: 300px;
     border: 1px solid #fff;
   }
 }

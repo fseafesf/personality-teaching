@@ -51,7 +51,6 @@ export default {
   emits: ['nodeClick'],
   data() {
     return {
-      data: JSON.parse(JSON.stringify(data))
     };
   },
   mounted() {
@@ -77,10 +76,6 @@ export default {
           message: value
         });
       }).catch(() => {
-        // this.$message({
-        //   type: 'info',
-        //   message: '取消输入'
-        // });
       });
     },
     remove(node, data) {
@@ -89,35 +84,37 @@ export default {
       const index = children.findIndex(d => d.id === data.id);
       children.splice(index, 1);
     },
-    handleNodeClick(data) {
-      this.$emit('nodeClick', data)
+    handleNodeClick(data, checked, node) {
+      this.$emit('nodeClick', data, checked, node)
     }
   },
   computed: {
     treeData() {
       const level1 = []
       const level2 = []
-      this.$store.state.tKnowledge.points.list.forEach(item => {
-        if (item.level == 1) {
-          const newItem = {}
-          newItem.id = item.knp_id
-          newItem.label = item.name
-          level1.push(newItem)
-        }
-        if (item.level == 2) {
-          const newItem = {}
-          newItem.id = item.knp_id
-          newItem.label = item.name
-          newItem.parent_knp_id = item.parent_knp_id
-          level2.push(newItem)
-        }
-      })
+      if (this.$store.state.tKnowledge.points.list) {
+        this.$store.state.tKnowledge.points.list.forEach(item => {
+          if (item.level == 1) {
+            const newItem = {}
+            newItem.id = item.knp_id
+            newItem.label = item.name
+            level1.push(newItem)
+          }
+          if (item.level == 2) {
+            const newItem = {}
+            newItem.id = item.knp_id
+            newItem.label = item.name
+            newItem.parent_knp_id = item.parent_knp_id
+            level2.push(newItem)
+          }
+        })
 
-      for (const item of level1) {
-        const arr = level2.filter(iten => iten.parent_knp_id)
-        item.children = arr
+        for (const item of level1) {
+          const arr = level2.filter(iten => iten.parent_knp_id)
+          item.children = arr
+        }
+        return level1
       }
-      return level1
     }
   },
 };

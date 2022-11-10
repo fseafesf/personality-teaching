@@ -8,6 +8,8 @@
 </template>
 
 <script >
+import { getClassList } from '@/services';
+
 export default {
   data() {
     return {
@@ -48,6 +50,11 @@ export default {
         label: 'label'
       }
     };
+  },
+  mounted() {
+    getClassList(1).then(res => {
+      console.log(res)
+    })
   },
   methods: {
     handleNodeClick(data) {

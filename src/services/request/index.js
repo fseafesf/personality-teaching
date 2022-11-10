@@ -12,21 +12,22 @@ class PtRequest {
   constructor(baseURL, timeout = 5000) {
     this.instance = axios.create({
       baseURL,
-      timeout
+      timeout,
+      // headers: {
+      //   cookie: document.cookie
+      // }
     })
-//请求拦截器
+    //请求拦截器
     this.instance.interceptors.request.use(config => {
       store.commit('changeIsLoading', true)
-      // console.log(store.state.isLoading);
       nprogress.start();
       return config
     }, err => {
       return err
     })
-//响应拦截器
+    //响应拦截器
     this.instance.interceptors.response.use(res => {
       store.commit('changeIsLoading', false)
-      // console.log(store.state.isLoading);
       nprogress.done();
       return res
     }, err => {
@@ -46,7 +47,7 @@ class PtRequest {
 
   get(config) {
     return this.request({ ...config, method: 'get' })
-  } 
+  }
 
   post(config) {
     return this.request({ ...config, method: 'post' })
