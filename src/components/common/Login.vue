@@ -19,7 +19,7 @@
               show-password
             ></el-input
           ></el-col>
-          <el-button type="primary" id="login-btn" @click="toggleShowLogin"
+          <el-button type="primary" id="login-btn" @click="sendLogin"
             >登录</el-button
           >
         </el-row>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { login } from "@/services";
 export default {
   name: "Login",
   data() {
@@ -45,6 +46,26 @@ export default {
   methods: {
     toggleShowLogin() {
       this.isHide = !this.isHide;
+    },
+    sendLogin() {
+      if (this.username === "" || this.password === "") {
+        alert("输入内容不能为空");
+      } else {
+        login({
+          username: this.username,
+          password: this.password,
+        }).then((res) => {
+          console.log(res);
+          localStorage.setItem("isLogin",1)
+          if (res.code == 0) {
+            this.toggleShowLogin();
+          } else {
+            alert("账号或密码错误");
+            this.username = "";
+            this.password = "";
+          }
+        });
+      }
     },
   },
 };
