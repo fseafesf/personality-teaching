@@ -59,12 +59,12 @@
         <div class="content-box" v-for="(item, index) in seList" :key="index">
           <ProblemHead :Problem="item"></ProblemHead>
           <div
-            :is="typeComponent[item.type-1]"
+            :is="typeComponent[item.type - 1]"
             :typeProblem="item"
             :index="Number(index)"
             class="content-problem"
           ></div>
-          <ToolMenu :Knp_id="item.id"></ToolMenu>
+          <ToolMenu :typeProblem="item"></ToolMenu>
         </div>
       </div>
     </div>
@@ -84,7 +84,7 @@ export default {
     return {
       list: [],
       seList: [],
-      pageId: Number,
+      pageId: String,
       show: false,
       typeComponent: ["Radio", "Multi", "Fill", "Judge", "Answer"],
       currentView: "",
@@ -159,9 +159,8 @@ export default {
   },
   methods: {
     getListData() {
-      // console.log(this.$store.state.tTest.problems);
       this.list = this.$store.state.tTest.problems;
-      this.seList = { ...this.list };
+      this.seList = JSON.parse(JSON.stringify(this.list));
     },
     handleNodeClick(data) {
       console.log(data);
@@ -177,6 +176,8 @@ export default {
         path: "/teacher/examHome/examPaper",
       });
       this.page.selectProblem = [];
+      this.page.id = "";
+      this.page.title = "";
     },
   },
   computed: {
@@ -305,7 +306,7 @@ export default {
         &:last-child {
           margin-bottom: 40px;
         }
-        .content-problem{
+        .content-problem {
           padding: 15px 0 0 5px;
         }
       }

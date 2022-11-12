@@ -3,8 +3,8 @@
     <!-- 班级信息 -->
     <div class="header">
       <div class="classInfo">
-        <span><strong>班级名称：</strong>{{classInfo.name}}</span>
-        <span><strong>班级描述：</strong>{{classInfo.major}}</span>
+        <span><strong>班级名称：</strong>{{$store.state.tClass.checkClassName}}</span>
+        <span><strong>班级描述：</strong>{{$store.state.tClass.checkClassMajor}}</span>
         <span><strong>任课老师：</strong>{{teacherInfo.name}}</span>
       </div>
       <el-button type="success" size="mini" @click="$router.go(-1)">退出</el-button>
@@ -18,10 +18,10 @@
         :data="studentList"
         stripe
         style="width: 100%">
-        <el-table-column type="index" label="序号" width="60px"></el-table-column>
+        <el-table-column type="index" label="序号"></el-table-column>
         <el-table-column prop="name" label="学生姓名"></el-table-column>
         <el-table-column prop="studentId" label="学号"></el-table-column>
-        <el-table-column label="操作" width="60px">
+        <el-table-column label="操作">
           <el-button type="danger" size="mini">删除</el-button>
         </el-table-column>
       </el-table>
@@ -66,12 +66,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  * {
+    box-sizing: border-box;
+  }
   .header {
     position: relative;
     // 班级信息
     .classInfo {
       display: flex;
       flex-direction: column;
+      width: 100%;
       height: 120px;
       margin: 10px 0;
       justify-content: center;

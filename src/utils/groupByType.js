@@ -22,6 +22,10 @@ export function group(arr) {
     } return result.sort((a, b) => {
         return a.type - b.type
     })
+
+    // .sort((a, b) => {
+    //     return a.type - b.type
+    // })
 }
 
 export function groupByType(arr) {

@@ -27,6 +27,7 @@
 <script>
 import Problem from "components/teacher/Test/tTest/tproblem.vue";
 import vuedraggable from "vuedraggable";
+import { mapState } from "vuex";
 export default {
   name: "card",
   data() {
@@ -37,7 +38,6 @@ export default {
     };
   },
   created() {
-    console.log(this.typeProblem);
     document.body.ondrop = (event) => {
       event.stopPropagation();
       event.preventDefault();
@@ -50,6 +50,7 @@ export default {
     },
     end() {
       console.log(this.typeProblem.data);
+      console.log(this.page.selectProblem)
     },
   },
   props: {
@@ -62,6 +63,9 @@ export default {
     index: {
       type: Number,
     },
+  },
+  computed: {
+    ...mapState("tTest", ["page"]),
   },
   components: {
     Problem,

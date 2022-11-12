@@ -4,12 +4,12 @@
       <!-- 搜索区 -->
       <div class="header">
         <el-input placeholder="请输入班级信息" class="searchInput"></el-input>
-        <el-button type="primary" id="searchClassBtn" size="small">查询班级</el-button>
+        <el-button type="primary" id="searchClassBtn" size="small" @click="appointedClassFn">查询班级</el-button>
         <el-button type="primary" id="addClassBtn" size="small" @click="addClassShowDialogBtn">创建班级</el-button>
       </div>
 
       <!-- 班级列表 -->
-      <el-table :data="classList"
+      <el-table :data="$store.state.tClass.classList"
         border
         style="width: 100%"
         stripe>
@@ -19,7 +19,7 @@
         <el-table-column prop="major" label="专业"></el-table-column>
         <el-table-column label="操作" width="240px">
           <template v-slot="scope">
-            <el-button type="primary" size="mini" @click="checkClassInfoFn">查看</el-button>
+            <el-button type="primary" size="mini" @click="checkClassInfoFn(scope.row)">查看</el-button>
             <el-button type="primary" size="mini" @click="modifyClassFn(scope.row)">修改</el-button>
             <el-button type="danger" size="mini" @click="delClassBtn(scope.row)">删除</el-button>
           </template>
@@ -55,11 +55,10 @@
 </template>
 
 <script >
-import { getClassAPI, addClassAPI, deleteClassAPI, modifyClassAPI } from '@/services/modules/teacher/tClass.js'
+import { addClassAPI, deleteClassAPI, modifyClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
 export default {
   data() {
     return {
-      classList: [],
       dialogVisible: false,
       // 添加班级的数据对象
       addClassForm: {
@@ -67,22 +66,15 @@ export default {
         college: '',
         major: ''
       },
-      pn: 1,  // 分页页号
       isEdit: false, // true为编辑状态，false为新增状态
       editClassId: '' // 保存班级编号
     }
   },
-  created() {
-    this.getClassListFn()
+  mounted() {
+    this.$store.dispatch('getClassInfoActions') // 获取班级列表
   },
   methods: {
-    // 获取班级列表
-    async getClassListFn() {
-      const res = await getClassAPI(this.pn)
-      // console.log(res)
-      this.classList = res.data
-    },
-    // 关闭对话框
+    // 取消对话框
     cancelFn() {
       this.dialogVisible = false
     },
@@ -95,7 +87,7 @@ export default {
       this.isEdit = false
       this.dialogVisible = true
     },
-    // 保存班级信息
+    // 创建/修改班级信息后保存
     async confirmFn() {
       if (!this.isEdit) {  /// 创建班级
         const res = await addClassAPI(this.addClassForm)
@@ -105,14 +97,17 @@ export default {
       } else {  // 修改班级信息
         const res = await modifyClassAPI({ class_id: this.editClassId, ...this.addClassForm })
         console.log(res)
-        // if (res.code !== 0) return this.$message.error(res.msg)
-        // this.$message.success(res.msg)
+        if (res.code !== 0) return this.$message.error(res.msg)
+        this.$message.success(res.msg)
       }
-      this.getClassListFn()
+      this.$store.dispatch('getClassInfoActions')
       this.dialogVisible = false
     },
     // 查看班级信息
-    checkClassInfoFn() {
+    checkClassInfoFn(obj) {
+      this.$store.state.tClass.checkClassName = obj.name
+      this.$store.state.tClass.checkClassMajor = obj.major
+      // console.log(this.$store.state.tClass.checkClassName)
       this.$router.push('/teacher/class/classInfo')
     },
     // 删除班级
@@ -121,7 +116,7 @@ export default {
       const res = await deleteClassAPI(obj.class_id)
       if (res.code !== 0) return this.$message.error(res.msg)
       this.$message.success(res.msg)
-      this.getClassListFn()
+      this.$store.dispatch('getClassInfoActions')
     },
     // 修改班级信息
     modifyClassFn(obj) {
@@ -136,6 +131,10 @@ export default {
         this.addClassForm.college = obj.college
         this.addClassForm.major = obj.major
       })
+    },
+    // 查询指定班级
+    async appointedClassFn() {
+      // const res = getAppointedClassAPI(this.$cookies.get("session_id"))
     }
   }
 };

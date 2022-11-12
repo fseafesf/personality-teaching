@@ -93,7 +93,7 @@ export default new Vuex.Store({
       {
         name: '学情分析',
         path: '/teacher/analysis'
-      },
+      }
     ],
     currentIndex: 0,
     currentNavBarData: {},

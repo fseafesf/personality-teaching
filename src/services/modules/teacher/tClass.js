@@ -60,3 +60,21 @@ export const modifyClassAPI = ({ class_id, name, college, major }) => {
     }
   })
 }
+
+/**
+ * 
+ * @param {*} cookie 用于权限校验
+ * @param {*} class_id 班级编号
+ * @returns 
+ */
+export const getAppointedClassAPI = (cookie, class_id) => {
+  return ptRequest.get({
+    url: '/teacher/class',
+    headers: {
+      'Cookie': `session_id = ${cookie}`
+    },
+    params: {
+      class_id
+    }
+  })
+}
