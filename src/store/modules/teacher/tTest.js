@@ -17,11 +17,9 @@ const tTest = {
     page: {
       title: '',
       selectProblem: [],
-      exam_id: Number,
+      exam_id: String,
       difficultType: '',
       createTime: '',
-      score: Number,
-      status: Number
     },
     // 所有的试卷
     pages: [],

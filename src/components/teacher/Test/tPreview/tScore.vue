@@ -8,7 +8,7 @@
       <span @click="this.delete">删除</span>
     </div>
     <div class="score-list">
-      <vuedraggable class="wrapper" v-model="typeProblem.data">
+      <vuedraggable class="wrapper" v-model="typeProblem.data" @end="this.end">
         <transition-group>
           <div
             class="drag-individual"
@@ -27,6 +27,7 @@
 
 <script>
 import vuedraggable from "vuedraggable";
+import { mapState } from "vuex";
 export default {
   name: "score",
   data() {
@@ -59,6 +60,13 @@ export default {
     delete() {
       console.log(this.typeProblem.type);
     },
+    end(){
+      console.log(this.page.selectProblem)
+    }
+  },
+  computed: {
+    ...mapState("tTest", ["page"]),
+    
   },
   components: {
     vuedraggable,

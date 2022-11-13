@@ -50,7 +50,13 @@ export default new Vuex.Store({
       },
       {
         name: '班级管理',
-        path: '/teacher/class'
+        path: '/teacher/class',
+        children: [
+          {
+            name: '班级信息',
+            path: '/teacher/class/classInfo'
+          }
+        ]
       },
       {
         name: '试卷管理',
@@ -76,7 +82,13 @@ export default new Vuex.Store({
       },
       {
         name: '试卷评阅',
-        path: '/teacher/review'
+        path: '/teacher/review',
+        children: [
+          {
+            name: '学生列表',
+            path: '/teacher/review/correctPaper'
+          }
+        ]
       },
       {
         name: '学情分析',

@@ -6,15 +6,10 @@
         <span>纠错</span>
         <span>查看解析</span>
       </div>
-      <el-button
-        :class="!btnHide ? 'hide' : ''"
-        type="primary"
-        @click="handleMneu"
+      <el-button v-if="btnShow" type="primary" @click="handleMneu"
         >+ 选题</el-button
       >
-      <el-button :class="btnHide ? 'hide' : ''" type="info" @click="deleteMenu"
-        >- 移除</el-button
-      >
+      <el-button v-else type="info" @click="deleteMenu">- 移除</el-button>
     </div>
   </div>
 </template>
@@ -27,40 +22,40 @@ export default {
   data() {
     return {
       list: [1, 2, 3],
-      btnHide: Boolean,
+      btnShow: Boolean,
     };
   },
   props: {
-    Knp_id: {
-      type: Number,
+    typeProblem: {
+      type: Object,
     },
   },
+  created() {
+    // console.log(this.page.selectProblem);
+  },
   mounted() {
-    this.btnHide = !this.page.selectProblem.includes(
-      this.problems.find(
-        (item) => item.id === this.$props.Knp_id
-      )
+    // console.log(this.typeProblem);
+    this.btnShow = !JSON.stringify(this.page.selectProblem).includes(
+      JSON.stringify(this.typeProblem)
     );
   },
-  computed:{
-   ...mapState("tTest",["page","problems"])
+  computed: {
+    ...mapState("tTest", ["page", "problems"]),
   },
   methods: {
     ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
     handleMneu() {
-      console.log(this.$props.Knp_id);
-      this.btnHide = false;
+      this.btnShow = false;
       let problem = this.problems.find(
-        (item) => item.id === this.$props.Knp_id
+        (item) => item.id === this.typeProblem.id
       );
       this.addProblem(problem);
-      console.log("tool-menu", this.page.selectProblem);
     },
 
     deleteMenu() {
-      this.btnHide = true;
+      this.btnShow = true;
       let index = this.page.selectProblem.findIndex(
-        (item) => item.id === this.$props.Knp_id
+        (item) => item.id === this.typeProblem.id
       );
       this.deleteProblem(index);
     },
