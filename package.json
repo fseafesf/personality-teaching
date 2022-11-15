@@ -10,6 +10,7 @@
     "axios": "^1.1.2",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.10",
+    "jsencrypt": "^3.3.1",
     "nanoid": "^4.0.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",

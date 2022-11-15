@@ -1,17 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   },
   {
     path: '/home',
     name: 'Home',
     component: () => import('@/views/common/Home.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/common/Login.vue')
   },
   {
     path: '/teacher/knowledge',
@@ -123,11 +127,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to,from,next)=>{
-  if(to.name !='Home'){
+  if(to.name !='Login'){
     if(Number(localStorage.getItem('isLogin'))){
       next()
-    }else{
-      alert("请先登录！")
+    }else{      
+      alert("请先登录！");
+      router.replace({path: '/'})
     }
   }else{
     next()
