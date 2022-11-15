@@ -1,7 +1,6 @@
 <template>
   <div id="modal" :class="{ hide: isHide }">
     <div id="modal-content">
-      <div id="close" class="el-icon-close" @click="toggleShowLogin"></div>
       <h1>xxx教学系统登录</h1>
       <div id="login">
         <el-row class="input-line">
@@ -19,7 +18,10 @@
               show-password
             ></el-input
           ></el-col>
-          <el-button type="primary" id="login-btn" @click="sendLogin"
+          <el-button
+            type="primary"
+            id="login-btn"
+            @click="sendLogin"
             >登录</el-button
           >
         </el-row>
@@ -29,11 +31,17 @@
         <p>用户名: cs / 密码:123456</p>
       </div>
     </div>
+    <div id="clock">
+      <div id="time">{{ time }}</div>
+      <div id="date">{{ date }}</div>
+    </div>
+    <div id="copyright">Copyright © 2022-11-15 All Rights Reserved</div>
   </div>
 </template>
 
 <script>
 import { login } from "@/services";
+import { encrypt, decrypt } from "@/utils/jsencrypt";
 export default {
   name: "Login",
   data() {
@@ -41,7 +49,14 @@ export default {
       username: "",
       password: "",
       isHide: false,
+      time: "",
+      date: "",
     };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      setInterval(this.upDateClock, 1000);
+    });
   },
   methods: {
     toggleShowLogin() {
@@ -53,12 +68,14 @@ export default {
       } else {
         login({
           username: this.username,
+          // password: encrypt(this.password),
           password: this.password,
         }).then((res) => {
           console.log(res);
-          localStorage.setItem("isLogin",1)
           if (res.code == 0) {
             this.toggleShowLogin();
+            localStorage.setItem("isLogin", 1);
+            this.$router.replace({ path: "/home" });
           } else {
             alert("账号或密码错误");
             this.username = "";
@@ -67,11 +84,42 @@ export default {
         });
       }
     },
+    upDateClock: function (e) {
+      let d = new Date();
+      let year = d.getFullYear();
+      if (year < 10) {
+        year = "0" + year;
+      }
+      let mon = d.getMonth();
+      if (mon < 10) {
+        mon = "0" + mon;
+      }
+      let day = d.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      let hour = d.getHours();
+      if (hour < 10) {
+        hour = "0" + hour;
+      }
+      let minute = d.getMinutes();
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      this.time = hour + ":" + minute;
+      this.date = year + "/" + mon + "/" + day;
+    },
   },
 };
 </script>
 
 <style lang="less" scoped>
+#copyright {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .hide {
   visibility: hidden;
   opacity: 0;
@@ -83,26 +131,37 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  transform: scale(1.1);
-  transition: all 0.3s ease;
-  z-index: 999;
-  #modal-content {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 480px;
-    height: 300px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    padding: 25px;
-    h1 {
-      margin-top: 10px;
-    }
+  background-image: linear-gradient(to left, gray, white);
+  background-size: 400%;
+  animation: myanimation 10s infinite;
+}
+@keyframes myanimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
+#modal-content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 480px;
+  height: 300px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  padding: 25px;
+  h1 {
+    margin-top: 10px;
+  }
+}
+
 #login {
   width: 380px;
   // border: 1px solid black;
@@ -133,12 +192,16 @@ export default {
     margin: 0;
   }
 }
-#close {
+#clock {
   position: absolute;
-  right: 25px;
-  top: 15px;
-  font-size: 25px;
-  color: #909399;
-  cursor: pointer;
+  bottom: 5%;
+  right: 8%;
+  text-align: center;
+  #time {
+    font-size: 80px;
+  }
+  #date {
+    font-size: 35px;
+  }
 }
 </style>

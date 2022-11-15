@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { encrypt, decrypt } from './utils/jsencrypt'
 
 import "normalize.css"
 import "./assets/css/index.css"
@@ -16,6 +17,9 @@ login({
   password: '123456'
 }).then(res => {
   console.log(res)
+  let x = encrypt("123456");
+  console.log(x);
+  console.log(decrypt(x));
 })
 
 Vue.prototype.$cookies = cookies;
@@ -27,3 +31,5 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+
