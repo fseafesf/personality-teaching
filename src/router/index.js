@@ -131,8 +131,7 @@ router.beforeEach((to,from,next)=>{
     if(Number(localStorage.getItem('isLogin'))){
       next()
     }else{      
-      alert("请先登录！");
-      router.replace({path: '/'})
+      router.replace({path: '/login'})
     }
   }else{
     next()
