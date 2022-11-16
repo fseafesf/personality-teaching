@@ -42,7 +42,7 @@
         <el-input type="textarea" v-model="editForm.answer" />
       </el-form-item>
       <el-form-item label="知识点联系:" label-width="100px">
-        <Tree :operation="false" @nodeClick="nodeClick" :show-checkbox="true" :defaultChecked="editForm.knp_id" />
+        <Tree :operation="false" @checkedClick="checkedClick" :show-checkbox="true" :defaultChecked="editForm.knp_id" />
       </el-form-item>
       <el-form-item label="难度" prop="level">
         <el-select v-model="form.level" placeholder="难度" :value="questionLevel(form.level)">
@@ -133,7 +133,8 @@ export default {
     }
   },
   mounted() {
-
+    this.$store.dispatch('QuestionByIdActive', this.$route.params.id)
+    // console.log(this.$route)
   },
   methods: {
     onSubmit() {
@@ -156,7 +157,7 @@ export default {
     cancelHandleClick() {
       this.$router.push({ path: '/teacher/topic' })
     },
-    nodeClick(data, checked) {
+    checkedClick(data, checked) {
       checked ? this.form.knp_id = data.id : this.form.knp_id = ''
     }
   }

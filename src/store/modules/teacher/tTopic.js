@@ -13,6 +13,11 @@ const tTopic = {
       state.currentTopicEditData = data
     },
     ChangeTopicTableData(state, data) {
+      if (!data.list) {
+        state.topicTableData = data.list
+        state.total = data.total
+        return
+      }
       const mapData = data.list.map(item => {
         item.type = questionType(item.type)
         item.level = questionLevel(item.level)
@@ -24,7 +29,8 @@ const tTopic = {
   },
   actions: {
     QuestionListActive(context, payload) {
-      getQuestionList(payload?.keyword, payload?.size, payload?.page).then(res => {
+      getQuestionList(payload?.type, payload?.level, payload?.keyword, payload?.size, payload?.page).then(res => {
+        console.log('topic', res);
         context.commit('ChangeTopicTableData', res.data)
       }).catch(err => {
         console.log(err);

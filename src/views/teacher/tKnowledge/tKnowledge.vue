@@ -1,6 +1,6 @@
 <template>
   <div class="knowledge">
-    <TopBar />
+    <TopBar v-if="!$route.meta.hideTopBar" />
     <router-view></router-view>
   </div>
 </template>

@@ -34,15 +34,24 @@ export default {
         if (item.path === to.path) return item.path === to.path
 
 
+
         for (const iten of item.children) {
-          // let regexp = `/{#${iten.path}}/ig`
-          // console.log(regexp.exec(`${to.path}`));
+
 
           if (iten.path === to.path) {
             return iten.path === to.path
           }
+
+          // console.log(iten.path, to.path)
+          // console.log(to.path.indexOf(iten.path), 'ok')
+          if (to.path.indexOf(iten.path) !== -1) {
+
+            return iten.path.indexOf(to.path)
+          }
+
         }
       })
+      // console.log('index', index)
       store.commit("changeCurrentIndex", index)
       store.commit("changeCurrentNavBarData", index)
       this.currentIndex = index
@@ -60,6 +69,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+
   .content {
     display: flex;
     height: 100%;

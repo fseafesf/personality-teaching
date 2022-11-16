@@ -2,7 +2,7 @@
   <div id="app">
     <NavBar />
     <router-view class="wrap-v1" />
-    <Loading/>
+    <Loading />
   </div>
 </template>
 
@@ -13,11 +13,11 @@ import Loading from './components/common/Loading.vue'
 export default {
   data() {
     return {
-      isLogin:Number(localStorage.getItem('isLogin')),
+      isLogin: Number(localStorage.getItem('isLogin')),
     }
   },
   name: "App",
-  components: { NavBar, Loading,},
+  components: { NavBar, Loading, },
 }
 </script>
 

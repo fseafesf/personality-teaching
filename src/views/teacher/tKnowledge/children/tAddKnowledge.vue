@@ -14,7 +14,7 @@
       </el-form-item>
 
       <el-form-item label="知识点内容:" prop="context">
-        <el-input type="textarea" :rows="30" />
+        <el-input type="textarea" :rows="24" />
       </el-form-item>
 
       <el-form-item>

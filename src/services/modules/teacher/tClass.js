@@ -5,11 +5,16 @@ import ptRequest from '../../request'
  * @param {*} pn: 分页页号
  * @returns 
  */
-export const getClassAPI = pn => {
+export const getClassAPI = (page_num, page_size) => {
+  console.log(page_num, page_size)
   return ptRequest.get({
     url: '/teacher/class/list',
-    params: {
-      pn
+    data: {
+      page_num,
+      page_size
+    },
+    headers: {
+      'Content-Type': 'multipart/form-data'
     }
   })
 }
@@ -19,7 +24,7 @@ export const getClassAPI = pn => {
  * @param {*} param0 {name：班级名称, college：学院, major：专业}
  * @returns 
  */
-export const addClassAPI = ({name, college, major}) => {
+export const addClassAPI = ({ name, college, major }) => {
   return ptRequest.post({
     url: '/teacher/class',
     params: {

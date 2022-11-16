@@ -1,20 +1,20 @@
 <template>
   <div class="edit">
-    <el-form ref="form" :model="form" label-width="100px">
+    <el-form ref="form" :model="form" label-width="100px" v-if="pointDetail.info">
 
       <el-form-item label="题目名称:" prop="question_name">
-        <el-input v-model="pointDetail.name"></el-input>
+        <el-input v-model="pointDetail.info.name"></el-input>
       </el-form-item>
 
       <el-form-item label="难度" prop="level">
-        <el-select placeholder="难度" :value="questionLevel(pointDetail.level)">
+        <el-select placeholder="难度" :value="questionLevel(pointDetail.info.level)">
           <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item label="知识点内容:" prop="context">
-        <el-input type="textarea" :rows="30" v-model="pointDetail.context" />
+        <el-input type="textarea" :rows="24" v-model="pointDetail.info.context" />
       </el-form-item>
 
       <el-form-item>
@@ -38,6 +38,9 @@ export default {
       }
 
     }
+  },
+  mounted() {
+    this.$store.dispatch('PointByIdActive', this.$route.params.id)
   },
   methods: {
     onSubmit() {

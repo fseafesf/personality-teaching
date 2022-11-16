@@ -27,13 +27,34 @@ export default {
 
     }
   },
+  props: {
+    topicTableData: {
+      type: Array,
+      default: () => []
+    },
+    type: {
+      type: Number,
+    },
+    level: {
+      type: Number,
+    },
+    keyword: {
+      type: String,
+    },
+    size: {
+      type: Number,
+      default: 10
+    },
+    page: {
+      type: Number,
+    }
+  },
   mounted() {
-    this.$store.dispatch('QuestionListActive')
+    this.$store.dispatch('QuestionListActive', { type: this.$props.type, level: this.$props.level, keyword: this.$props.keyword, size: this.$props.size, page: this.$props.page })
   },
   methods: {
     handleEdit(index, row) {
-      this.$router.push({ path: '/teacher/topic/edit' })
-      this.$store.dispatch('QuestionByIdActive', row.question_id)
+      this.$router.push({ path: '/teacher/topic/edit/' + row.question_id })
     },
     handleDelete(index, row) {
       this.$confirm('此操作将永久删除该题目, 是否继续?', '提示', {

@@ -12,15 +12,15 @@ import 'element-ui/lib/theme-chalk/index.css';
 import cookies from 'vue-cookies'
 
 import { login } from '@/services'
-login({
-  username: 'cs',
-  password: '123456'
-}).then(res => {
-  console.log(res)
-  let x = encrypt("123456");
-  console.log(x);
-  console.log(decrypt(x));
-})
+// login({
+//   username: 'cs',
+//   password: '123456'
+// }).then(res => {
+//   console.log(res)
+//   let x = encrypt("123456");
+//   console.log(x);
+//   console.log(decrypt(x));
+// })
 
 Vue.prototype.$cookies = cookies;
 Vue.use(ElementUI);
