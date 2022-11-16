@@ -31,6 +31,14 @@ export default new Vuex.Store({
           {
             name: '知识点联系',
             path: '/teacher/knowledge/contact',
+          },
+          {
+            // name: '添加知识点',
+            path: '/teacher/knowledge/add',
+          },
+          {
+            // name: '编辑知识点',
+            path: '/teacher/knowledge/edit',
           }
         ]
       },

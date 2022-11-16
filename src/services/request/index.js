@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-
 import { BASE_URL, TIMEOUT } from './config'
 //引入nprogress进度条
 import nprogress from 'nprogress'

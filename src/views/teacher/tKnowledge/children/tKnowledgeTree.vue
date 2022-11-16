@@ -1,10 +1,10 @@
 <template>
   <div class="knowledge-tree">
     <div class="left">
-      <Tree />
+      <Tree @nodeClick="nodeClick" current-node-key />
     </div>
     <div class="content">
-      知识点内容
+      {{ $store.state.tKnowledge.pointDetail.context }}
     </div>
   </div>
 </template>
@@ -18,10 +18,12 @@ export default {
     return {
     };
   },
-  // mounted() {
-  //   this.$store.dispatch('PointListActive')
-  // },
   methods: {
+    nodeClick(data) {
+      console.log(data)
+      // if (!data.parent_knp_id) return
+      this.$store.dispatch('PointByIdActive', data.id)
+    }
   },
 };
 </script>

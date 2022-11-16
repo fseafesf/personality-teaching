@@ -23,8 +23,28 @@ const routes = [
     component: () => import('@/views/teacher/tKnowledge/tKnowledge.vue'),
     redirect: '/teacher/knowledge/tree',
     children: [
-      { path: 'tree', component: () => import('@/views/teacher/tKnowledge/children/tKnowledgeTree.vue') },
-      { path: 'contact', component: () => import('@/views/teacher/tKnowledge/children/tKnowledgeContact.vue') },
+      {
+        path: 'tree',
+        component: () => import('@/views/teacher/tKnowledge/children/tKnowledgeTree.vue')
+      },
+      {
+        path: 'contact',
+        component: () => import('@/views/teacher/tKnowledge/children/tKnowledgeContact.vue')
+      },
+      {
+        path: 'add',
+        component: () => import('@/views/teacher/tKnowledge/children/tAddKnowledge.vue'),
+        meta: {
+          hideTopBar: true,
+        }
+      },
+      {
+        path: 'edit/:id',
+        component: () => import('@/views/teacher/tKnowledge/children/tEditKnowledge.vue'),
+        meta: {
+          hideTopBar: true,
+        }
+      }
     ]
   },
   {
@@ -37,12 +57,10 @@ const routes = [
         component: () => import('../views/teacher/tTopic/children/tAddTopic.vue'),
         meta: {
           isChildren: true,
-          // hideTabBar: true
         }
       },
       {
-        path: 'edit',
-        // path: 'edit/:id',
+        path: 'edit/:id',
         component: () => import('../views/teacher/tTopic/children/tEditTopic.vue'),
         meta: {
           isChildren: true,
@@ -57,7 +75,7 @@ const routes = [
     name: 'tClass',
     component: () => import('@/views/teacher/tClass/tClass.vue'),
     children: [
-      {       
+      {
         path: 'classInfo',
         component: () => import('@/views/teacher/tClass/children/classInfo.vue'),
         meta: {
@@ -121,20 +139,22 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes
 })
 
-router.beforeEach((to,from,next)=>{
-  if(to.name !='Login'){
-    if(Number(localStorage.getItem('isLogin'))){
+router.beforeEach((to, from, next) => {
+  if (to.name != 'Login') {
+    if (Number(localStorage.getItem('isLogin'))) {
       next()
-    }else{      
-      router.replace({path: '/login'})
+    } else {
+      router.replace({ path: '/login' })
     }
-  }else{
+  } else {
     next()
   }
 })
+
+
 export default router

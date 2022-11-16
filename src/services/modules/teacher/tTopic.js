@@ -1,11 +1,13 @@
 import ptRequest from '../../request'
 
 // 题目列表
-export function getQuestionList(info, page_size = 10, page_no = 1) {
+export function getQuestionList(type, level, context, page_size = 10, page_no = 1) {
   return ptRequest.get({
-    url: '/question/question_list',
+    url: '/teacher/question/list',
     params: {
-      info,
+      type,
+      level,
+      context,
       page_size,
       page_no
     }
@@ -15,7 +17,7 @@ export function getQuestionList(info, page_size = 10, page_no = 1) {
 // 通过id获取题目信息
 export function getQuestionById(question_id) {
   return ptRequest.get({
-    url: '/question/question_detail',
+    url: '/teacher/question/detail',
     params: {
       question_id
     }
@@ -27,7 +29,7 @@ export function addQuestion(form) {
   const { question_name, type, level, create_user, question_option_list, answer, context, knp_id } = form
   // console.log( question_name, type, level, create_user, question_option_list, answer, context, knp_id);
   return ptRequest.post({
-    url: '/question/question_add',
+    url: '/teacher/question',
     data: {
       question_name,
       type,
@@ -44,7 +46,7 @@ export function addQuestion(form) {
 // 删除题目
 export function deleteQuestion(question_id) {
   return ptRequest.delete({
-    url: 'question/question_delete?question_id=' + question_id,
+    url: '/teacher/question?question_id=' + question_id,
   })
 }
 
@@ -54,7 +56,7 @@ export function updataQuestion(form) {
   // console.log(question_id, question_name, type, level, create_user, question_option_list, answer, context, knp_id);
 
   return ptRequest.put({
-    url: '/question/question_update',
+    url: '/teacher/question',
     data: {
       question_id,
       question_name,

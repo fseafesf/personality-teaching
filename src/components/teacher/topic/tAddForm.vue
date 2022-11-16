@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-form-item label="题型: " prop="type">
         <div class="topic-type">
-          <el-select class="search-item" v-model="form.type" placeholder="题型">
+          <el-select class="search-item" v-model="form.type" placeholder="题型" @change="typeChangeHandler">
             <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -48,7 +48,7 @@
       </el-form-item>
 
       <el-form-item label="知识点联系:">
-        <Tree class="tree" @nodeClick="nodeClick" :operation="false" :show-checkbox="true" />
+        <Tree class="tree" @checkedClick="checkedClick" :operation="false" :show-checkbox="true" />
       </el-form-item>
 
       <el-form-item label="难度" prop="level">
@@ -131,9 +131,12 @@ export default {
     cancelHandleClick() {
       this.$router.push({ path: '/teacher/topic' })
     },
-    nodeClick(data, checked) {
+    checkedClick(data, checked) {
       // console.log(data);
       checked ? this.form.knp_id = data.id : this.form.knp_id = ''
+    },
+    typeChangeHandler() {
+      this.$refs['form'].clearValidate();
     }
   }
 }
