@@ -15,7 +15,9 @@
         </div>
       </div>
       <div class="head-right">
-        <el-button type="primary" @click="save">保存试卷</el-button>
+        <el-button type="primary" @click="save" v-if="!createD"
+          >保存试卷</el-button
+        >
         <el-button type="primary" plain>下载试题</el-button>
       </div>
     </div>
@@ -26,7 +28,7 @@
         </div>
         <Card
           v-for="(item, index) in problemsList"
-          :key="index"
+          :key="item.type"
           :typeProblem="item"
           :index="index"
         ></Card>
@@ -40,7 +42,7 @@
             </div>
             <div
               class="operation-continue ounifed"
-              v-if="!!this.page.exam_id"
+              v-if="createD"
               @click="modify"
             >
               <i class="el-icon-menu"></i>
@@ -50,11 +52,11 @@
         </div>
         <div class="preview-score">
           <div class="score-head"></div>
-          <vuedraggable class="wrapper" v-model="problemsList" @end="end">
+          <vuedraggable class="wrapper" v-model="problemsList">
             <transition-group>
               <Score
                 v-for="(item, index) in problemsList"
-                :key="index"
+                :key="item.type"
                 :typeProblem="item"
                 :index="index"
               ></Score>
@@ -70,10 +72,11 @@
 import Card from "components/teacher/Test/tPreview/tCard.vue";
 import EditTitle from "components/teacher/Test/tPreview/tEditTitle.vue";
 import Score from "components/teacher/Test/tPreview/tScore.vue";
-import { group } from "utils/groupByType";
-import { mapState } from "vuex";
+import { group, breakGroup } from "utils/groupByType";
+import { mapActions, mapMutations, mapState } from "vuex";
 import vuedraggable from "vuedraggable";
 import { createPage, searchPage, modifyPage } from "@/services";
+import { setCache, getCache, clearCache } from "@/utils/localstorage";
 
 export default {
   name: "preview",
@@ -85,63 +88,94 @@ export default {
     };
   },
   created() {
-    if (!!this.page.title) {
-      this.pageTitle = this.page.title;
+    console.log(this.page.selectProblem);
+    if (!!getCache("title")) {
+      this.pageTitle = getCache("title");
     }
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
       searchPage(this.$cookies.get("session_key"), this.pageId).then((res) => {
         console.log(res);
-        this.page.title = res.data.exam_name;
+        this.setPageData({
+          key: "title",
+          val: res.data.exam_name,
+        });
         this.pageTitle = this.page.title;
-        this.page.exam_id = this.pageId;
-        this.page.selectProblem = JSON.parse(res.data.questions);
-        this.getProblems();
+        this.setPageData({
+          key: "exam_id",
+          val: this.pageId,
+        });
+        this.setPageData({
+          key: "selectProblem",
+          val: breakGroup(JSON.parse(res.data.questions)),
+        });
+        this.problemsList = JSON.parse(res.data.questions);
+        setCache("exam_id", this.pageId);
+        setCache("title", res.data.exam_name);
+        setCache("selectProblem", breakGroup(JSON.parse(res.data.questions)));
       });
     } else {
       this.getProblems();
     }
   },
   methods: {
-    end(){
-     console.log(this.problemsList)
-    },
+    ...mapMutations("tTest", ["setPageData", "clearPageData"]),
+    ...mapActions("tTest", ["setTitle"]),
     getProblems() {
-      this.problemsList = group(this.page.selectProblem);
+      this.problemsList = group(getCache("selectProblem"));
     },
     pBack() {
+      this.clearPageData({
+        key: "title",
+        val: "",
+      });
+      this.clearPageData({
+        key: "exam_id",
+        val: "",
+      });
+      this.clearPageData({
+        key: "selectProblem",
+        val: [],
+      });
+      clearCache("exam_id");
+      clearCache("title");
+      clearCache("selectProblem");
       this.$router.replace({
         path: "/teacher/examHome",
       });
-      this.page.selectProblem = [];
-      this.page.exam_id = "";
-      this.page.title = '';
     },
     back() {
-      if (!this.pageId) {
-        this.$router.go(-1);
-      }
       this.$router
-        .push({
+        .replace({
           path: "/teacher/examHome/test",
-          query: {
-            id: this.pageId,
-          },
         })
         .catch((err) => console.log(err));
     },
     save() {
+      console.log(this.problemsList);
       let data = new FormData();
       console.log(this.pageTitle);
       data.append("exam_name", this.pageTitle);
-      data.append("questions", JSON.stringify(this.page.selectProblem));
+      data.append("questions", JSON.stringify(this.problemsList));
       data.append("comment", "<comment>");
       createPage(this.$cookies.get("session_key"), data).then((res) => {
         console.log(res, "创建试卷");
         if (res.code === 0) {
-          this.page.selectProblem = [];
-          this.page.id = '';
-          this.page.title = '';
+          this.clearPageData({
+            key: "title",
+            val: "",
+          });
+          this.clearPageData({
+            key: "exam_id",
+            val: "",
+          });
+          this.clearPageData({
+            key: "selectProblem",
+            val: [],
+          });
+          clearCache("exam_id");
+          clearCache("title");
+          clearCache("selectProblem");
           this.$router.replace({
             path: "/teacher/examHome/examPaper",
           });
@@ -152,14 +186,26 @@ export default {
       let data = new FormData();
       data.append("exam_name", this.pageTitle);
       data.append("exam_id", this.page.exam_id);
-      data.append("questions", JSON.stringify(this.page.selectProblem));
+      data.append("questions", JSON.stringify(this.problemsList));
       data.append("comment", "<comment>");
       modifyPage(this.$cookies.get("session_key"), data).then((res) => {
         console.log(res);
         if (res.code === 0) {
-          this.page.selectProblem = [];
-          this.page.id = '';
-          this.page.title = '';
+          this.clearPageData({
+            key: "title",
+            val: "",
+          });
+          this.clearPageData({
+            key: "exam_id",
+            val: "",
+          });
+          this.clearPageData({
+            key: "selectProblem",
+            val: [],
+          });
+          clearCache("exam_id");
+          clearCache("title");
+          clearCache("selectProblem");
           this.$router.replace({
             path: "/teacher/examHome/examPaper",
           });
@@ -167,15 +213,29 @@ export default {
       });
     },
   },
-  watch:{
-    pageTitle:{
-      handler(newVal,oldVal){
-        this.page.title = newVal
-      }
-    }
-  },
   computed: {
     ...mapState("tTest", ["page"]),
+    createD() {
+      return !!getCache("exam_id");
+    },
+    params() {
+      return JSON.parse(JSON.stringify(this.page.selectProblem));
+    },
+  },
+  watch: {
+    pageTitle: {
+      handler(newVal, oldVal) {
+        this.page.title = newVal;
+      },
+    },
+    params: {
+      handler(newVal, oldVal) {
+        console.log(newVal);
+        setCache("selectProblem", this.params);
+        this.getProblems();
+      },
+      immediate: true,
+    },
   },
   components: {
     Card,

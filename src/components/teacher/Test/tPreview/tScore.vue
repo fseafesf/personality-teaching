@@ -8,7 +8,7 @@
       <span @click="this.delete">删除</span>
     </div>
     <div class="score-list">
-      <vuedraggable class="wrapper" v-model="typeProblem.data" @end="this.end">
+      <vuedraggable class="wrapper" v-model="typeProblem.data">
         <transition-group>
           <div
             class="drag-individual"
@@ -36,9 +36,7 @@ export default {
       typeIndex: ["一", "二", "三", "四", "五"],
     };
   },
-  created() {
-    console.log(this.typeProblem);
-  },
+  created() {},
   props: {
     typeProblem: {
       type: Object,
@@ -60,13 +58,12 @@ export default {
     delete() {
       console.log(this.typeProblem.type);
     },
-    end(){
-      console.log(this.page.selectProblem)
-    }
+    end() {
+      console.log(this.page.selectProblem);
+    },
   },
   computed: {
     ...mapState("tTest", ["page"]),
-    
   },
   components: {
     vuedraggable,
@@ -89,7 +86,7 @@ export default {
     }
   }
   &:hover {
-    cursor: move;
+    cursor: pointer;
     border-color: #4498ee;
   }
   .score-list {

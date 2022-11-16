@@ -1,48 +1,28 @@
 <template>
   <div class="problem-head">
     <div class="head-content">
-      <span>{{ this.toType(this.Problem.type) }}题</span>
+      <span>{{ this.toTypeH(this.Problem.type) }}题</span>
       <em>|</em>
       <span>常考题</span>
       <em>|</em>
-      <span>{{this.toDifficult(this.Problem.difficultType)}}题</span>
+      <span>{{ this.toDifficultH(this.Problem.level) }}题</span>
     </div>
   </div>
 </template>
 
 <script>
+import { toType, toDifficult } from "@/utils/transfrom";
 export default {
   name: "ProblemHead",
-  data() {return{}},
+  data() {
+    return {};
+  },
   methods: {
-    toType(key) {
-      switch (key) {
-        case 1:
-          return "单选";
-        case 2:
-          return "多选";
-        case 3:
-          return "计算";
-        case 4:
-          return "阅读";
-        case 5:
-          return "编程";
-        default:
-          break;
-      }
+    toTypeH(key) {
+      return toType(key);
     },
-    toDifficult(key) {
-      switch (key) {
-        case 1:
-          return "简单";
-        case 2:
-          return "中等";
-        case 3:
-          return "困难";
-
-        default:
-          break;
-      }
+    toDifficultH(key) {
+      return toDifficult(key);
     },
   },
   props: {
@@ -65,7 +45,7 @@ export default {
     font-size: 12px;
     display: flex;
     gap: 10px;
-    span{
+    span {
       color: #999;
     }
   }

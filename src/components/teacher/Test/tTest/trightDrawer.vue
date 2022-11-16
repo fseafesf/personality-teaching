@@ -92,30 +92,34 @@
 <script>
 import { mapState } from "vuex";
 import { groupByType } from "@/utils/groupByType";
+import { getCache, setCache, clearCache } from "@/utils/localstorage";
 export default {
   name: "right-drawer",
   data() {
     return {
       basketShow: false,
-      problemData: [],
+      problemData: {},
+      pageId: "",
     };
   },
   created() {
+    if (!!getCache("exam_id")) {
+      this.pageId = getCache("exam_id");
+    }
+    this.getData();
   },
+
   methods: {
     drawer() {
       this.basketShow = !this.basketShow;
     },
     preview() {
-      this.$router.push({
+      this.$router.replace({
         path: "/teacher/examHome/preview",
       });
     },
     getData() {
-      this.problemData = groupByType(
-        this.$store.state.tTest.page.selectProblem
-      );
-      console.log("根据type分类的题目", this.problemData);
+      this.problemData = groupByType(this.page.selectProblem);
     },
   },
   computed: {
@@ -127,8 +131,9 @@ export default {
   watch: {
     params: {
       handler(newVal, oldVal) {
-        // console.log(newVal);
+        console.log(newVal)
         this.getData();
+        setCache("selectProblem", this.params);
       },
       immediate: true,
     },

@@ -98,12 +98,18 @@ const routes = [
       {
         path: 'test',
         name: 'tTest',
-        component: () => import('@/views/teacher/tTestPage/children/tTest.vue')
+        component: () => import('@/views/teacher/tTestPage/children/tTest.vue'),
+        meta:{
+          keepAlive:true
+        }
       },
       {
         path: 'preview',
         name: 'tPreview',
-        component: () => import('@/views/teacher/tTestPage/children/tPreview.vue')
+        component: () => import('@/views/teacher/tTestPage/children/tPreview.vue'),
+        meta:{
+          keepAlive:true
+        }
       },
       {
         path: 'release',

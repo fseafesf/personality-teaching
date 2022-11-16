@@ -17,10 +17,7 @@ export function getQuestionList(type, level, context, page_size = 10, page_no = 
 // 通过id获取题目信息
 export function getQuestionById(question_id) {
   return ptRequest.get({
-    url: '/teacher/question/detail',
-    params: {
-      question_id
-    }
+    url: '/teacher/question/detail',   
   })
 }
 
