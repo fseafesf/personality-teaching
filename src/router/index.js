@@ -149,7 +149,7 @@ router.beforeEach((to, from, next) => {
     if (Number(localStorage.getItem('isLogin'))) {
       next()
     } else {
-      router.push({ path: '/login' })
+      router.replace({ path: '/login' })
     }
   } else {
     next()
