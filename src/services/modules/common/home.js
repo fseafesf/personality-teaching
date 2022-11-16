@@ -10,11 +10,3 @@ export function login(data) {
   })
 }
 
-export function test(question_id) {
-  return ptRequest.get({
-    url: '/question/question_detail',
-    params: {
-      question_id
-    }
-  })
-}
