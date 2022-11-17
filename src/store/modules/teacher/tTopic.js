@@ -30,14 +30,15 @@ const tTopic = {
   actions: {
     QuestionListActive(context, payload) {
       getQuestionList(payload?.type, payload?.level, payload?.keyword, payload?.size, payload?.page).then(res => {
-        console.log('topic', res);
         context.commit('ChangeTopicTableData', res.data)
       }).catch(err => {
         console.log(err);
       })
     },
     QuestionByIdActive(context, id) {
+      console.log(id, 'id');
       getQuestionById(id).then(res => {
+        console.log(res, 'ijd')
         context.commit('changeCurrentTopicEditData', res.data)
       })
     },
