@@ -80,6 +80,13 @@ const routes = [
         component: () => import('@/views/teacher/tClass/children/classInfo.vue'),
         meta: {
           isChildren: true,
+        },
+      },
+      {
+        path: 'student',
+        component: () => import('@/views/teacher/tClass/children/unJoinClassStu.vue'),
+        meta: {
+          isChildren: true
         }
       }
     ]

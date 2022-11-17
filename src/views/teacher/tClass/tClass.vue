@@ -1,12 +1,7 @@
 <template>
   <div>   
     <template v-if="!$route.meta.isChildren">
-      <!-- 搜索区 -->
-      <div class="header">
-        <el-input placeholder="请输入班级信息" class="searchInput"></el-input>
-        <el-button type="primary" id="searchClassBtn" size="small" @click="appointedClassFn">查询班级</el-button>
-        <el-button type="primary" id="addClassBtn" size="small" @click="addClassShowDialogBtn">创建班级</el-button>
-      </div>
+      <el-button type="primary" id="addClassBtn" size="small" class="addClassBtn" @click="addClassShowDialogBtn">创建班级</el-button>
 
       <!-- 班级列表 -->
       <el-table :data="$store.state.tClass.classList"
@@ -25,6 +20,16 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="$store.state.tClass.page_num"
+        :page-sizes = "[20, 30, 40]"
+        :page-size="$store.state.tClass.page_size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
 
       <!-- 新增 / 修改班级对话框 -->
       <el-dialog
@@ -55,7 +60,7 @@
 </template>
 
 <script >
-import { addClassAPI, deleteClassAPI, modifyClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
+import { addClassAPI, deleteClassAPI, modifyClassAPI } from '@/services/modules/teacher/tClass.js'
 export default {
   data() {
     return {
@@ -72,6 +77,12 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getClassInfoActions') // 获取班级列表
+    // this.$store.dispatch('getStuListActions')
+  },
+  computed: {
+    total: function () {
+      return this.$store.state.tClass.classList.length
+    }
   },
   methods: {
     // 取消对话框
@@ -132,16 +143,23 @@ export default {
         this.addClassForm.major = obj.major
       })
     },
-    // 查询指定班级
-    async appointedClassFn() {
-      // const res = getAppointedClassAPI(this.$cookies.get("session_id"))
+    // 分页->每页条数改变触发
+    handleSizeChange(sizes) {
+      this.$store.state.tClass.page_size = sizes
+      this.$store.state.tClass.page_num = 1
+      this.$store.dispatch('getClassInfoActions')
+    },
+    // 当前页码改变时触发
+    handleCurrentChange(nowPage) {
+      this.$store.state.tClass.page_num = nowPage
+      this.$store.dispatch('getClassInfoActions')
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.header {
+/* .header {
   display: flex;
   margin: 10px 0;
   height: 80px;
@@ -153,5 +171,8 @@ export default {
     width: 300px;
     margin-right: 10px;
   }
-}
+} */
+  .addClassBtn {
+    margin: 10px 0;
+  }
 </style>

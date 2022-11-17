@@ -63,6 +63,10 @@ export default new Vuex.Store({
           {
             name: '班级信息',
             path: '/teacher/class/classInfo'
+          },
+          {
+            name: '未加入班级学生信息',
+            path: '/techer/class/student'
           }
         ]
       },
