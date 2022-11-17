@@ -96,7 +96,7 @@
           <div class="block">
             <el-pagination
               layout="prev, pager, next"
-              :total="15"
+              :total="total"
               :current-page="queryInfo.page_no"
               :page-size="queryInfo.page_size"
               @current-change="handleCurrentChange"
@@ -246,6 +246,7 @@ export default {
     ...mapActions("tTest", ["getProblems"]),
     receive() {
       this.getProblems(this.queryInfo).then((res) => {
+        this.total = res
         this.getListData();
       });
     },
@@ -286,10 +287,14 @@ export default {
         key: "selectProblem",
         val: [],
       });
-
+      this.clearPageData({
+        key: "comment",
+        val: '',
+      });
       clearCache("exam_id");
       clearCache("title");
       clearCache("selectProblem");
+      clearCache("comment")
     },
     handleCurrentChange(newPage) {
       this.queryInfo.page_no = newPage;

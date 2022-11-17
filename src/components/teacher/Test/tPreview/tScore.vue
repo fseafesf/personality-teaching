@@ -27,7 +27,7 @@
 
 <script>
 import vuedraggable from "vuedraggable";
-import { mapState } from "vuex";
+import { mapState ,mapMutations} from "vuex";
 export default {
   name: "score",
   data() {
@@ -49,6 +49,7 @@ export default {
     },
   },
   methods: {
+    ...mapMutations("tTest",["deleteTypeProblem"]),
     toType(key) {
       return this.typeArr[key - 1];
     },
@@ -57,6 +58,7 @@ export default {
     },
     delete() {
       console.log(this.typeProblem.type);
+      this.deleteTypeProblem(this.typeProblem.type);
     },
     end() {
       console.log(this.page.selectProblem);

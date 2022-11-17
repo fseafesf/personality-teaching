@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: "tEditTitle",
+  name: "tEditComment",
   data() {
     return {
       focus: true,

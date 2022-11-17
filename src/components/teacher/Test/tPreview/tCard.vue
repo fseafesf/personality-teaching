@@ -34,8 +34,8 @@ export default {
   data() {
     return {
       currentView: "",
-      typeArr: ["单选", "多选", "填空", "判断", "简答"],
-      typeComponent: ["Radio", "Multi", "Fill", "Judge", "Answer"],
+      typeArr: ["单选", "多选", "判断", "填空", "简答"],
+      typeComponent: ["Radio", "Multi", "Judge", "Fill", "Answer"],
     };
   },
   created() {

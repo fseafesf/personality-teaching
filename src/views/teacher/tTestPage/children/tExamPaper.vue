@@ -93,9 +93,14 @@ export default {
       key: "selectProblem",
       val: [],
     });
+    this.clearPageData({
+      key: "comment",
+      val: "",
+    });
     clearCache("exam_id");
     clearCache("title");
     clearCache("selectProblem");
+    clearCache("comment");
     this.getPages();
   },
   mounted() {},
@@ -104,8 +109,8 @@ export default {
     ...mapActions("tTest", ["getInitPages", "getProblems"]),
     getPages() {
       this.getInitPages({
-        cookie:this.$cookies.get("session_key"),
-        ...this.param
+        cookie: this.$cookies.get("session_key"),
+        ...this.param,
       }).then((res) => {
         this.tableData = this.pages;
       });
@@ -133,9 +138,7 @@ export default {
       });
       setCache("exam_id", row.exam_id);
     },
-    handleCopy(index,row){
-      
-    },
+    handleCopy(index, row) {},
     handleDelete(index, row) {
       console.log(row.exam_id);
       deletePage(this.$cookies.get("session_key"), row.exam_id).then((res) => {
