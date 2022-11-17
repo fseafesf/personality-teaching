@@ -1,7 +1,7 @@
 <template>
   <div class="right-drawer">
-    <div @click="drawer" class="drawer-box">
-      <div class="drawer-content">
+    <div  class="drawer-box">
+      <div class="drawer-content" @click="drawer">
         <div class="drawer-preview">试卷预览</div>
       </div>
       <div class="drawer-basket" :class="basketShow ? 'basket' : ''">
@@ -10,21 +10,21 @@
             题目总数:{{ this.page.selectProblem.length }}
           </div>
           <div class="basket-list">
-            <div class="basket-radio unified" v-show="this.problemData['1']">
+            <div class="basket-radio unified" v-for="(value,key,index) in problemData" :key="index" v-show="problemData[key]">
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
-                  <span>单选题</span>
+                  <span>{{toTypeR(key)}}</span>
                   <span
                     ><em class="numColor">{{
-                      this.problemData["1"]?.length
+                      problemData[key]?.length
                     }}</em
                     >题</span
                   >
                 </div>
-                <div class="radio-right"><i class="el-icon-delete"></i></div>
+                <div class="radio-right" @click="deleteType(key)"><i class="el-icon-delete"></i></div>
               </div>
             </div>
-            <div class="basket-select unified" v-show="this.problemData['2']">
+            <!-- <div class="basket-select unified" v-show="this.problemData['2']">
               <div class="radio-content content-unifed">
                 <div class="radio-left left-unifed">
                   <span>多选题</span>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="radio-right"><i class="el-icon-delete"></i></div>
               </div>
-            </div>
+            </div> -->
             <el-button type="primary" @click="preview">预览</el-button>
           </div>
         </div>
@@ -90,9 +90,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState ,mapMutations} from "vuex";
 import { groupByType } from "@/utils/groupByType";
 import { getCache, setCache, clearCache } from "@/utils/localstorage";
+import {toType} from '@/utils/transfrom'
 export default {
   name: "right-drawer",
   data() {
@@ -110,6 +111,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations("tTest",["deleteTypeProblem"]),
     drawer() {
       this.basketShow = !this.basketShow;
     },
@@ -120,7 +122,14 @@ export default {
     },
     getData() {
       this.problemData = groupByType(this.page.selectProblem);
+      console.log(this.problemData)
     },
+    toTypeR(key) {
+      return toType(Number(key));
+    },
+    deleteType(key){
+      this.deleteTypeProblem(Number(key));
+    }
   },
   computed: {
     ...mapState("tTest", ["page"]),
@@ -131,7 +140,6 @@ export default {
   watch: {
     params: {
       handler(newVal, oldVal) {
-        console.log(newVal)
         this.getData();
         setCache("selectProblem", this.params);
       },

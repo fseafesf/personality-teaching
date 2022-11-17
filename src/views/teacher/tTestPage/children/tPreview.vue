@@ -11,7 +11,9 @@
         <span class="left-test">课堂测验</span>
         <span class="left-test">|</span>
         <div class="left-save">
-          <span class="left-test">保存试卷</span>
+          <div class="left-comment">
+            <EditComment :editComment.sync="pageComment"></EditComment>
+          </div>
         </div>
       </div>
       <div class="head-right">
@@ -71,6 +73,7 @@
   <script>
 import Card from "components/teacher/Test/tPreview/tCard.vue";
 import EditTitle from "components/teacher/Test/tPreview/tEditTitle.vue";
+import EditComment from "components/teacher/Test/tPreview/tEditComment.vue";
 import Score from "components/teacher/Test/tPreview/tScore.vue";
 import { group, breakGroup } from "utils/groupByType";
 import { mapActions, mapMutations, mapState } from "vuex";
@@ -79,18 +82,22 @@ import { createPage, searchPage, modifyPage } from "@/services";
 import { setCache, getCache, clearCache } from "@/utils/localstorage";
 
 export default {
-  name: "preview",
+  name: "tPreview",
   data() {
     return {
       pageTitle: "请输入标题",
+      pageComment: "请输入备注",
       pageId: "",
       problemsList: [],
     };
   },
   created() {
-    console.log(this.page.selectProblem);
     if (!!getCache("title")) {
       this.pageTitle = getCache("title");
+    }
+    if (!!getCache("comment")) {
+      console.log(getCache("comment"));
+      this.pageComment = getCache("comment");
     }
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
@@ -109,10 +116,16 @@ export default {
           key: "selectProblem",
           val: breakGroup(JSON.parse(res.data.questions)),
         });
+        this.setPageData({
+          key: "comment",
+          val: res.data.comment,
+        });
+        this.pageComment = this.page.comment;
         this.problemsList = JSON.parse(res.data.questions);
         setCache("exam_id", this.pageId);
         setCache("title", res.data.exam_name);
         setCache("selectProblem", breakGroup(JSON.parse(res.data.questions)));
+        setCache("comment", res.data.comment);
       });
     } else {
       this.getProblems();
@@ -137,9 +150,14 @@ export default {
         key: "selectProblem",
         val: [],
       });
+      this.clearPageData({
+        key: "comment",
+        val: "",
+      });
       clearCache("exam_id");
       clearCache("title");
       clearCache("selectProblem");
+      clearCache("comment");
       this.$router.replace({
         path: "/teacher/examHome",
       });
@@ -157,7 +175,7 @@ export default {
       console.log(this.pageTitle);
       data.append("exam_name", this.pageTitle);
       data.append("questions", JSON.stringify(this.problemsList));
-      data.append("comment", "<comment>");
+      data.append("comment", this.pageComment);
       createPage(this.$cookies.get("session_key"), data).then((res) => {
         console.log(res, "创建试卷");
         if (res.code === 0) {
@@ -173,9 +191,14 @@ export default {
             key: "selectProblem",
             val: [],
           });
+          this.clearPageData({
+            key: "comment",
+            val: "",
+          });
           clearCache("exam_id");
           clearCache("title");
           clearCache("selectProblem");
+          clearCache("comment");
           this.$router.replace({
             path: "/teacher/examHome/examPaper",
           });
@@ -187,7 +210,7 @@ export default {
       data.append("exam_name", this.pageTitle);
       data.append("exam_id", this.page.exam_id);
       data.append("questions", JSON.stringify(this.problemsList));
-      data.append("comment", "<comment>");
+      data.append("comment", this.pageComment);
       modifyPage(this.$cookies.get("session_key"), data).then((res) => {
         console.log(res);
         if (res.code === 0) {
@@ -203,9 +226,14 @@ export default {
             key: "selectProblem",
             val: [],
           });
+          this.clearPageData({
+            key: "comment",
+            val: "",
+          });
           clearCache("exam_id");
           clearCache("title");
           clearCache("selectProblem");
+          clearCache("comment")
           this.$router.replace({
             path: "/teacher/examHome/examPaper",
           });
@@ -240,6 +268,7 @@ export default {
   components: {
     Card,
     EditTitle,
+    EditComment,
     Score,
     vuedraggable,
   },
@@ -282,7 +311,10 @@ export default {
         cursor: pointer;
       }
       .left-save {
-        flex-grow: 2;
+        .left-comment {
+          width: 100px;
+          height: 100%;
+        }
       }
     }
     .head-right {

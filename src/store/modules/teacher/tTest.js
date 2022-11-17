@@ -40,7 +40,9 @@ const tTest = {
     },
 
     deleteTypeProblem(state,type){
-
+      state.page.selectProblem = state.page.selectProblem.filter((item) => {
+        return item.type !== type
+      })
     },
     //更改卷子信息
     setPageData(state, param) {
@@ -59,8 +61,9 @@ const tTest = {
   actions: {
     getProblems(context, payload) {
       return new Promise((reslove, reject) => {
-        getQuestionList(payload?.query, payload?.page_size, payload?.page_no).then(res => {
-          reslove('success')
+        getQuestionList(payload?.type ,payload?.level, payload?.context, payload?.page_size, payload?.page_no).then(res => {
+          console.log(res)
+          reslove(res.data.total)
           context.commit('initProblems', res.data.list)
         }).catch(err => reject(err))
       })

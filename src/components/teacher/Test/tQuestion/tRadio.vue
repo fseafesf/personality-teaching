@@ -8,7 +8,10 @@
       </div>
       <div class="radio-option">选择题选项内容区</div>
     </div>
-    <div class="radio-operate">
+    <div
+      class="radio-operate"
+      :class="[{ special: $route.name !== 'tPreview' }]"
+    >
       <div class="set-parse">
         <span>
           <i class="el-icon-data-line"></i>
@@ -49,22 +52,16 @@ export default {
     },
   },
   methods: {
-    ...mapMutations("tTest", [
-      "addProblem",
-      "deleteProblem",
-    ]),
+    ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
     handleDelete() {
       console.log(this.typeProblem.question_id);
-      console.log(this.page.selectProblem)
-      let index = this.page.selectProblem.findIndex(
-        (item) => {
-          console.log(item.question_id === this.typeProblem.question_id)
-          return item.question_id === this.typeProblem.question_id
-        }
-      );
-      console.log(index)
+      console.log(this.page.selectProblem);
+      let index = this.page.selectProblem.findIndex((item) => {
+        console.log(item.question_id === this.typeProblem.question_id);
+        return item.question_id === this.typeProblem.question_id;
+      });
+      console.log(index);
       this.deleteProblem(index);
-      
     },
   },
   computed: {
@@ -85,6 +82,9 @@ export default {
         margin-right: 5px;
       }
     }
+  }
+  .special {
+    display: none !important;
   }
   .radio-operate {
     position: absolute;
