@@ -11,16 +11,16 @@ module.exports = {
             .set('components', resolve('src/components'))
             .set('utils', resolve('src/utils'))
     },
-    // devServer: {
-    //     proxy: {
-    //         '/api': {
-    //             // target: 'http://47.102.42.113:8880',
-    //             target: 'http://teach.komorebi-nxj.cn/api',
-    //             changeOrigin: true,
-    //             pathRewrite: {
-    //                 '/api': ''
-    //             }
-    //         }
-    //     }
-    // }
+    devServer: {
+        proxy: {
+            '/api': {
+                // target: 'http://47.102.42.113:8880',
+                target: 'http://teach.komorebi-nxj.cn/api',
+                changeOrigin: true,
+                pathRewrite: {
+                    '/api': ''
+                }
+            }
+        }
+    }
 }
