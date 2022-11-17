@@ -99,6 +99,12 @@ export default {
       console.log(getCache("comment"));
       this.pageComment = getCache("comment");
     }
+    if (!!getCache("selectProblem")) {
+      this.setPageData({
+        key: "selectProblem",
+        val: getCache("selectProblem"),
+      });
+    }
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
       searchPage(this.$cookies.get("session_key"), this.pageId).then((res) => {
@@ -233,7 +239,7 @@ export default {
           clearCache("exam_id");
           clearCache("title");
           clearCache("selectProblem");
-          clearCache("comment")
+          clearCache("comment");
           this.$router.replace({
             path: "/teacher/examHome/examPaper",
           });
@@ -259,10 +265,10 @@ export default {
     params: {
       handler(newVal, oldVal) {
         console.log(newVal);
-        setCache("selectProblem", this.params);
+        setCache("selectProblem", newVal);
         this.getProblems();
       },
-      immediate: true,
+      deep: true,
     },
   },
   components: {

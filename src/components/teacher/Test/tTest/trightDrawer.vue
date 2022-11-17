@@ -144,6 +144,7 @@ export default {
         setCache("selectProblem", this.params);
       },
       immediate: true,
+      deep:true
     },
   },
 };
