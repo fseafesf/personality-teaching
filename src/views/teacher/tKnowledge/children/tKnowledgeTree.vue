@@ -1,10 +1,13 @@
 <template>
   <div class="knowledge-tree">
     <div class="left">
-      <Tree @nodeClick="nodeClick" current-node-key />
+      <Tree @nodeClick="nodeClick" :currentNode="currentNode" />
     </div>
-    <div class="content">
-      {{ $store.state.tKnowledge.pointDetail.context }}
+    <div class="right">
+      <div class="title">{{ pointDetail ? pointDetail.name : '请点击知识点查看内容' }}</div>
+      <div class="content">
+        {{ pointDetail?.context }}
+      </div>
     </div>
   </div>
 </template>
@@ -16,15 +19,24 @@ export default {
   components: { Tree },
   data() {
     return {
+
     };
   },
   methods: {
     nodeClick(data) {
-      console.log(data)
+      console.log(data, 'click')
       // if (!data.parent_knp_id) return
       this.$store.dispatch('PointByIdActive', data.id)
     }
   },
+  computed: {
+    pointDetail: function () {
+      return this.$store.state.tKnowledge.pointDetail.info
+    },
+    currentNode() {
+      return this.$store.state.tKnowledge.currentNode
+    }
+  }
 };
 </script>
 
@@ -36,14 +48,22 @@ export default {
   gap: 10px;
 
   .left,
-  .content {
-    min-height: 800px;
+  .right {
+    min-height: 80vh;
     background-color: #fff;
+    border-radius: 5px;
   }
 
-  .content {
+  .right {
     flex: 1;
-    padding: 10px;
+    padding: 20px;
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #4498EE;
+      margin-bottom: 10px;
+    }
   }
 }
 </style>

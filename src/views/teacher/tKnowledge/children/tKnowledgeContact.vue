@@ -40,22 +40,14 @@ export default {
     justify-content: space-between;
     align-items: center;
 
-    .contact-left {
-      width: 300px;
-      min-height: 800px;
-      background: #fff;
-    }
 
-    .contact-right {
-      width: 300px;
-      min-height: 800px;
-      background: #fff;
-    }
-
+    .contact-left,
+    .contact-right,
     .contact-result {
       width: 300px;
-      min-height: 800px;
+      min-height: 80vh;
       background: #fff;
+      border-radius: 5px;
     }
   }
 }

@@ -32,7 +32,7 @@ const routes = [
         component: () => import('@/views/teacher/tKnowledge/children/tKnowledgeContact.vue')
       },
       {
-        path: 'add',
+        path: 'add/:id',
         component: () => import('@/views/teacher/tKnowledge/children/tAddKnowledge.vue'),
         meta: {
           hideTopBar: true,

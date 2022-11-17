@@ -4,8 +4,7 @@
       <div class="block">
         <el-tree :data="treeData" :show-checkbox="showCheckbox" node-key="id" default-expand-all
           :expand-on-click-node="false" :highlight-current="true" :default-checked-keys="[defaultChecked]"
-          :current-node-key="treeData ? treeData[0]?.id : ''" @check-change="handleNodeClick"
-          @node-click="nodeClickHandler">
+          :current-node-key="currentNode" @check-change="handleNodeClick" @node-click="nodeClickHandler">
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <template v-if="operation">
@@ -29,6 +28,7 @@
 </template>
 
 <script >
+import { deletePoint } from "@/services"
 // let id = 1000
 
 export default {
@@ -48,67 +48,59 @@ export default {
     defaultChecked: {
       type: String,
       default: ''
+    },
+    currentNode: {
+      type: String,
+      default: ''
     }
   },
   emits: ['checkedClick', 'nodeClick'],
   data() {
     return {
-      // data: [
-      //   {
-      //     id: 1,
-      //     label: '知识点1',
-      //     children: [
-      //       {
-      //         id: 2.1,
-      //         label: '知识点2.1',
-      //         children: [
-      //           {
-      //             id: 3.1,
-      //             label: '知识点3'
-      //           }
-      //         ]
-      //       },
-      //       {
-      //         id: 2.2,
-      //         label: '知识点2.2',
-      //         children: [
-      //           {
-      //             id: 3.2,
-      //             label: '知识点3'
-      //           }
-      //         ]
-      //       }
-      //     ]
-      //   }
-      // ]
+      data: [
+        {
+          id: 1,
+          label: '知识点1',
+          children: [
+            {
+              id: 2.1,
+              label: '知识点2.1',
+              children: [
+                {
+                  id: 3.1,
+                  label: '知识点3'
+                }
+              ]
+            },
+            {
+              id: 2.2,
+              label: '知识点2.2',
+              children: [
+                {
+                  id: 3.2,
+                  label: '知识点3'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 4,
+          label: '知识点4',
+        }
+
+      ]
     };
   },
   mounted() {
+    // this.$store.dispatch('PointOneActive')
     this.$store.dispatch('PointListActive')
   },
   methods: {
     append(data) {
-      // const newChild = { id: id++, label: "testtest", children: [] };
-      // if (!data.children) {
-      //   this.$set(data, "children", []);
-      // }
-      // data.children.push(newChild);
-      this.$router.push({ path: '/teacher/knowledge/add' })
+      this.$router.push({ path: '/teacher/knowledge/add/' + data.id })
     },
     edit(node, data) {
-      console.log(node, data);
-      // this.$prompt('', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   inputValue: data.label
-      // }).then(({ value }) => {
-      //   this.$message({
-      //     type: 'success',
-      //     message: value
-      //   });
-      // }).catch(() => {
-      // });
-
       this.$router.push({ path: '/teacher/knowledge/edit/' + data.id })
     },
     remove(node, data) {
@@ -117,14 +109,22 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
+        deletePoint(data.id).then(res => {
+          console.log(res)
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.$store.dispatch('PointListActive')
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            });
+          }
+
+        })
       }).catch(() => { });
     },
     handleNodeClick(data, checked, node) {
@@ -136,33 +136,9 @@ export default {
   },
   computed: {
     treeData() {
-      const level1 = []
-      const level2 = []
-      if (this.$store.state.tKnowledge.points.list) {
-        this.$store.state.tKnowledge.points.list.forEach(item => {
-          if (item.level == 1) {
-            const newItem = {}
-            newItem.id = item.knp_id
-            newItem.label = item.name
-            level1.push(newItem)
-          }
-          if (item.level == 2) {
-            const newItem = {}
-            newItem.id = item.knp_id
-            newItem.label = item.name
-            newItem.parent_knp_id = item.parent_knp_id
-            level2.push(newItem)
-          }
-        })
-
-        for (const item of level1) {
-          const arr = level2.filter(iten => iten.parent_knp_id)
-          item.children = arr
-        }
-        return level1
-      }
+      return this.$store.state.tKnowledge.points
     }
-  },
+  }
 };
 </script>
 
