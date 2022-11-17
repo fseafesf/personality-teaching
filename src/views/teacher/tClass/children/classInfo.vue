@@ -13,14 +13,17 @@
     <!-- 学生信息 -->
     <div class="studentBox">
       <h3 class="title">学生列表</h3>
-      <el-button type="primary" size="small" class="addStuBtn">添加学生</el-button>
+      <el-button type="primary" size="small" class="addStuBtn">新增学生</el-button>
+      <el-button type="primary" size="small" @click="unjoinStuBtn">未加入班级学生</el-button>
       <el-table
         :data="studentList"
         stripe
         style="width: 100%">
         <el-table-column type="index" label="序号"></el-table-column>
         <el-table-column prop="name" label="学生姓名"></el-table-column>
-        <el-table-column prop="studentId" label="学号"></el-table-column>
+        <el-table-column prop="college" label="学院"></el-table-column>
+        <el-table-column prop="major" label="专业"></el-table-column>
+        <el-table-column prop="tel" label="电话号码"></el-table-column>
         <el-table-column label="操作">
           <el-button type="danger" size="mini">删除</el-button>
         </el-table-column>
@@ -48,18 +51,29 @@ export default {
       // 学生列表
       studentList: [
         {
-          studentId: '2001',
-          name: '张三'
+          name: '张三',
+          college: '计科',
+          major: '计科',
+          tel: '110120119'
         },
         {
-          studentId: '2002',
-          name: '李四'
+          name: '李四',
+          college: '计科',
+          major: '计科',
+          tel: '110120119'
         },
         {
-          studentId: '2003',
-          name: '王五'
+          name: '王五',
+          college: '计科',
+          major: '计科',
+          tel: '110120119'
         },
       ]
+    }
+  },
+  methods: {
+    unjoinStuBtn() {
+      this.$router.push('/techer/class/student')
     }
   }
 }
