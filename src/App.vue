@@ -11,11 +11,6 @@ import NavBar from './components/common/nav-bar.vue'
 import Loading from './components/common/Loading.vue'
 
 export default {
-  data() {
-    return {
-      isLogin: Number(localStorage.getItem('isLogin')),
-    }
-  },
   name: "App",
   components: { NavBar, Loading, },
 }

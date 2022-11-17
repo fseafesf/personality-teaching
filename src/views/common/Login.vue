@@ -1,5 +1,5 @@
 <template>
-  <div id="modal" :class="{ hide: isHide }">
+  <div id="modal">
     <div id="modal-content">
       <h1>xxx教学系统登录</h1>
       <div id="login">
@@ -16,12 +16,10 @@
               v-model="password"
               placeholder="请输入密码"
               show-password
+              @keyup.enter.native="sendLogin"
             ></el-input
           ></el-col>
-          <el-button
-            type="primary"
-            id="login-btn"
-            @click="sendLogin"
+          <el-button type="primary" id="login-btn" @click="sendLogin"
             >登录</el-button
           >
         </el-row>
@@ -42,13 +40,13 @@
 <script>
 import { login } from "@/services";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
+
 export default {
   name: "Login",
   data() {
     return {
       username: "",
       password: "",
-      isHide: false,
       time: "",
       date: "",
     };
@@ -59,22 +57,16 @@ export default {
     });
   },
   methods: {
-    toggleShowLogin() {
-      this.isHide = !this.isHide;
-    },
     sendLogin() {
       if (this.username === "" || this.password === "") {
         alert("输入内容不能为空");
       } else {
         login({
           username: this.username,
-          // password: encrypt(this.password),
-          password: this.password,
+          password: encrypt(this.password),
         }).then((res) => {
           console.log(res);
           if (res.code == 0) {
-            this.toggleShowLogin();
-            localStorage.setItem("isLogin", 1);
             this.$router.replace({ path: "/home" });
           } else {
             alert("账号或密码错误");
@@ -90,7 +82,7 @@ export default {
       if (year < 10) {
         year = "0" + year;
       }
-      let mon = d.getMonth();
+      let mon = d.getMonth() + 1;
       if (mon < 10) {
         mon = "0" + mon;
       }

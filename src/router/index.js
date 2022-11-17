@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import cookies from 'vue-cookies'
 Vue.use(VueRouter)
 
 const routes = [
@@ -106,16 +107,16 @@ const routes = [
         path: 'test',
         name: 'tTest',
         component: () => import('@/views/teacher/tTestPage/children/tTest.vue'),
-        meta:{
-          keepAlive:true
+        meta: {
+          keepAlive: true
         }
       },
       {
         path: 'preview',
         name: 'tPreview',
         component: () => import('@/views/teacher/tTestPage/children/tPreview.vue'),
-        meta:{
-          keepAlive:true
+        meta: {
+          keepAlive: true
         }
       },
       {
@@ -159,7 +160,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.name != 'Login') {
-    if (Number(localStorage.getItem('isLogin'))) {
+    if (cookies.get("session_key")) {
       next()
     } else {
       router.replace({ path: '/login' })

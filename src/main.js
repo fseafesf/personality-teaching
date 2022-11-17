@@ -13,8 +13,12 @@ import cookies from 'vue-cookies'
 
 Vue.prototype.$cookies = cookies;
 Vue.use(ElementUI);
+
 Vue.config.productionTip = false
 
+
+
+console.log(encrypt(123456));
 new Vue({
   router,
   store,
