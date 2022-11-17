@@ -26,11 +26,14 @@
             <span class="mt">题型:</span>
             <div class="filter-option">
               <ul class="filter-item-wrap">
-                <li class="active">全部</li>
-                <li>单选</li>
-                <li>多选</li>
-                <li>简答</li>
-                <li>填空</li>
+                <li
+                  v-for="(item, index) in type"
+                  :key="index"
+                  :class="{ active: currentType === item }"
+                  @click="changeType(item)"
+                >
+                  <span>{{ toTypeT(item) }}</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -38,10 +41,14 @@
             <span class="mt">难度:</span>
             <div class="filter-option">
               <ul class="filter-item-wrap">
-                <li class="active">全部</li>
-                <li>简单</li>
-                <li>中等</li>
-                <li>困难</li>
+                <li
+                  v-for="(item, index) in type"
+                  :key="index"
+                  :class="{ active: currentLevel === item }"
+                  @click="changeLevel(item)"
+                >
+                  <span>{{ toLevelT(item) }}</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -54,22 +61,58 @@
             </div>
           </div>
         </div>
-        <div class="handle-line"></div>
+        <div class="handle-line">
+          <div class="line-left">
+            <el-input
+              placeholder="请输入内容"
+              v-model="input"
+              clearable
+              size="small"
+            >
+            </el-input>
+          </div>
+          <div class="line-right">
+            <span>这是一些操作</span>
+          </div>
+        </div>
 
-        <div class="content-box" v-for="(item, index) in seList" :key="index">
-          <ProblemHead :Problem="item"></ProblemHead>
+        <div class="manual-list" v-if="renderList.length !== 0">
           <div
-            :is="typeComponent[item.type - 1]"
-            :typeProblem="item"
-            :index="Number(index)"
-            class="content-problem"
-          ></div>
-          <ToolMenu :typeProblem="item"></ToolMenu>
+            class="content-box"
+            v-for="(item, index) in renderList"
+            :key="item.question_id"
+          >
+            <ProblemHead :Problem="item"></ProblemHead>
+            <div
+              :is="typeComponent[item.type - 1]"
+              :typeProblem="item"
+              :index="Number(index)"
+              class="content-problem"
+            ></div>
+            <keep-alive>
+              <ToolMenu :typeProblem="item"></ToolMenu>
+            </keep-alive>
+          </div>
+          <div class="block">
+            <el-pagination
+              layout="prev, pager, next"
+              :total="15"
+              :current-page="queryInfo.page_no"
+              :page-size="queryInfo.page_size"
+              @current-change="handleCurrentChange"
+              background
+            >
+            </el-pagination>
+          </div>
+        </div>
+        <div class="none" v-else>
+          <i class="el-icon-loading"></i>
+          <span>没有相应题目噢</span>
         </div>
       </div>
     </div>
 
-    <RightDrawer></RightDrawer>
+    <RightDrawer :problemData="problemData"></RightDrawer>
   </div>
 </template>
 
@@ -78,16 +121,47 @@ import Problem from "components/teacher/Test/tTest/tproblem.vue";
 import ProblemHead from "components/teacher/Test/tTest/tproblemHead.vue";
 import ToolMenu from "components/teacher/Test/tTest/toolMenu.vue";
 import RightDrawer from "components/teacher/Test/tTest/trightDrawer.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
+import { setCache, getCache, clearCache } from "@/utils/localstorage";
+import { getQuestionList } from "@/services";
+import { toType, toDifficult } from "@/utils/transfrom";
+import { groupByType } from "@/utils/groupByType";
+
 export default {
+  name: "tTest",
   data() {
     return {
+      // 初始数据
       list: [],
+      // 过滤的数据
       seList: [],
+      // 渲染的数据
+      renderList: [],
+      // 编辑的试卷id
       pageId: String,
+      // 课程选择
       show: false,
-      typeComponent: ["Radio", "Multi", "Fill", "Judge", "Answer"],
+      // 题目搜索
+      input: "",
+      // 题目类型
+      type: [0, 1, 2, 3, 4, 5],
+      currentType: 0,
+      // 题目难度
+      level: [0, 1, 2, 3],
+      currentLevel: 0,
+      // 不同题型的组件
+      typeComponent: ["Radio", "Multi", "Judge", "Fill", "Answer"],
       currentView: "",
+
+      // 分页器的数据
+      total: 0,
+      queryInfo: {
+        query: "",
+        page_size: 10,
+        page_no: 1,
+      },
+
+      //左侧知识点树
       data: [
         {
           label: "一级 1",
@@ -152,15 +226,40 @@ export default {
         children: "children",
         label: "label",
       },
+      problemData: {},
     };
   },
   created() {
-    this.getListData();
+    if (!!this.$route.query.id) {
+      this.pageId = this.$route.query.id;
+    }
+    if (!!getCache("selectProblem")) {
+      this.setPageData({
+        key: "selectProblem",
+        val: getCache("selectProblem"),
+      });
+    }
+    this.receive();
   },
   methods: {
+    ...mapMutations("tTest", ["setPageData", "clearPageData", "initProblems"]),
+    ...mapActions("tTest", ["getProblems"]),
+    receive() {
+      this.getProblems(this.queryInfo).then((res) => {
+        this.getListData();
+      });
+    },
     getListData() {
-      this.list = this.$store.state.tTest.problems;
+      this.list = this.problems;
       this.seList = JSON.parse(JSON.stringify(this.list));
+      this.renderList = JSON.parse(JSON.stringify(this.list));
+      console.log(this.page.selectProblem, "tTest");
+    },
+    changeType(param) {
+      this.currentType = param;
+    },
+    changeLevel(param) {
+      this.currentLevel = param;
     },
     handleNodeClick(data) {
       console.log(data);
@@ -172,16 +271,57 @@ export default {
       this.show = !this.show;
     },
     back() {
-      this.$router.push({
+      this.$router.replace({
         path: "/teacher/examHome/examPaper",
       });
-      this.page.selectProblem = [];
-      this.page.id = "";
-      this.page.title = "";
+      this.clearPageData({
+        key: "title",
+        val: "",
+      });
+      this.clearPageData({
+        key: "exam_id",
+        val: "",
+      });
+      this.clearPageData({
+        key: "selectProblem",
+        val: [],
+      });
+
+      clearCache("exam_id");
+      clearCache("title");
+      clearCache("selectProblem");
+    },
+    handleCurrentChange(newPage) {
+      this.queryInfo.page_no = newPage;
+      this.currentLevel = 0;
+      this.currentType = 0;
+      this.receive();
+    },
+    toTypeT(key) {
+      return toType(key);
+    },
+    toLevelT(key) {
+      return toDifficult(key);
     },
   },
   computed: {
-    ...mapState("tTest", ["page"]),
+    ...mapState("tTest", ["page", "problems"]),
+    listenChange() {
+      const { currentType, currentLevel } = this;
+      return { currenttype: currentType, currentlevel: currentLevel };
+    },
+  },
+  watch: {
+    listenChange(val) {
+      const filterKeys = Object.keys(val);
+      console.log(val);
+      this.renderList = this.seList.filter((item) => {
+        return filterKeys.every((key) => {
+          if (val[key] === 0) return true;
+          return item[key.slice(7)] == val[key];
+        });
+      });
+    },
   },
   components: {
     Problem,
@@ -264,7 +404,7 @@ export default {
       // background: #f5f5f5;
       .filter-box {
         background: white;
-        height: 200px;
+        height: 150px;
         .filter-item {
           padding: 10px 0 10px 10px;
           display: flex;
@@ -298,18 +438,42 @@ export default {
         margin-top: 20px;
         background: white;
         height: 50px;
-      }
-      .content-box {
-        margin-top: 20px;
-        min-height: 150px;
-        background: white;
-        &:last-child {
-          margin-bottom: 40px;
+        padding: 5px 18px 0 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .line-left {
+          width: 200px;
         }
-        .content-problem {
-          padding: 15px 0 0 5px;
+        .line-right {
+          width: 100px;
         }
       }
+      .manual-list {
+        .content-box {
+          margin-top: 20px;
+          min-height: 150px;
+          background: white;
+          transition: 1s;
+          &:last-child {
+            margin-bottom: 40px;
+          }
+          .content-problem {
+            padding: 15px 0 0 5px;
+          }
+        }
+        .block {
+          display: flex;
+          justify-content: center;
+          margin: 20px 0 20px 0;
+        }
+      }
+    }
+    .none {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100px;
     }
   }
 }

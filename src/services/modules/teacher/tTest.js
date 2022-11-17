@@ -1,10 +1,14 @@
 import sxRequest from '../../request'
 
-export async function getPageList(cookie, data) {
+export async function getPageList(cookie, page = 1, page_size = 10) {
     return sxRequest.get({
         url: '/teacher/exam/list',
+        headers: {
+            'Cookie': `session_key=${cookie}`,
+        },
         params: {
-            ...data
+            page,
+            page_size
         }
     })
         .then(res => res)

@@ -4,7 +4,7 @@
       <div class="multi-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span>{{ typeProblem.content }}</span>
+        <span>{{ typeProblem.context }}</span>
       </div>
       <div class="multi-option">多选题选项区</div>
     </div>

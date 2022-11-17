@@ -16,6 +16,9 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import { breakGroup } from "@/utils/groupByType";
+import { searchPage } from "@/services";
+import { getCache } from "@/utils/localstorage";
 
 export default {
   name: "tool-menu",
@@ -31,23 +34,30 @@ export default {
     },
   },
   created() {
-    // console.log(this.page.selectProblem);
+    if (!!getCache("selectProblem")) {
+      this.btnShow = !JSON.stringify(getCache("selectProblem")).includes(
+        JSON.stringify(this.typeProblem)
+      );
+    }
   },
-  mounted() {
-    // console.log(this.typeProblem);
-    this.btnShow = !JSON.stringify(this.page.selectProblem).includes(
-      JSON.stringify(this.typeProblem)
-    );
+  mounted() {},
+  activated() {
+    
   },
   computed: {
     ...mapState("tTest", ["page", "problems"]),
   },
   methods: {
-    ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
+    ...mapMutations("tTest", [
+      "addProblem",
+      "deleteProblem",
+      "setPageData",
+      "clearPageData",
+    ]),
     handleMneu() {
       this.btnShow = false;
       let problem = this.problems.find(
-        (item) => item.id === this.typeProblem.id
+        (item) => item.question_id === this.typeProblem.question_id
       );
       this.addProblem(problem);
     },
@@ -55,7 +65,7 @@ export default {
     deleteMenu() {
       this.btnShow = true;
       let index = this.page.selectProblem.findIndex(
-        (item) => item.id === this.typeProblem.id
+        (item) => item.question_id === this.typeProblem.question_id
       );
       this.deleteProblem(index);
     },

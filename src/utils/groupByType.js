@@ -22,10 +22,6 @@ export function group(arr) {
     } return result.sort((a, b) => {
         return a.type - b.type
     })
-
-    // .sort((a, b) => {
-    //     return a.type - b.type
-    // })
 }
 
 export function groupByType(arr) {
@@ -43,9 +39,12 @@ export function groupByType(arr) {
     return map
 }
 
-/* export function singleType(arr, type) {
-    let result = arr.filter((item) => {
-        return item.type === type
-    })
+
+export function breakGroup(arr) {
+    let result = arr.reduce((pre, cur) => {
+        let { type, data } = cur
+        return pre.concat(data)
+    }, [])
     return result
-} */
+}
+

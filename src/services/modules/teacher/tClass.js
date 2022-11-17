@@ -2,20 +2,16 @@ import ptRequest from '../../request'
 
 /**
  * 获取班级列表
- * @param {*} pn: 分页页号
+ * @param {*}  {page_num：分页页号 , page_size：分页大小} 
  * @returns 
  */
 export const getClassAPI = (page_num, page_size) => {
-  console.log(page_num, page_size)
   return ptRequest.get({
     url: '/teacher/class/list',
-    data: {
+    params: {
       page_num,
       page_size
     },
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
   })
 }
 
@@ -67,7 +63,7 @@ export const modifyClassAPI = ({ class_id, name, college, major }) => {
 }
 
 /**
- * 
+ * 查看单个班级
  * @param {*} cookie 用于权限校验
  * @param {*} class_id 班级编号
  * @returns 
@@ -83,3 +79,32 @@ export const getAppointedClassAPI = (cookie, class_id) => {
     }
   })
 }
+
+/**
+ * 查询教师信息
+ * @returns 
+ */
+// export const getTeacherInfoAPI = () => {
+//   return ptRequest.get({
+//     url: '/teacher/info'
+//   })
+// }
+
+
+/**
+ * 获取学生列表
+ */
+export const getStuListAPI = (cookie, class_id, page_num, page_size ) => {
+  return ptRequest.get({
+    url: '/teacher/class/student/list',
+    headers: {
+      'Cookie': `session_key=${cookie}`
+    },
+    params: {
+      class_id,
+      page_num,
+      page_size
+    }
+  })
+}
+

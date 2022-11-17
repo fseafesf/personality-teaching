@@ -7,7 +7,7 @@
       </h3>
     </div>
     <div class="card-list">
-      <vuedraggable class="wrapper" v-model="typeProblem.data" @end="this.end">
+      <vuedraggable v-model="typeProblem.data">
         <transition-group>
           <div
             class="drag-individual"
@@ -17,6 +17,7 @@
             :index="index"
             v-show="typeProblem.data.length !== 0"
             :typeProblem="item"
+            
           ></div>
         </transition-group>
       </vuedraggable>
@@ -50,7 +51,7 @@ export default {
     },
     end() {
       console.log(this.typeProblem.data);
-      console.log(this.page.selectProblem)
+      console.log(this.page.selectProblem);
     },
   },
   props: {
@@ -97,7 +98,7 @@ export default {
     border: 1px solid transparent;
     padding: 10px;
     &:hover {
-      cursor: move;
+      cursor: pointer;
       border-color: #4498ee;
     }
   }

@@ -2,11 +2,16 @@
   <div class="examPaper">
     <div class="examHead">
       <div class="examSearch">
-        <el-input placeholder="请输入内容" @change="queryPaper" v-model="input" clearable>
+        <el-input
+          placeholder="请输入内容"
+          @change="queryPaper"
+          v-model="input"
+          clearable
+        >
         </el-input>
       </div>
       <div class="examBtn">
-        <el-button type="primary" >查询试卷</el-button>
+        <el-button type="primary">查询试卷</el-button>
         <el-button type="primary" @click="composePaper">新增试卷</el-button>
       </div>
     </div>
@@ -60,8 +65,9 @@
 </template>
 
 <script>
-import { getPageList, deletePage, searchPage } from "@/services";
-import { mapMutations, mapState } from "vuex";
+import { deletePage, searchPage } from "@/services";
+import { mapActions, mapMutations, mapState } from "vuex";
+import { setCache, getCache, clearCache } from "@/utils/localstorage";
 export default {
   name: "tExamPaper",
   data() {
@@ -75,29 +81,43 @@ export default {
     };
   },
   created() {
+    this.clearPageData({
+      key: "title",
+      val: "",
+    });
+    this.clearPageData({
+      key: "exam_id",
+      val: "",
+    });
+    this.clearPageData({
+      key: "selectProblem",
+      val: [],
+    });
+    clearCache("exam_id");
+    clearCache("title");
+    clearCache("selectProblem");
     this.getPages();
   },
   mounted() {},
   methods: {
-    ...mapMutations("tTest", ["initPages"]),
-    async getPages() {
-      await getPageList(this.$cookies.get("session_key"), this.param).then(
-        (res) => {
-          console.log(res);
-          this.initPages(res.data);
-          this.tableData = this.pages;
-        }
-      );
+    ...mapMutations("tTest", ["initPages", "clearPageData"]),
+    ...mapActions("tTest", ["getInitPages", "getProblems"]),
+    getPages() {
+      this.getInitPages({
+        cookie:this.$cookies.get("session_key"),
+        ...this.param
+      }).then((res) => {
+        this.tableData = this.pages;
+      });
     },
     queryPaper() {
       if (this.input.trim() !== "") {
         searchPage(this.$cookies.get("session_key"), this.input).then((res) => {
           console.log(res);
-          this.tableData = Array.of(res.data)
+          this.tableData = Array.of(res.data);
         });
       }
     },
-
     composePaper() {
       this.$router.replace({
         path: "/teacher/examHome/test",
@@ -105,12 +125,16 @@ export default {
     },
 
     handleEdit(index, row) {
-      this.$router.push({
+      this.$router.replace({
         path: "/teacher/examHome/preview",
         query: {
           id: row.exam_id,
         },
       });
+      setCache("exam_id", row.exam_id);
+    },
+    handleCopy(index,row){
+      
     },
     handleDelete(index, row) {
       console.log(row.exam_id);
@@ -120,7 +144,7 @@ export default {
       });
     },
     handleRelease(index, row) {
-      console.log(row.id);
+      console.log(row.exam_id);
       this.$router.replace({
         path: "/teacher/examHome/release",
         query: {
@@ -132,15 +156,15 @@ export default {
   computed: {
     ...mapState("tTest", ["pages"]),
   },
-  watch:{
-    input:{
-      handler(newVal,oldVal){
-        if(newVal.trim() == ''){
-          this.tableData = this.pages
+  watch: {
+    input: {
+      handler(newVal, oldVal) {
+        if (newVal.trim() == "") {
+          this.tableData = this.pages;
         }
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>
 

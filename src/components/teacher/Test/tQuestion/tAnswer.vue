@@ -4,7 +4,7 @@
       <div class="answer-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span>{{ typeProblem.content }}</span>
+        <span>{{ typeProblem.context }}</span>
       </div>
       <div class="answer-option">简答题回答区</div>
     </div>
