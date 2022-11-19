@@ -68,12 +68,12 @@ export const modifyClassAPI = ({ class_id, name, college, major }) => {
  * @param {*} class_id 班级编号
  * @returns 
  */
-export const getAppointedClassAPI = (cookie, class_id) => {
+export const getAppointedClassAPI = (class_id) => {
   return ptRequest.get({
     url: '/teacher/class',
-    headers: {
+    /* headers: {
       'Cookie': `session_id = ${cookie}`
-    },
+    }, */
     params: {
       class_id
     }
@@ -81,20 +81,9 @@ export const getAppointedClassAPI = (cookie, class_id) => {
 }
 
 /**
- * 查询教师信息
- * @returns 
- */
-// export const getTeacherInfoAPI = () => {
-//   return ptRequest.get({
-//     url: '/teacher/info'
-//   })
-// }
-
-
-/**
  * 获取学生列表
  */
-export const getStuListAPI = (cookie, class_id, page_num, page_size ) => {
+export const getStuListAPI = (cookie, class_id, { page_num, page_size } ) => {
   return ptRequest.get({
     url: '/teacher/class/student/list',
     headers: {
@@ -108,3 +97,91 @@ export const getStuListAPI = (cookie, class_id, page_num, page_size ) => {
   })
 }
 
+/**
+ * 新增学生
+ * @param {*} cookie 
+ * @param {*} param1 { name：姓名, college：学院, major：专业, phone_number：电话号码 }
+ * @returns 
+ */
+export const addStudentAPI = (cookie, { name, college, major, phone_number }) => {
+  return ptRequest.post({
+    url: '/teacher/student',
+    headers: {
+      'Cookie': `session_key=${cookie}`
+    },
+    data: {
+      name,
+      college,
+      major,
+      phone_number
+    }
+  })
+}
+
+/**
+ * 查询未加入班级学生
+ * @param {*} cookie 
+ * @param {*} param1 { page_num：分页号, page_size：分页大小}
+ * @returns 
+ */
+export const getUnjoinStuAPI = (cookie,  {page_num, page_size} ) => {
+  return ptRequest.get({
+    url: '/teacher/student/list',
+    headers: {
+      'Cookie': `session_key=${cookie}`
+    },
+    params: {
+      page_num,
+      page_size
+    }
+  })
+}
+
+/**
+ * 给班级添加学生
+ * @param {*} cookie 
+ * @param {*} class_id 班级编号
+ * @param {*} student_id 学生编号
+ * @returns 
+ */
+export const addStuToClassAPI = (cookie, class_id, student_id ) => {
+  return ptRequest.post({
+    url: "/teacher/class/student",
+    headers: {
+      "Cookie": `session_key=${cookie}`
+    },
+    params: {
+      class_id,
+      student_id
+    }
+  })
+}
+
+/**
+ * 删除班级学生
+ * @param {*} cookie 
+ * @param {*} param1 { class_id：班级编号, student_id：学生编号 }
+ * @returns 
+ */
+ export const deleteStuAPI = (cookie, {class_id, student_id} ) => {
+  return ptRequest.delete({
+    url: '/teacher/class/student',
+    headers: {
+      'Cookie': `session_key=${cookie}`
+    },
+    params: {
+      class_id,
+      student_id
+    }
+  })
+}
+
+/**
+ * 查询教师信息
+ * @returns 
+ */
+// export const getTeacherInfoAPI = () => {
+//   return ptRequest.get({
+//     url: '/teacher/info'
+//   })
+// }
