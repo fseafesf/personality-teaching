@@ -1,15 +1,15 @@
 <template>
-  <div>   
+  <div class="tClass">   
     <template v-if="!$route.meta.isChildren">
-      <el-button type="primary" id="addClassBtn" size="small" class="addClassBtn" @click="addClassShowDialogBtn">创建班级</el-button>
-
+      <div class="header">
+        <el-button type="primary" id="addClassBtn" size="small" class="addClassBtn" @click="addClassShowDialogBtn">创建班级</el-button>
+      </div>
       <!-- 班级列表 -->
       <el-table :data="$store.state.tClass.classList"
         border
-        style="width: 100%"
-        stripe>
+        style="width: 100%">
         <el-table-column type="index" label="序号" width="80px"></el-table-column>
-        <el-table-column prop="name" label="班级名" width="140"></el-table-column>
+        <el-table-column prop="name" label="班级名" width="240px"></el-table-column>
         <el-table-column prop="college" label="学院名"></el-table-column>
         <el-table-column prop="major" label="专业"></el-table-column>
         <el-table-column label="操作" width="240px">
@@ -21,15 +21,18 @@
         </el-table-column>
       </el-table>
 
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="$store.state.tClass.page_num"
-        :page-sizes = "[20, 30, 40]"
-        :page-size="$store.state.tClass.page_size"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
+      <!-- 分页 -->
+      <div class="footer">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="$store.state.tClass.classPage.page_num"
+          :page-sizes = "[10, 20, 30, 40]"
+          :page-size="$store.state.tClass.classPage.page_size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </div>
 
       <!-- 新增 / 修改班级对话框 -->
       <el-dialog
@@ -37,7 +40,7 @@
         :visible.sync="dialogVisible"
         width="40%"
         @close="dialogCloseFn">
-        <el-form :model="addClassForm" ref="addClassRef" label-width="100px">
+        <el-form :model="addClassForm" ref="addClassRef" label-width="100px" :rules="classInfoRules">
           <el-form-item label="班级名称:" prop="name">
             <el-input v-model="addClassForm.name" minlength="1"></el-input>
           </el-form-item>
@@ -53,6 +56,7 @@
           <el-button type="primary" @click="confirmFn">确定</el-button>
         </span>
       </el-dialog>
+
     </template>
     
     <router-view></router-view>
@@ -60,7 +64,8 @@
 </template>
 
 <script >
-import { addClassAPI, deleteClassAPI, modifyClassAPI } from '@/services/modules/teacher/tClass.js'
+import { addClassAPI, deleteClassAPI, modifyClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
+import { mapActions } from 'vuex';
 export default {
   data() {
     return {
@@ -72,19 +77,31 @@ export default {
         major: ''
       },
       isEdit: false, // true为编辑状态，false为新增状态
-      editClassId: '' // 保存班级编号
+      editClassId: '', // 保存班级编号
+      // 表单验证规则
+      classInfoRules: {
+        name: [
+          {required: true, message: "请输入班级名", trigger: 'blur'}
+        ],
+        college: [
+          {required: true, message: "请输入学院名", trigger: "blur"}
+        ],
+        major: [
+          {required: true, message: "请输入专业名", trigger: "blur"}
+        ]
+      }
     }
   },
   mounted() {
-    this.$store.dispatch('getClassInfoActions') // 获取班级列表
-    // this.$store.dispatch('getStuListActions')
+    this.getClassInfoActions()
   },
   computed: {
     total: function () {
       return this.$store.state.tClass.classList.length
-    }
+    },
   },
   methods: {
+    ...mapActions(['getClassInfoActions', 'getStuListActions']),
     // 取消对话框
     cancelFn() {
       this.dialogVisible = false
@@ -111,23 +128,39 @@ export default {
         if (res.code !== 0) return this.$message.error(res.msg)
         this.$message.success(res.msg)
       }
-      this.$store.dispatch('getClassInfoActions')
+      this.getClassInfoActions()
       this.dialogVisible = false
     },
     // 查看班级信息
-    checkClassInfoFn(obj) {
-      this.$store.state.tClass.checkClassName = obj.name
-      this.$store.state.tClass.checkClassMajor = obj.major
-      // console.log(this.$store.state.tClass.checkClassName)
+    async checkClassInfoFn(obj) {
+      let res = await getAppointedClassAPI(obj.class_id)
+      this.$store.state.tClass.classInfo = res.data
+      this.$store.state.tClass.classId = obj.class_id
       this.$router.push('/teacher/class/classInfo')
+      this.getStuListActions({cookie: this.$cookies.get("session_key")})
     },
     // 删除班级
-    async delClassBtn(obj) {
-      // console.log(obj)
-      const res = await deleteClassAPI(obj.class_id)
-      if (res.code !== 0) return this.$message.error(res.msg)
-      this.$message.success(res.msg)
-      this.$store.dispatch('getClassInfoActions')
+     delClassBtn(obj) {
+      this.$confirm('是否删除该班级？', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const res = await deleteClassAPI(obj.class_id)
+        if (res.code !== 0) return this.$message.error(res.msg)
+        this.$message.success(res.msg)
+        this.getClassInfoActions()
+        this.$message({
+          type: 'success',
+          message: '删除成功！'
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+      })
+      
     },
     // 修改班级信息
     modifyClassFn(obj) {
@@ -145,34 +178,48 @@ export default {
     },
     // 分页->每页条数改变触发
     handleSizeChange(sizes) {
-      this.$store.state.tClass.page_size = sizes
-      this.$store.state.tClass.page_num = 1
-      this.$store.dispatch('getClassInfoActions')
+      this.classPage.page_size = sizes
+      this.classPage.page_num = 1
+      this.getClassInfoActions()
     },
     // 当前页码改变时触发
     handleCurrentChange(nowPage) {
       this.$store.state.tClass.page_num = nowPage
-      this.$store.dispatch('getClassInfoActions')
+      this.getClassInfoActions()
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-/* .header {
-  display: flex;
-  margin: 10px 0;
-  height: 80px;
-  align-items: center;
-  border-radius: 4px;
-  background-color: #fff;
-  padding-left: 20px;
-  .searchInput {
-    width: 300px;
-    margin-right: 10px;
+  .header {
+    display: flex;
+    // position: fixed;
+    // z-index: 1;
+    width: 100%;
+    height: 50px;
+    margin: 4px 0;
+    align-items: center;
+    border-radius: 4px;
+    background-color: #fff;
+    padding-left: 20px;
   }
-} */
   .addClassBtn {
     margin: 10px 0;
+  }
+  .el-table {
+    margin: 0 0 40px;
+  }
+  .footer {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    z-index: 1;
+    width: 100%;
+    height: 40px;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-top: 4px;
   }
 </style>

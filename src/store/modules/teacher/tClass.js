@@ -1,26 +1,25 @@
-import { getClassAPI, getAppointedClassAPI, getStuListAPI } from '@/services/modules/teacher/tClass.js'
+import { getClassAPI, getStuListAPI } from '@/services/modules/teacher/tClass.js'
 const tClass = {
   state: () => ({
     name: 'tClass',
-    page_num: 1, // 分页页号
-    page_size: 20, // 分页大小
+    classPage: {
+      page_num: 1, // 分页页号
+      page_size: 20, // 分页大小
+    },
     classList: [],  // 存放班级列表
-    checkClassName: '',  // 班级名称
-    checkClassMajor: '', // 专业名称
-    classInfo: [],  // 班级信息
     teacherInfo: [], //教师信息
     studentList: [], // 学生列表
-    stuListPage: {
-      page_num: 1,
-      page_size: 20
-    }
+    classInfo: {}, // 班级信息
+    classId: '',  // 查看的班级编号
+    stuListPage: {  //存放学生列表的分页数
+      page_num: "1",
+      page_size: "10"
+    },
+    studentList: []  // 存放班级学生信息
   }),
   mutations: {
     getClassList(state, val) {
       state.classList = val
-    },
-    getappointedClass(state, val) {
-      state.classInfo = val
     },
     getTeacherInfo(state, val) {
       state.teacherInfo = val
@@ -32,17 +31,10 @@ const tClass = {
   actions: {
     // 班级列表
     async getClassInfoActions(store) {
-      let res = await getClassAPI(store.state.page_num, store.state.page_size)
+      let res = await getClassAPI(store.state.classPage.page_num, store.state.classPage.page_size)
+      // console.log(res)
       if (res.code === 0) {
         store.commit('getClassList', res.data)
-      }
-    },
-    // 查询单个班级
-    async getappoinClassActions(store) {
-      let res = await getAppointedClassAPI(this.$cookies.get("session_id"), store.state.classList.class_id)
-      console.log(res)
-      if (res.code === 0) {
-        store.commit('getappointedClass', res.data)
       }
     },
     // 获取教师信息
@@ -53,14 +45,13 @@ const tClass = {
         store.commit('getTeacherInfo', res.data)
       }
     },
-    // 获取学生列表
-    /* async getStuListActions(store) {
-      let res = await getStuListAPI(this.$cookies.get('session_key'), store.state.stuListPage.page_num, store.state.stuListPage.page_size)
-      console.log(res)
+    // 获取班级学生列表
+    async getStuListActions(store, payload) {
+      const res = await getStuListAPI(payload.cookie, store.state.classId, store.state.stuListPage)
       if (res.code === 0) {
-        store.commit('getStuList', res.data)
+        store.commit("getStuList", res.data)
       }
-    } */
+    }
   },
   getters: {
 

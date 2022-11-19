@@ -82,13 +82,6 @@ const routes = [
         meta: {
           isChildren: true,
         },
-      },
-      {
-        path: 'student',
-        component: () => import('@/views/teacher/tClass/children/unJoinClassStu.vue'),
-        meta: {
-          isChildren: true
-        }
       }
     ]
   },
