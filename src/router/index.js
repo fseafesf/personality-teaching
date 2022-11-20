@@ -8,6 +8,8 @@ const routes = [
     path: '/',
     redirect: '/login'
   },
+
+  // 老师
   {
     path: '/home',
     name: 'Home',
@@ -16,7 +18,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/common/Login.vue')
+    component: () => import('@/views/common/Login.vue'),
   },
   {
     path: '/teacher/knowledge',
@@ -65,7 +67,6 @@ const routes = [
         component: () => import('../views/teacher/tTopic/children/tEditTopic.vue'),
         meta: {
           isChildren: true,
-          // hideTabBar: true
         }
       }
     ]
@@ -136,13 +137,17 @@ const routes = [
     ]
   },
   {
-
     path: '/teacher/analysis',
     name: 'tAnalysis',
     component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue')
-
   },
 
+  // 学生
+  {
+    path: '/student/home',
+    name: 'sHome',
+    component: () => import('@/views/student/sHome/sHome.vue')
+  },
 ]
 
 const router = new VueRouter({

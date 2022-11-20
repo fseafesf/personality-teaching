@@ -19,13 +19,14 @@ export default {
   components: { Tree },
   data() {
     return {
-
+      currentId: ''
     };
   },
   methods: {
     nodeClick(data) {
-      console.log(data, 'click')
-      // if (!data.parent_knp_id) return
+      // console.log(data, 'click')
+      if (data.id == this.currentId) return
+      this.currentId = data.id
       this.$store.dispatch('PointByIdActive', data.id)
     }
   },
@@ -52,6 +53,10 @@ export default {
     min-height: 80vh;
     background-color: #fff;
     border-radius: 5px;
+  }
+
+  .left {
+    width: 400px;
   }
 
   .right {

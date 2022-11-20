@@ -44,7 +44,7 @@ export default {
     .contact-left,
     .contact-right,
     .contact-result {
-      width: 300px;
+      width: 350px;
       min-height: 80vh;
       background: #fff;
       border-radius: 5px;

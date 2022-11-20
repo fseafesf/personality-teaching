@@ -110,7 +110,7 @@ export default {
         ],
         answer: '',
         context: '',
-        knp_id: ''
+        knp_id: []
       }
       if (this.$store.state.tTopic.currentTopicEditData) {
         const data = this.$store.state.tTopic.currentTopicEditData
@@ -126,9 +126,15 @@ export default {
           }
         }
         form.context = data.problem_info?.context
-        data.knowledge_point_list ? form.knp_id = data.knowledge_point_list[0].knp_id : ''
+
+        if (data.knowledge_point_question_list) {
+          for (const item of data.knowledge_point_question_list) {
+            // console.log(item)
+            form.knp_id.push(item.knp_id)
+          }
+        }
       }
-      this.form = form
+      this.form = { ...form }
       return form
     }
   },
@@ -159,7 +165,7 @@ export default {
       this.$router.push({ path: '/teacher/topic' })
     },
     checkedClick(data, checked) {
-      checked ? this.form.knp_id = data.id : this.form.knp_id = ''
+      this.form.knp_id = data
     }
   }
 }
