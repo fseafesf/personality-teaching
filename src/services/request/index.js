@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { MessageBox, Message } from "element-ui"
 
 import { BASE_URL, TIMEOUT } from './config'
 //引入nprogress进度条
@@ -12,9 +13,6 @@ class PtRequest {
     this.instance = axios.create({
       baseURL,
       timeout,
-      // headers: {
-      //   cookie: document.cookie
-      // }
     })
     //请求拦截器
     this.instance.interceptors.request.use(config => {
@@ -28,6 +26,14 @@ class PtRequest {
     this.instance.interceptors.response.use(res => {
       store.commit('changeIsLoading', false)
       nprogress.done();
+
+      // console.log(res)
+      if (res.data.code !== 0) {
+        Message({
+          type: 'error',
+          message: res.data.msg
+        });
+      }
       return res
     }, err => {
       return err

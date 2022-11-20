@@ -36,9 +36,8 @@ const tTopic = {
       })
     },
     QuestionByIdActive(context, id) {
-      console.log(id, 'id');
       getQuestionById(id).then(res => {
-        console.log(res, 'ijd')
+        // console.log(res, 'ijd')
         context.commit('changeCurrentTopicEditData', res.data)
       })
     },

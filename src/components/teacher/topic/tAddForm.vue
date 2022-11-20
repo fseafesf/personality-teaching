@@ -132,8 +132,7 @@ export default {
       this.$router.push({ path: '/teacher/topic' })
     },
     checkedClick(data, checked) {
-      // console.log(data);
-      checked ? this.form.knp_id = data.id : this.form.knp_id = ''
+      this.form.knp_id = data
     },
     typeChangeHandler() {
       this.$refs['form'].clearValidate();

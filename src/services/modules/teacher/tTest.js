@@ -3,9 +3,9 @@ import sxRequest from '../../request'
 export async function getPageList(cookie, page = 1, page_size = 10) {
     return sxRequest.get({
         url: '/teacher/exam/list',
-        headers: {
-            'Cookie': `session_key=${cookie}`,
-        },
+        // headers: {
+        //     'Cookie': `session_key=${cookie}`,
+        // },
         params: {
             page,
             page_size
@@ -30,9 +30,9 @@ export function createPage(cookie, data) {
 export function deletePage(cookie, data) {
     return sxRequest.delete({
         url: '/teacher/exam',
-        headers: {
-            'Cookie': `session_key=${cookie}`
-        },
+        // headers: {
+        //     'Cookie': `session_key=${cookie}`
+        // },
         params: {
             exam_id: data
         }

@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { encrypt, decrypt } from './utils/jsencrypt'
 
 import "normalize.css"
 import "./assets/css/index.css"
@@ -16,9 +15,6 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
-
-
-console.log(encrypt(123456));
 new Vue({
   router,
   store,

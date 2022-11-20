@@ -141,10 +141,7 @@ export default new Vuex.Store({
     }]
   },
   getters: {
-    // currentNavBarData(state) {
-    //   const index = state.currentIndex
-    //   return state.navBarData[index];
-    // }
+
   },
   mutations: {
     changeIsLoading(state, status) {
@@ -155,6 +152,15 @@ export default new Vuex.Store({
     },
     changeCurrentNavBarData(state, index) {
       state.currentNavBarData = state.navBarData[index]
+    },
+    changenavBarData(state) {
+      console.log('ok')
+      state.navBarData = [
+        {
+          name: '我的',
+          path: '/student/home'
+        }
+      ]
     }
   },
   actions: {

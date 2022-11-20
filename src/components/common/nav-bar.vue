@@ -1,7 +1,7 @@
 <template>
   <div class="nav-bar">
     <div class="content wrap-v1">
-      <div v-for="(item, index) in navBarData" :key="index">
+      <div v-for="(item, index) in $store.state.navBarData" :key="index">
         <div class="title" :class="{ active: currentIndex === index }" @click="itemClick(index)">
           <router-link :to="item.path">{{ item.name }}</router-link>
         </div>
@@ -15,9 +15,15 @@
 import store from '../../store'
 
 export default {
+  props: {
+    navBarData: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
-      navBarData: store.state.navBarData,
+      // navBarData: store.state.navBarData,
       currentIndex: store.state.currentIndex
     }
   },
@@ -29,15 +35,12 @@ export default {
   },
   watch: {
     $route(to, from) {
-      const index = this.navBarData.findIndex(item => {
+      console.log(this.$props)
+      const index = this.$store.state.navBarData.findIndex(item => {
         if (!item.children) return item.path === to.path
         if (item.path === to.path) return item.path === to.path
 
-
-
         for (const iten of item.children) {
-
-
           if (iten.path === to.path) {
             return iten.path === to.path
           }
@@ -45,10 +48,8 @@ export default {
           // console.log(iten.path, to.path)
           // console.log(to.path.indexOf(iten.path), 'ok')
           if (to.path.indexOf(iten.path) !== -1) {
-
             return iten.path.indexOf(to.path)
           }
-
         }
       })
       // console.log('index', index)

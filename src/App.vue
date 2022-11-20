@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <NavBar />
+    <NavBar :nav-bar-data="$store.state.navBarData" />
     <router-view class="wrap-v1" />
     <Loading />
   </div>
@@ -13,6 +13,9 @@ import Loading from './components/common/Loading.vue'
 export default {
   name: "App",
   components: { NavBar, Loading, },
+  mounted() {
+    // console.log(this.$route.meta);
+  }
 }
 </script>
 

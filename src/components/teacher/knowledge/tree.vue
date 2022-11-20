@@ -2,11 +2,12 @@
   <div class="tree">
     <div class="custom-tree-container">
       <div class="block">
-        <el-tree :data="treeData" :show-checkbox="showCheckbox" node-key="id" default-expand-all
-          :expand-on-click-node="false" :highlight-current="true" :default-checked-keys="[defaultChecked]"
+        <el-tree :data="treeData" ref="tree" :show-checkbox="showCheckbox" node-key="id" default-expand-all
           :current-node-key="currentNode" @check-change="handleNodeClick" @node-click="nodeClickHandler">
           <span class="custom-tree-node" slot-scope="{ node, data }">
-            <span>{{ node.label }}</span>
+            <div class="label">
+              <span>{{ node.label }}</span>
+            </div>
             <template v-if="operation">
               <span>
                 <el-button type="text" size="mini" @click.stop="() => append(data)">
@@ -46,8 +47,8 @@ export default {
       default: false
     },
     defaultChecked: {
-      type: String,
-      default: ''
+      type: Array,
+      default: () => ([])
     },
     currentNode: {
       type: String,
@@ -110,25 +111,18 @@ export default {
         type: 'warning'
       }).then(() => {
         deletePoint(data.id).then(res => {
-          console.log(res)
           if (res.code === 0) {
             this.$message({
               type: 'success',
               message: '删除成功!'
             });
             this.$store.dispatch('PointListActive')
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.msg
-            });
           }
-
         })
       }).catch(() => { });
     },
-    handleNodeClick(data, checked, node) {
-      this.$emit('checkedClick', data, checked, node)
+    handleNodeClick(data, checked) {
+      this.$emit('checkedClick', this.$refs.tree.getCheckedKeys().join(','), checked)
     },
     nodeClickHandler(data) {
       this.$emit('nodeClick', data)
@@ -138,6 +132,15 @@ export default {
     treeData() {
       return this.$store.state.tKnowledge.points
     }
+  },
+  watch: {
+    defaultChecked: function (newValue) {
+      this.$refs.tree.setCheckedKeys(newValue)
+    },
+    currentNode: function (newValue) {
+      // this.$refs.tree.setCurrentKey(newValue)
+    }
+
   }
 };
 </script>
@@ -147,7 +150,7 @@ export default {
   height: 100%;
 
   .custom-tree-container {
-    width: 300px;
+    // width: 400px;
     // min-height: 800px;
     border-radius: 5px;
 
@@ -162,6 +165,10 @@ export default {
       justify-content: space-between;
       font-size: 14px;
       padding-right: 8px;
+
+      // .label {
+      //   width: 300px;
+      // }
     }
   }
 

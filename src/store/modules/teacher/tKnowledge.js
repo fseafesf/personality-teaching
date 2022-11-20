@@ -25,37 +25,7 @@ const tKnowledge = {
   actions: {
     PointListActive(context) {
       getPointList().then(res => {
-        const level1 = []
-        const other = []
-        res.data.list.forEach(item => {
-          if (item.knp_id === item.parent_knp_id) {
-            const newItem = {}
-            newItem.id = item.knp_id
-            newItem.label = item.name
-            newItem.children = []
-            level1.push(newItem)
-          } else {
-            const newItem = {}
-            newItem.id = item.knp_id
-            newItem.label = item.name
-            newItem.parent_knp_id = item.parent_knp_id
-            newItem.children = []
-            other.push(newItem)
-          }
-        })
-        const level2 = []
-        other.forEach(item => {
-          level1.forEach(item1 => {
-            if (item1.id === item.parent_knp_id) {
-              item1.children.push(item)
-              level2.push(item)
-            }
-          })
-        })
-
-        mapTree(other, level2)
-
-        context.commit('changePoints', level1)
+        context.commit('changePoints', mapTree(res.data.list))
       })
     },
     PointOneActive(context) {
@@ -66,6 +36,7 @@ const tKnowledge = {
     PointByIdActive(context, id) {
       context.commit('changeCurrentNode', id)
       getPointById(id).then(res => {
+        // console.log(res)
         context.commit('changepointDetail', res.data)
       })
     },
