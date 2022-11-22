@@ -5,12 +5,12 @@
       <div class="classInfo">
         <span><strong>班级名称：</strong>{{$store.state.tClass.classInfo.name}}</span>
         <span><strong>班级描述：</strong>{{$store.state.tClass.classInfo.major}}</span>
-        <span><strong>任课老师：</strong>{{teacherInfo.name}}</span>
+        <span><strong>任课老师：</strong>{{$store.state.tClass.teacherInfo.name}}</span>
       </div>
       <el-button type="success" size="mini" @click="$router.go(-1)">退出</el-button>
     </div>
 
-    <!-- 学生信息 -->
+    <!-- 学生列表 -->
     <div class="studentBox">
       <h3 class="title">学生列表</h3>
       <el-button type="primary" size="small" class="addStuBtn" @click="addStudentFn">新增学生</el-button>
@@ -33,13 +33,13 @@
       <el-pagination
           @size-change="stuHandleSizeChange"
           @current-change="stuHandleCurrentChange"
-          :current-page="10"
+          :current-page="$store.state.tClass.stuListPage.page_num"
           :page-sizes = "[10, 20, 30]"
-          :page-size="10"
+          :page-size="$store.state.tClass.stuListPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="20"
+          :total="+this.$store.state.tClass.studentTotal"
           style="margin-top: 12px">
-    </el-pagination>
+      </el-pagination>
     </div>
 
     <!-- 新增学生对话框 -->
@@ -81,11 +81,11 @@
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="10"
+          :current-page="unJoinStuPage.page_num"
           :page-sizes = "[10, 20, 30]"
-          :page-size="10"
+          :page-size="unJoinStuPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="20"
+          :total="unJoinStuTotal"
           style="margin-top: 12px">
       </el-pagination>
     </el-dialog>
@@ -99,11 +99,6 @@ export default {
   name: 'classInfo',
   data() {
     return {
-      // 教师信息
-      teacherInfo: {
-        teacher_id: '1',
-        name: '王肖'
-      },
       addStuForm: {  // 未加入班级的信息
         name: "",
         college: "",
@@ -114,9 +109,10 @@ export default {
       dialogTableVisible: false,   // 未加入班级学生对话框是否显示
       unJoinClassList: [],  // 未加入班级学生列表    
       unJoinStuPage: {  // 未加入班级学生页码
-        page_num: "1",
-        page_size: "10"
+        page_num: 1,
+        page_size: 10
       },   
+      unJoinStuTotal: 0,
       // 新增学生表单验证规则
       addStuRules: {
         name: [
@@ -130,7 +126,7 @@ export default {
         ],
         phone_number: [
           {required: true, message: "请输入学生电话号码", trigger: "blur"},
-          {pattern: /^1([3456789][0-9])\d{9}$/, message: "电话号码必须是11位且以1开头,第二位数字是3456789中的一位", trigger: "blur"}
+          {pattern: /^1([3456789])\d{9}$/, message: "电话号码必须是11位且以1开头,第二位数字是3456789中的一位", trigger: "blur"}
         ]
       }
     }
@@ -141,39 +137,51 @@ export default {
     async unjoinStuFn() {
       this.dialogTableVisible = true
       const res = await getUnjoinStuAPI(this.$cookies.get("session_key"), this.unJoinStuPage)
+      this.unJoinStuTotal = res.total
       this.unJoinClassList = res.data
     },
     // 点击新增学生按钮
     addStudentFn() {
       this.dialogUnJoinVisible = true
     },
-    // 保存新增学生按钮
-    confirmAddStuFn() {
-      this.dialogUnJoinVisible = false
-    },
     // 关闭对话框
     dialogCloseFn() {
       this.$refs.addStuRef.resetFields()
     },
-    handleSizeChange() {
-      console.log('----未加入班级页码改变')
+    // 未加入班级学生页码
+    handleSizeChange(sizes) {
+      this.unJoinStuPage.page_size = sizes
+      this.unJoinStuPage.page_num = 1
+      this.unjoinStuFn()
     },
-    handleCurrentChange() {
-      console.log('---------未加入班级页码大小改变')
+    handleCurrentChange(nowPage) {
+      this.unJoinStuPage.page_num = nowPage
+      this.unjoinStuFn()
     },
     // 学生列表页面改变
-    stuHandleSizeChange() {
-      console.log('---------学生列表页码改变了')
+    stuHandleSizeChange(sizes) {
+      this.$store.state.tClass.stuListPage.page_num = 1
+      this.$store.state.tClass.stuListPage.page_size = sizes
+      this.getStuListActions(this.$store.state.tClass.stuListPage)
     },
-    stuHandleCurrentChange() {
-      console.log('----------学生列表页码大小改变了')
+    stuHandleCurrentChange(nowPage) {
+      this.$store.state.tClass.stuListPage.page_num = nowPage
+      this.getStuListActions(this.$store.state.tClass.stuListPage)
     },
     // 新增学生
-    async confirmAddStuFn() {
-      const res = await addStudentAPI(this.$cookies.get("session_key"),this.addStuForm)
-      if (res.code !== 0) return this.$message.error(res.msg)
-      this.$message.success(res.msg)
-      this.dialogUnJoinVisible = false
+    confirmAddStuFn() {
+      this.$refs.addStuRef.validate(async valid => {
+        if (valid) {
+          const res = await addStudentAPI(this.$cookies.get("session_key"),this.addStuForm)
+          if (res.code === 0) {
+            this.$message.success(res.msg)
+            this.dialogUnJoinVisible = false
+          }   
+        } else {
+          return false
+        }
+      })
+         
     }, 
     // 删除学生
     deleteStuFn(obj) {
@@ -183,28 +191,28 @@ export default {
         type: 'warning'
       }).then(async () => {
         const res = await deleteStuAPI(this.$cookies.get("session_key"),{class_id:this.$store.state.tClass.classId, student_id:obj.student_id})
-        if (res.code !== 0) return this.$message.error(res.msg)
-        this.getStuListActions({ cookie: this.$cookies.get("session_key") })
-        this.$message({
-          type: 'success',
-          message: '删除成功！'
-        }).catch(() => {
+        if (res.code === 0) {
+          this.getStuListActions({ cookie: this.$cookies.get("session_key") })
+          this.$message({
+            type: 'success',
+            message: '删除成功！'
+          })
+        }
+      }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
           })
-        })
-      })
-      
+        })     
     },
     // 添加学生到指定班级
     async addStuToClassFn(obj) {
       const res = await addStuToClassAPI(this.$cookies.get("session_key"), this.$store.state.tClass.classId, obj.student_id)
-      if (res.code !== 0) return this.$message.error(res.msg)
-      this.$message.success(res.msg)
-      this.unjoinStuFn()
-      // this.getStuListFn()
-      this.getStuListActions({cookie: this.$cookies.get("session_key")})
+      if (res.code === 0) {
+        this.$message.success(res.msg)
+        this.unjoinStuFn()
+        this.getStuListActions({ cookie: this.$cookies.get("session_key") })
+      }
     },
   }
 }

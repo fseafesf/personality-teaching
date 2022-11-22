@@ -27,10 +27,10 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="$store.state.tClass.classPage.page_num"
-          :page-sizes = "[10, 20, 30, 40]"
+          :page-sizes = "[5, 10, 20]"
           :page-size="$store.state.tClass.classPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+          :total="+this.$store.state.tClass.classNum">
         </el-pagination>
       </div>
 
@@ -65,7 +65,7 @@
 
 <script >
 import { addClassAPI, deleteClassAPI, modifyClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
-import { mapActions } from 'vuex';
+import { mapActions} from 'vuex';
 export default {
   data() {
     return {
@@ -95,13 +95,8 @@ export default {
   mounted() {
     this.getClassInfoActions()
   },
-  computed: {
-    total: function () {
-      return this.$store.state.tClass.classList.length
-    },
-  },
   methods: {
-    ...mapActions(['getClassInfoActions', 'getStuListActions']),
+    ...mapActions(['getClassInfoActions', 'getStuListActions', 'getTeacherInfoActions']),
     // 取消对话框
     cancelFn() {
       this.dialogVisible = false
@@ -116,20 +111,29 @@ export default {
       this.dialogVisible = true
     },
     // 创建/修改班级信息后保存
-    async confirmFn() {
-      if (!this.isEdit) {  /// 创建班级
-        const res = await addClassAPI(this.addClassForm)
-        // console.log(res)
-        if (res.code !== 0) return this.$message.error(res.msg)
-        this.$message.success(res.msg)
-      } else {  // 修改班级信息
-        const res = await modifyClassAPI({ class_id: this.editClassId, ...this.addClassForm })
-        console.log(res)
-        if (res.code !== 0) return this.$message.error(res.msg)
-        this.$message.success(res.msg)
-      }
-      this.getClassInfoActions()
-      this.dialogVisible = false
+    confirmFn() {
+      this.$refs.addClassRef.validate(async valid => {
+        if (valid) {
+          if (!this.isEdit) {  /// 创建班级
+            const res = await addClassAPI(this.addClassForm)
+            // console.log(res)
+            if (res.code === 0) {
+              this.$message.success(res.msg)
+            }
+          } else {  // 修改班级信息
+            const res = await modifyClassAPI({ class_id: this.editClassId, ...this.addClassForm })
+            // console.log(res)
+            if (res.code === 0) {
+              this.$message.success(res.msg)
+            }      
+          }
+          this.getClassInfoActions()
+          this.dialogVisible = false
+        } else {
+          return false
+        }
+      })
+      
     },
     // 查看班级信息
     async checkClassInfoFn(obj) {
@@ -137,7 +141,8 @@ export default {
       this.$store.state.tClass.classInfo = res.data
       this.$store.state.tClass.classId = obj.class_id
       this.$router.push('/teacher/class/classInfo')
-      this.getStuListActions({cookie: this.$cookies.get("session_key")})
+      this.getStuListActions({ cookie: this.$cookies.get("session_key") })
+      this.getTeacherInfoActions()
     },
     // 删除班级
      delClassBtn(obj) {
@@ -147,18 +152,18 @@ export default {
         type: 'warning'
       }).then(async () => {
         const res = await deleteClassAPI(obj.class_id)
-        if (res.code !== 0) return this.$message.error(res.msg)
+        if (res.code === 0) {
         this.$message.success(res.msg)
         this.getClassInfoActions()
         this.$message({
           type: 'success',
           message: '删除成功！'
-        }).catch(() => {
+        })}
+      }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
           })
-        })
       })
       
     },
@@ -178,15 +183,15 @@ export default {
     },
     // 分页->每页条数改变触发
     handleSizeChange(sizes) {
-      this.classPage.page_size = sizes
-      this.classPage.page_num = 1
-      this.getClassInfoActions()
+      this.$store.state.tClass.classPage.page_size = sizes
+      this.$store.state.tClass.classPage.page_num = 1
+      this.getClassInfoActions(this.$store.state.tClass.classPage)
     },
     // 当前页码改变时触发
     handleCurrentChange(nowPage) {
-      this.$store.state.tClass.page_num = nowPage
-      this.getClassInfoActions()
-    }
+      this.$store.state.tClass.classPage.page_num = nowPage
+      this.getClassInfoActions(this.$store.state.tClass.classPage)
+    },
   }
 };
 </script>
