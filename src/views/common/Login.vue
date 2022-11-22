@@ -1,7 +1,7 @@
 <template>
   <div id="modal">
     <div id="modal-content">
-      <h1>xxx教学系统登录</h1>
+      <h1>个性化教学系统登录</h1>
       <div id="login">
         <el-row class="input-line">
           <el-col :span="4"><span class="text">账号：</span></el-col>
@@ -33,6 +33,9 @@
 <script>
 import { login } from "@/services";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
 
 export default {
   name: "Login",
@@ -44,6 +47,8 @@ export default {
       date: "",
     };
   },
+
+
   mounted() {
     this.$nextTick(() => {
       setInterval(this.upDateClock, 1000);
@@ -65,9 +70,8 @@ export default {
         }).then((res) => {
           console.log(res);
           if (res.code == 0) {
-            this.$router.replace({ path: "/home" });
+            this.$router.replace({ path: "/home" }); //账号密码正确则成功跳转
           } else {
-            alert("账号或密码错误");
             this.username = "";
             this.password = "";
           }

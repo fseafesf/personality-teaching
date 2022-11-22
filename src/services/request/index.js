@@ -1,5 +1,8 @@
 import axios from 'axios'
 import { MessageBox, Message } from "element-ui"
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
 
 import { BASE_URL, TIMEOUT } from './config'
 //引入nprogress进度条
@@ -7,6 +10,7 @@ import nprogress from 'nprogress'
 //引入nprogress进度条样式
 import "nprogress/nprogress.css";
 import store from '../../store'
+import router from '@/router'
 
 class PtRequest {
   constructor(baseURL, timeout = 5000) {
@@ -27,12 +31,15 @@ class PtRequest {
       store.commit('changeIsLoading', false)
       nprogress.done();
 
-      // console.log(res)
+      console.log(res)
       if (res.data.code !== 0) {
         Message({
           type: 'error',
           message: res.data.msg
         });
+      }
+      if (res.data.code == 1001){ //检查登录态，若登录态不合法则跳转至登录
+        router.replace({path:'/login'})
       }
       return res
     }, err => {

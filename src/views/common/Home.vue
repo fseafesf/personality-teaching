@@ -5,11 +5,13 @@
 </template>
 
 <script>
-
+import cookies from 'vue-cookies';
 export default {
   name: "Home",
-  mounted() {
-
-  }
+  beforeCreate(){
+    if (!cookies.get("session_key")) {
+      this.$router.replace({ path: '/login'})
+    }
+  },
 }
 </script>
