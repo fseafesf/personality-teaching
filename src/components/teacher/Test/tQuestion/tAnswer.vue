@@ -6,7 +6,7 @@
         <span></span>
         <span>{{ typeProblem.context }}</span>
       </div>
-      <div class="answer-option">简答题回答区</div>
+      <div class="answer-option"></div>
     </div>
     <div
       class="answer-operate"
@@ -81,6 +81,11 @@ export default {
         margin-right: 5px;
       }
     }
+    // .answer-option{
+    //   width: 60%;
+    //   border: 1px solid;
+    //   height: 70px;
+    // }
   }
   .special {
     display: none !important;

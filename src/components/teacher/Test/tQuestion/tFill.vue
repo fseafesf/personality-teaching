@@ -4,7 +4,7 @@
       <div class="fill-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span>{{ typeProblem.context }}(填空题的内容)</span>
+        <span>{{ typeProblem.context }}___</span>
       </div>
       <div class="fill-option"></div>
     </div>

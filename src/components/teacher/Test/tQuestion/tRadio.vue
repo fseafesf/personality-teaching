@@ -6,7 +6,16 @@
         <span></span>
         <span>{{ typeProblem.context }}</span>
       </div>
-      <div class="radio-option">选择题选项内容区</div>
+      <div class="radio-option">
+        <div
+          class="option"
+          v-for="(item, index) in typeProblem.question_option_list"
+          :key="index"
+        >
+          <span> {{ toSelect(index) }}、</span>
+          <span> {{ item.Context }}</span>
+        </div>
+      </div>
     </div>
     <div
       class="radio-operate"
@@ -36,6 +45,7 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import { toSelect } from "@/utils/transfrom";
 export default {
   name: "radio",
   data() {
@@ -53,6 +63,7 @@ export default {
   },
   methods: {
     ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
+    toSelect,
     handleDelete() {
       console.log(this.typeProblem.question_id);
       console.log(this.page.selectProblem);
@@ -80,6 +91,16 @@ export default {
       height: 46px;
       span {
         margin-right: 5px;
+      }
+    }
+    .radio-option {
+      display: flex;
+      padding-right: 40px;
+      flex-wrap: wrap;
+      .option{
+        width: 600px;
+        height: 30px;
+        line-height: 30px;
       }
     }
   }
