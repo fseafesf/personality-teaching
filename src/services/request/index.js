@@ -30,8 +30,6 @@ class PtRequest {
     this.instance.interceptors.response.use(res => {
       store.commit('changeIsLoading', false)
       nprogress.done();
-
-      // console.log(res)
       if (res.data.code !== 0) {
         Message({
           type: 'error',

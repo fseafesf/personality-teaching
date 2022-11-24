@@ -94,9 +94,11 @@ export default {
   .score-list {
     display: flex;
     padding: 0 5px;
+    
     .wrapper {
       span {
         display: flex;
+        flex-wrap: wrap;
         .drag-individual {
           width: 25px;
           height: 30px;
@@ -104,7 +106,7 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 5px;
+          margin: 5px 5px;
           border-radius: 5px;
           &:hover {
             color: #fff !important;

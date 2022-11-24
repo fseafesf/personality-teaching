@@ -60,6 +60,9 @@ export default {
       default: () => ({}),
     },
   },
+  created(){
+    console.log(this.typeProblem)
+  },
   methods: {
     ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
     toSelect,

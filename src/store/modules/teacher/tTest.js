@@ -90,7 +90,7 @@ const tTest = {
     },
     getClasses(context, payload) {
       return new Promise((reslove, reject) => {
-        getClassAPI(payload.page_num, payload.page_size = 20).then(res => {
+        getClassAPI({ page_num: payload.page_num, page_size: payload.page_size = 20 }).then(res => {
           reslove(res.data)
           context.commit('initClasses', res.data)
         }).catch(err => reject(err))

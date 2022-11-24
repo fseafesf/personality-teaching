@@ -4,7 +4,7 @@
       <div class="fill-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span>{{ typeProblem.context }}___</span>
+        <span>{{ typeProblem.context }}</span>
       </div>
       <div class="fill-option"></div>
     </div>

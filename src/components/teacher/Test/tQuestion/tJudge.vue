@@ -7,14 +7,8 @@
         <span>{{ typeProblem.context }}</span>
       </div>
       <div class="judge-option">
-        <div
-          class="option"
-          v-for="(item, index) in typeProblem.question_option_list"
-          :key="index"
-        >
-          <span> {{ toSelect(index) }}、</span>
-          <span> {{ item.Context }}</span>
-        </div>
+        <span>A、正确</span>
+        <span>B、错误</span>
       </div>
     </div>
     <div
@@ -90,6 +84,14 @@ export default {
       height: 46px;
       span {
         margin-right: 5px;
+      }
+    }
+    .judge-option{
+      display: flex;
+      flex-wrap: wrap;
+      span{
+        width: 80%;
+        margin: 5px 0 5px 0; 
       }
     }
   }
