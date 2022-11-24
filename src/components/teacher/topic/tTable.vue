@@ -50,9 +50,12 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('QuestionListActive', { type: this.$props.type, level: this.$props.level, keyword: this.$props.keyword, size: this.$props.size, page: this.$props.page })
+    this.updateTable()
   },
   methods: {
+    updateTable() {
+      this.$store.dispatch('QuestionListActive', { type: this.$props.type, level: this.$props.level, keyword: this.$props.keyword, size: this.$props.size, page: this.$props.page })
+    },
     handleEdit(index, row) {
       this.$router.push({ path: '/teacher/topic/edit/' + row.question_id })
     },
@@ -67,7 +70,8 @@ export default {
             type: 'success',
             message: '删除成功!'
           });
-          this.$store.dispatch('QuestionListActive')
+          this.updateTable()
+          // this.$store.dispatch('QuestionListActive')
         })
       }).catch(() => { });
     }

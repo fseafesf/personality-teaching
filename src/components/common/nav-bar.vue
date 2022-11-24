@@ -35,7 +35,7 @@ export default {
   },
   watch: {
     $route(to, from) {
-      console.log(this.$props)
+      // console.log(this.$props)
       const index = this.$store.state.navBarData.findIndex(item => {
         if (!item.children) return item.path === to.path
         if (item.path === to.path) return item.path === to.path
