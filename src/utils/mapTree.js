@@ -17,7 +17,7 @@
 // }
 
 export const mapTree = (data) => {
-  console.log('res', data)
+  // console.log('res', data)
   const level1 = []
   const other = []
   data.forEach(item => {
@@ -38,6 +38,7 @@ export const mapTree = (data) => {
       other.push(newItem)
     }
   })
+
   const level2 = []
   other.forEach(item => {
     level1.forEach(item1 => {

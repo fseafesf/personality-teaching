@@ -10,7 +10,7 @@
       </el-form-item>
 
       <el-form-item label="题干:" prop="context">
-        <el-input type="textarea" v-model="form.context" />
+        <el-input type="textarea" :rows="4" v-model="form.context" />
       </el-form-item>
 
       <template v-if="(form.type == 1 || form.type == 2) && form.question_option_list">
@@ -39,7 +39,7 @@
       </template>
 
       <el-form-item label="答案解析:" prop="answer">
-        <el-input type="textarea" v-model="editForm.answer" />
+        <el-input type="textarea" :rows="4" v-model="editForm.answer" />
       </el-form-item>
       <el-form-item label="知识点联系:" label-width="100px">
         <Tree :operation="false" @checkedClick="checkedClick" :show-checkbox="true" :defaultChecked="editForm.knp_id" />
@@ -129,8 +129,7 @@ export default {
 
         if (data.knowledge_point_question_list) {
           for (const item of data.knowledge_point_question_list) {
-            // console.log(item)
-            form.knp_id.push(item.knp_id)
+            item.knp_id ? form.knp_id.push(item.knp_id) : ''
           }
         }
       }
@@ -139,9 +138,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route.params.id)
     this.$store.dispatch('QuestionByIdActive', this.$route.params.id)
-    // console.log(this.$route)
   },
   methods: {
     onSubmit() {

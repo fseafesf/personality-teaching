@@ -68,3 +68,14 @@ export function deletePoint(knp_id) {
     }
   })
 }
+
+// 修改知识点联系
+export function updatePointConnect(knp_id, p_knp_id) {
+  return ptRequest.put({
+    url: '/teacher/point/connection',
+    data: {
+      knp_id,
+      p_knp_id
+    }
+  })
+}
