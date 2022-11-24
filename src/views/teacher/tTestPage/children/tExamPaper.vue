@@ -2,11 +2,7 @@
   <div class="examPaper">
     <div class="examHead">
       <div class="examSearch">
-        <el-input
-          placeholder="请输入内容"
-          v-model="input"
-          clearable
-        >
+        <el-input placeholder="请输入内容" v-model="input" clearable>
         </el-input>
       </div>
       <div class="examBtn">
@@ -83,7 +79,7 @@ export default {
     return {
       input: "",
       tableData: [],
-      total:0,
+      total: 0,
       param: {
         page: 1,
         page_size: 10,
@@ -124,7 +120,7 @@ export default {
         cookie: this.$cookies.get("session_key"),
         ...this.param,
       }).then((res) => {
-        this.total = res
+        this.total = res;
         this.tableData = this.pages;
       });
     },
@@ -137,12 +133,9 @@ export default {
         })
       );
       if (this.input.trim() !== "") {
-        search(
-          this.$cookies.get("session_key"),
-          {
-    "text": this.input
-}
-        )
+        search(this.$cookies.get("session_key"), {
+          text: this.input,
+        })
           .then((res) => {
             console.log(res);
             this.tableData = res.data.exam_list;
@@ -201,6 +194,7 @@ export default {
               this.$message({
                 type: "success",
                 message: "删除成功!",
+                duration: 1000,
               });
               this.getPages();
             }

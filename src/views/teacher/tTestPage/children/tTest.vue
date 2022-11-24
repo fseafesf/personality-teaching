@@ -457,7 +457,7 @@ export default {
             margin-bottom: 40px;
           }
           .content-problem {
-            padding: 15px 0 0 5px;
+            padding: 15px 0 15px 5px;
           }
         }
         .block {

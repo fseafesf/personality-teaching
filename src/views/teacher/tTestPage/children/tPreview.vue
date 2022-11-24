@@ -318,8 +318,9 @@ export default {
       }
       .left-save {
         .left-comment {
-          width: 100px;
+          width: 200px;
           height: 100%;
+          margin-left: 100px;
         }
       }
     }
