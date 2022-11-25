@@ -83,12 +83,12 @@ export const getAppointedClassAPI = (class_id) => {
 /**
  * 获取学生列表
  */
-export const getStuListAPI = (cookie, class_id, { page_num, page_size } ) => {
+export const getStuListAPI = (class_id, { page_num, page_size } ) => {
   return ptRequest.get({
     url: '/teacher/class/student/list',
-    headers: {
-      'Cookie': `session_key=${cookie}`
-    },
+    // headers: {
+    //   'Cookie': `session_key=${cookie}`
+    // },
     params: {
       class_id,
       page_num,

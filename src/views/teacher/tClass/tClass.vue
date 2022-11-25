@@ -3,6 +3,7 @@
     <template v-if="!$route.meta.isChildren">
       <div class="header">
         <el-button type="primary" id="addClassBtn" size="small" class="addClassBtn" @click="addClassShowDialogBtn">创建班级</el-button>
+        <el-button type="primary" size="small" class="addStuBtn" @click="addStudentFn">创建学生</el-button>
       </div>
       <!-- 班级列表 -->
       <el-table :data="$store.state.tClass.classList"
@@ -14,7 +15,7 @@
         <el-table-column prop="major" label="专业"></el-table-column>
         <el-table-column label="操作" width="240px">
           <template v-slot="scope">
-            <el-button type="primary" size="mini" @click="checkClassInfoFn(scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" @click.stop="checkClassInfoFn(scope.row)">查看</el-button>
             <el-button type="primary" size="mini" @click="modifyClassFn(scope.row)">修改</el-button>
             <el-button type="danger" size="mini" @click="delClassBtn(scope.row)">删除</el-button>
           </template>
@@ -57,6 +58,27 @@
         </span>
       </el-dialog>
 
+      <!-- 新增学生对话框 -->
+    <el-dialog title="新增学生" :visible.sync="dialogUnJoinVisible" width="40%" @close="dialogCloseFn">
+      <el-form :model="addStuForm" ref="addStuRef" label-width="90px" :rules="addStuRules">
+        <el-form-item label="姓名:" prop="name">
+          <el-input v-model="addStuForm.name" minlength="1"></el-input>
+        </el-form-item>
+        <el-form-item label="学院:" prop="college">
+          <el-input v-model="addStuForm.college" minlength="1"></el-input>
+        </el-form-item>
+        <el-form-item label="专业:" prop="major">
+          <el-input v-model="addStuForm.major" minlength="1"></el-input>
+        </el-form-item>
+        <el-form-item label="电话号码:" prop="phone_number">
+          <el-input v-model="addStuForm.phone_number" minlength="1"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogUnJoinVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmAddStuFn" >保存</el-button>
+      </div>
+    </el-dialog>
     </template>
     
     <router-view></router-view>
@@ -64,7 +86,7 @@
 </template>
 
 <script >
-import { addClassAPI, deleteClassAPI, modifyClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
+import { addClassAPI, deleteClassAPI, modifyClassAPI, addStudentAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions} from 'vuex';
 export default {
   data() {
@@ -88,6 +110,29 @@ export default {
         ],
         major: [
           {required: true, message: "请输入专业名", trigger: "blur"}
+        ]
+      },
+      dialogUnJoinVisible: false,  // 新增学生对话框是否显示
+      addStuForm: {  // 未加入班级的信息
+        name: "",
+        college: "",
+        major: "",
+        phone_number: ""
+      }, 
+      // 新增学生表单验证规则
+      addStuRules: {
+        name: [
+          {required: true, message: "请输入学生姓名", trigger: "blur"}
+        ],
+        college: [
+          {required: true, message: "请输入学院名", trigger: "blur"}
+        ],
+        major: [
+          {required: true, message: "请输入专业名", trigger: "blur"}
+        ],
+        phone_number: [
+          {required: true, message: "请输入学生电话号码", trigger: "blur"},
+          {pattern: /^1([3456789])\d{9}$/, message: "电话号码必须是11位且以1开头,第二位数字是3456789中的一位", trigger: "blur"}
         ]
       }
     }
@@ -136,13 +181,10 @@ export default {
       
     },
     // 查看班级信息
-    async checkClassInfoFn(obj) {
-      let res = await getAppointedClassAPI(obj.class_id)
-      this.$store.state.tClass.classInfo = res.data
+    checkClassInfoFn(obj) {
+      this.$router.push( '/teacher/class/classInfo/')
       this.$store.state.tClass.classId = obj.class_id
-      this.$router.push('/teacher/class/classInfo')
-      this.getStuListActions({ cookie: this.$cookies.get("session_key") })
-      this.getTeacherInfoActions()
+  
     },
     // 删除班级
      delClassBtn(obj) {
@@ -192,16 +234,39 @@ export default {
       this.$store.state.tClass.classPage.page_num = nowPage
       this.getClassInfoActions(this.$store.state.tClass.classPage)
     },
+    // 点击新增学生按钮
+    addStudentFn() {
+      this.dialogUnJoinVisible = true
+    },
+    // 关闭对话框
+    dialogCloseFn() {
+      this.$refs.addStuRef.resetFields()
+    },
+    // 新增学生
+    confirmAddStuFn() {
+      this.$refs.addStuRef.validate(async valid => {
+        if (valid) {
+          const res = await addStudentAPI(this.$cookies.get("session_key"),this.addStuForm)
+          if (res.code === 0) {
+            this.$message.success(res.msg)
+            this.dialogUnJoinVisible = false
+          }   
+        } else {
+          return false
+        }
+      })   
+    }, 
   }
 };
 </script>
 
 <style lang="less" scoped>
+  * {
+    box-sizing: border-box;
+  }
   .header {
     display: flex;
-    // position: fixed;
-    // z-index: 1;
-    width: 100%;
+    width: 1200px;
     height: 50px;
     margin: 4px 0;
     align-items: center;
@@ -220,7 +285,7 @@ export default {
     position: fixed;
     bottom: 0;
     z-index: 1;
-    width: 100%;
+    width: 1200px;
     height: 40px;
     align-items: center;
     background-color: #fff;
