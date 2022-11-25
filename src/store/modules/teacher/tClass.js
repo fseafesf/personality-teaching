@@ -47,8 +47,8 @@ const tClass = {
       }
     },
     // 获取班级学生列表
-    async getStuListActions(store, payload) {
-      const res = await getStuListAPI(payload.cookie, store.state.classId, store.state.stuListPage)
+    async getStuListActions(store) {
+      const res = await getStuListAPI(store.state.classId, store.state.stuListPage)
       if (res.code === 0) {
         store.commit("getStuList", res)
       }
