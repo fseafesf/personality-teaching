@@ -24,7 +24,6 @@ export default {
   },
   methods: {
     nodeClick(data) {
-      // console.log(data, 'click')
       if (data.id == this.currentId) return
       this.currentId = data.id
       this.$store.dispatch('PointByIdActive', data.id)

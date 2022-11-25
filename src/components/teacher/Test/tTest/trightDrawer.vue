@@ -122,7 +122,6 @@ export default {
     },
     getData() {
       this.problemData = groupByType(this.page.selectProblem);
-      console.log(this.problemData)
     },
     toTypeR(key) {
       return toType(Number(key));

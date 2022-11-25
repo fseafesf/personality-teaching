@@ -27,6 +27,7 @@ export function getQuestionById(question_id) {
 // 添加题目
 export function addQuestion(form) {
   const { question_name, type, level, create_user, question_option_list, answer, context, knp_id } = form
+  // console.log(question_option_list)
   // console.log( question_name, type, level, create_user, question_option_list, answer, context, knp_id);
   return ptRequest.post({
     url: '/teacher/question',
@@ -52,8 +53,12 @@ export function deleteQuestion(question_id) {
 
 // 更新题目
 export function updataQuestion(form) {
-  const { question_id, question_name, type, level, create_user, question_option_list, answer, context, knp_id } = form
+  let { question_id, question_name, type, level, create_user, question_option_list, answer, context, knp_id } = form
   // console.log(question_id, question_name, type, level, create_user, question_option_list, answer, context, knp_id);
+
+  if (knp_id instanceof Array) {
+    knp_id.length ? knp_id = knp_id.join(',') : knp_id = ''
+  }
 
   return ptRequest.put({
     url: '/teacher/question',

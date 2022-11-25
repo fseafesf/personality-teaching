@@ -32,7 +32,7 @@
                   :class="{ active: currentType === item }"
                   @click="changeType(item)"
                 >
-                  <span>{{ toTypeT(item) }}</span>
+                  <span>{{ toType(item) }}</span>
                 </li>
               </ul>
             </div>
@@ -47,7 +47,7 @@
                   :class="{ active: currentLevel === item }"
                   @click="changeLevel(item)"
                 >
-                  <span>{{ toLevelT(item) }}</span>
+                  <span>{{ toDifficult(item) }}</span>
                 </li>
               </ul>
             </div>
@@ -72,7 +72,6 @@
             </el-input>
           </div>
           <div class="line-right">
-            <span>这是一些操作</span>
           </div>
         </div>
 
@@ -89,9 +88,8 @@
               :index="Number(index)"
               class="content-problem"
             ></div>
-            <keep-alive>
-              <ToolMenu :typeProblem="item"></ToolMenu>
-            </keep-alive>
+
+            <ToolMenu :typeProblem="item"></ToolMenu>
           </div>
           <div class="block">
             <el-pagination
@@ -244,9 +242,11 @@ export default {
   methods: {
     ...mapMutations("tTest", ["setPageData", "clearPageData", "initProblems"]),
     ...mapActions("tTest", ["getProblems"]),
+    toType,
+    toDifficult,
     receive() {
       this.getProblems(this.queryInfo).then((res) => {
-        this.total = res
+        this.total = res;
         this.getListData();
       });
     },
@@ -254,7 +254,7 @@ export default {
       this.list = this.problems;
       this.seList = JSON.parse(JSON.stringify(this.list));
       this.renderList = JSON.parse(JSON.stringify(this.list));
-      console.log(this.page.selectProblem, "tTest");
+      // console.log(this.page.selectProblem, "tTest");
     },
     changeType(param) {
       this.currentType = param;
@@ -289,24 +289,18 @@ export default {
       });
       this.clearPageData({
         key: "comment",
-        val: '',
+        val: "",
       });
       clearCache("exam_id");
       clearCache("title");
       clearCache("selectProblem");
-      clearCache("comment")
+      clearCache("comment");
     },
     handleCurrentChange(newPage) {
       this.queryInfo.page_no = newPage;
       this.currentLevel = 0;
       this.currentType = 0;
       this.receive();
-    },
-    toTypeT(key) {
-      return toType(key);
-    },
-    toLevelT(key) {
-      return toDifficult(key);
     },
   },
   computed: {
@@ -319,7 +313,6 @@ export default {
   watch: {
     listenChange(val) {
       const filterKeys = Object.keys(val);
-      console.log(val);
       this.renderList = this.seList.filter((item) => {
         return filterKeys.every((key) => {
           if (val[key] === 0) return true;
@@ -464,7 +457,7 @@ export default {
             margin-bottom: 40px;
           }
           .content-problem {
-            padding: 15px 0 0 5px;
+            padding: 15px 0 15px 5px;
           }
         }
         .block {

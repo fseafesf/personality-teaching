@@ -34,18 +34,15 @@ export default {
     },
   },
   created() {
-    if (!!getCache("selectProblem")) {
-      this.btnShow = !JSON.stringify(getCache("selectProblem")).includes(
-        JSON.stringify(this.typeProblem)
-      );
-    }
+    this.checkShow();
   },
   mounted() {},
-  activated() {
-    
-  },
+  activated() {},
   computed: {
     ...mapState("tTest", ["page", "problems"]),
+    params() {
+      return JSON.parse(JSON.stringify(this.page.selectProblem));
+    },
   },
   methods: {
     ...mapMutations("tTest", [
@@ -54,6 +51,13 @@ export default {
       "setPageData",
       "clearPageData",
     ]),
+    checkShow() {
+      if (!!getCache("selectProblem")) {
+        this.btnShow = !JSON.stringify(getCache("selectProblem")).includes(
+          JSON.stringify(this.typeProblem)
+        );
+      }
+    },
     handleMneu() {
       this.btnShow = false;
       let problem = this.problems.find(
@@ -68,6 +72,15 @@ export default {
         (item) => item.question_id === this.typeProblem.question_id
       );
       this.deleteProblem(index);
+    },
+  },
+  watch: {
+    params: {
+      handler(newVal, oldVal) {
+        this.checkShow();
+      },
+      immediate: true,
+      deep: true,
     },
   },
 };

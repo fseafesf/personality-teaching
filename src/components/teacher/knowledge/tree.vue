@@ -3,7 +3,8 @@
     <div class="custom-tree-container">
       <div class="block">
         <el-tree :data="treeData" ref="tree" :show-checkbox="showCheckbox" node-key="id" default-expand-all
-          :current-node-key="currentNode" @check-change="handleNodeClick" @node-click="nodeClickHandler">
+          :expand-on-click-node="false" highlight-current :current-node-key="currentNode"
+          @check-change="checkedClickHandler" @node-click="nodeClickHandler">
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <div class="label">
               <span>{{ node.label }}</span>
@@ -116,12 +117,13 @@ export default {
               type: 'success',
               message: '删除成功!'
             });
+
             this.$store.dispatch('PointListActive')
           }
         })
       }).catch(() => { });
     },
-    handleNodeClick(data, checked) {
+    checkedClickHandler(data, checked) {
       this.$emit('checkedClick', this.$refs.tree.getCheckedKeys().join(','), checked)
     },
     nodeClickHandler(data) {

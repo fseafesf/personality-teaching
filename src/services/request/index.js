@@ -30,19 +30,23 @@ class PtRequest {
     this.instance.interceptors.response.use(res => {
       store.commit('changeIsLoading', false)
       nprogress.done();
-
-      console.log(res)
       if (res.data.code !== 0) {
         Message({
           type: 'error',
           message: res.data.msg
         });
       }
-      if (res.data.code == 1001){ //检查登录态，若登录态不合法则跳转至登录
-        router.replace({path:'/login'})
+      if (res.data.code == 1001) { //检查登录态，若登录态不合法则跳转至登录
+        router.replace({ path: '/login' })
       }
       return res
     }, err => {
+      if (err.response.data.code) {
+        Message({
+          type: 'error',
+          message: err.response.data.msg
+        });
+      }
       return err
     })
   }

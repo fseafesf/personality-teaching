@@ -2,16 +2,11 @@
   <div class="examPaper">
     <div class="examHead">
       <div class="examSearch">
-        <el-input
-          placeholder="请输入内容"
-          @change="queryPaper"
-          v-model="input"
-          clearable
-        >
+        <el-input placeholder="请输入内容" v-model="input" clearable>
         </el-input>
       </div>
       <div class="examBtn">
-        <el-button type="primary">查询试卷</el-button>
+        <el-button type="primary" @click="queryPaper">查询试卷</el-button>
         <el-button type="primary" @click="composePaper">新增试卷</el-button>
       </div>
     </div>
@@ -26,12 +21,10 @@
           prop="exam_name"
         >
         </el-table-column>
-        <el-table-column
-          label="创建时间"
-          align="center"
-          width="250"
-          prop="update_time"
-        >
+        <el-table-column label="创建时间" align="center" width="250">
+          <template v-slot="scope">
+            {{ formDate(scope.row.update_time) }}
+          </template>
         </el-table-column>
         <el-table-column label="难易度" align="center" width="100">
         </el-table-column>
@@ -39,7 +32,7 @@
         </el-table-column>
 
         <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
+          <template v-slot="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
               >编辑</el-button
             >
@@ -61,22 +54,35 @@
         </el-table-column>
       </el-table>
     </div>
+    <div class="block">
+      <el-pagination
+        layout="prev, pager, next"
+        :current-page="param.page"
+        :total="total"
+        :page-size="param.page_size"
+        @current-change="handleCurrentChange"
+        background
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-import { deletePage, searchPage } from "@/services";
+import { deletePage, searchPage, search, createPage } from "@/services";
 import { mapActions, mapMutations, mapState } from "vuex";
 import { setCache, getCache, clearCache } from "@/utils/localstorage";
+import { formDate } from "@/utils/Date/formatDate";
 export default {
   name: "tExamPaper",
   data() {
     return {
       input: "",
       tableData: [],
+      total: 0,
       param: {
-        page: "1",
-        page_size: "10",
+        page: 1,
+        page_size: 10,
       },
     };
   },
@@ -107,28 +113,46 @@ export default {
   methods: {
     ...mapMutations("tTest", ["initPages", "clearPageData"]),
     ...mapActions("tTest", ["getInitPages", "getProblems"]),
+    formDate,
+    // 获取试卷列表
     getPages() {
       this.getInitPages({
         cookie: this.$cookies.get("session_key"),
         ...this.param,
       }).then((res) => {
+        this.total = res;
         this.tableData = this.pages;
       });
     },
+
+    // 查询试卷
     queryPaper() {
+      console.log(
+        typeof JSON.stringify({
+          text: this.input,
+        })
+      );
       if (this.input.trim() !== "") {
-        searchPage(this.$cookies.get("session_key"), this.input).then((res) => {
-          console.log(res);
-          this.tableData = Array.of(res.data);
-        });
+        search(this.$cookies.get("session_key"), {
+          text: this.input,
+        })
+          .then((res) => {
+            console.log(res);
+            this.tableData = res.data.exam_list;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
+    // 新增试卷
     composePaper() {
       this.$router.replace({
         path: "/teacher/examHome/test",
       });
     },
 
+    // 编辑试卷
     handleEdit(index, row) {
       this.$router.replace({
         path: "/teacher/examHome/preview",
@@ -138,22 +162,60 @@ export default {
       });
       setCache("exam_id", row.exam_id);
     },
-    handleCopy(index, row) {},
-    handleDelete(index, row) {
-      console.log(row.exam_id);
-      deletePage(this.$cookies.get("session_key"), row.exam_id).then((res) => {
-        console.log(res);
-        this.getPages();
+
+    // 复制试卷
+    handleCopy(index, row) {
+      searchPage("", row.exam_id).then((res) => {
+        let data = new FormData();
+        data.append("exam_name", res.data.exam_name);
+        data.append("questions", res.data.questions);
+        data.append("comment", res.data.comment);
+        // console.log(data)
+        createPage("", data).then(() => {
+          this.$message({
+            type: "success",
+            message: "复制成功",
+          });
+          this.getPages();
+        });
       });
     },
+
+    // 删除试卷
+    handleDelete(index, row) {
+      this.$confirm("此操作将永久删除该试卷, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          deletePage(this.$cookies.get("session_key"), row.exam_id).then(
+            (res) => {
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+                duration: 1000,
+              });
+              this.getPages();
+            }
+          );
+        })
+        .catch(() => {});
+    },
+
+    //发布试卷
     handleRelease(index, row) {
       console.log(row.exam_id);
       this.$router.replace({
         path: "/teacher/examHome/release",
         query: {
-          id: row.id,
+          id: row.exam_id,
         },
       });
+    },
+    handleCurrentChange(newPage) {
+      this.param.page = newPage;
+      this.getPages();
     },
   },
   computed: {
@@ -189,8 +251,13 @@ export default {
     }
   }
   .examList {
-    min-height: 500px;
+    min-height: 600px;
     background: #ffffff;
+  }
+  .block {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
   }
 }
 </style>

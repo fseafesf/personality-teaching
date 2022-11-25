@@ -6,7 +6,16 @@
         <span></span>
         <span>{{ typeProblem.context }}</span>
       </div>
-      <div class="multi-option">多选题选项区</div>
+      <div class="multi-option">
+        <div
+          class="option"
+          v-for="(item, index) in typeProblem.question_option_list"
+          :key="index"
+        >
+          <span> {{ toSelect(index) }}、</span>
+          <span> {{ item.Context }}</span>
+        </div>
+      </div>
     </div>
     <div
       class="multi-operate"
@@ -36,6 +45,7 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import { toSelect } from "@/utils/transfrom";
 export default {
   name: "multi",
   data() {
@@ -50,8 +60,12 @@ export default {
       default: () => ({}),
     },
   },
+  created(){
+    console.log(this.typeProblem)
+  },
   methods: {
     ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
+    toSelect,
     handleDelete() {
       console.log(this.typeProblem.question_id);
       console.log(this.page.selectProblem);
@@ -62,6 +76,7 @@ export default {
       console.log(index);
       this.deleteProblem(index);
     },
+   
   },
   computed: {
     ...mapState("tTest", ["page"]),
@@ -82,7 +97,16 @@ export default {
       }
     }
 
-   
+    .multi-option {
+      display: flex;
+      padding-right: 40px;
+      flex-wrap: wrap;
+      .option{
+        width: 600px;
+        height: 30px;
+        line-height: 30px;
+      }
+    }
   }
   .special {
       display: none !important;

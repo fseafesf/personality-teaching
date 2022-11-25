@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item label="题干:" prop="context">
-        <el-input type="textarea" v-model="form.context"></el-input>
+        <el-input type="textarea" :rows="4" v-model="form.context"></el-input>
       </el-form-item>
 
       <template v-if="form.type == 1 || form.type == 2">
@@ -44,7 +44,7 @@
       </template>
 
       <el-form-item label="答案解析:" prop="answer">
-        <el-input type="textarea" v-model="form.answer"></el-input>
+        <el-input type="textarea" :rows="4" v-model="form.answer"></el-input>
       </el-form-item>
 
       <el-form-item label="知识点联系:">

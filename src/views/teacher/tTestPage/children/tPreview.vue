@@ -108,7 +108,7 @@ export default {
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
       searchPage(this.$cookies.get("session_key"), this.pageId).then((res) => {
-        console.log(res);
+        // console.log(res);
         this.setPageData({
           key: "title",
           val: res.data.exam_name,
@@ -264,7 +264,7 @@ export default {
     },
     params: {
       handler(newVal, oldVal) {
-        console.log(newVal);
+        // console.log(newVal);
         setCache("selectProblem", newVal);
         this.getProblems();
       },
@@ -318,8 +318,9 @@ export default {
       }
       .left-save {
         .left-comment {
-          width: 100px;
+          width: 200px;
           height: 100%;
+          margin-left: 100px;
         }
       }
     }

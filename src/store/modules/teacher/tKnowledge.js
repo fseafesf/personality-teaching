@@ -15,7 +15,7 @@ const tKnowledge = {
     changePointOnes(state, data) {
       state.ponitOnes = data
     },
-    changepointDetail(state, data) {
+    changePointDetail(state, data) {
       state.pointDetail = data
     },
     changeCurrentNode(state, data) {
@@ -25,21 +25,17 @@ const tKnowledge = {
   actions: {
     PointListActive(context) {
       getPointList().then(res => {
-        context.commit('changePoints', mapTree(res.data.list))
+        res ? context.commit('changePoints', mapTree(res.data.list)) : ''
       })
     },
-    PointOneActive(context) {
-      getPointOne().then(res => {
-        context.commit('changePointOnes', res.data)
-      })
-    },
+
     PointByIdActive(context, id) {
       context.commit('changeCurrentNode', id)
       getPointById(id).then(res => {
-        // console.log(res)
-        context.commit('changepointDetail', res.data)
+        res ? context.commit('changePointDetail', res.data) : ''
       })
     },
+
     PointAddActive(context, payload) {
       return new Promise((resolve, reject) => {
         addPoint(payload.parent_knp_id, payload.level, payload.name, payload.context, 'cs').then(res => {

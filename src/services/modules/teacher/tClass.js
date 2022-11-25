@@ -5,7 +5,7 @@ import ptRequest from '../../request'
  * @param {*}  {page_num：分页页号 , page_size：分页大小} 
  * @returns 
  */
-export const getClassAPI = (page_num, page_size) => {
+export const getClassAPI = ({page_num, page_size}) => {
   return ptRequest.get({
     url: '/teacher/class/list',
     params: {
@@ -83,12 +83,12 @@ export const getAppointedClassAPI = (class_id) => {
 /**
  * 获取学生列表
  */
-export const getStuListAPI = (cookie, class_id, { page_num, page_size } ) => {
+export const getStuListAPI = (class_id, { page_num, page_size } ) => {
   return ptRequest.get({
     url: '/teacher/class/student/list',
-    headers: {
-      'Cookie': `session_key=${cookie}`
-    },
+    // headers: {
+    //   'Cookie': `session_key=${cookie}`
+    // },
     params: {
       class_id,
       page_num,
@@ -180,8 +180,8 @@ export const addStuToClassAPI = (cookie, class_id, student_id ) => {
  * 查询教师信息
  * @returns 
  */
-// export const getTeacherInfoAPI = () => {
-//   return ptRequest.get({
-//     url: '/teacher/info'
-//   })
-// }
+export const getTeacherInfoAPI = () => {
+  return ptRequest.get({
+    url: '/teacher/info',
+  })
+}
