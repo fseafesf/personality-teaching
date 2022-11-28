@@ -144,7 +144,19 @@ const routes = [
   {
     path: '/teacher/analysis',
     name: 'tAnalysis',
-    component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue')
+    component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue'),
+    children: [
+      {
+        name: "classAnalysis",
+        path: "classAnalysis",
+        component: () => import('@/views/teacher/tAnalysis/children/classAnalysis.vue')
+      },
+      {
+        name: "studentAnalysis",
+        path: "studentAnalysis",
+        component: () => import("@/views/teacher/tAnalysis/children/studentAnalysis.vue")
+      }
+    ]
   },
 
   // 学生
