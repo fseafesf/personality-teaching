@@ -101,7 +101,17 @@ export default new Vuex.Store({
       },
       {
         name: '学情分析',
-        path: '/teacher/analysis'
+        path: '/teacher/analysis',
+        children: [
+          {
+            name: "查看班级情况",
+            path: "/teacher/analysis/classAnalysis"
+          },
+          {
+            name: "查看个人情况",
+            path: "/teacher/analysis/studentAnalysis"
+          }
+        ]
       }
     ],
     currentIndex: 0,

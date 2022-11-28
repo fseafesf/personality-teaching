@@ -21,6 +21,11 @@ const routes = [
     component: () => import('@/views/common/Login.vue'),
   },
   {
+    path: '/changpwd',
+    name: 'Changepwd',
+    component: () => import('@/views/common/Changepwd.vue'),
+  },
+  {
     path: '/teacher/knowledge',
     name: 'tKnowledge',
     component: () => import('@/views/teacher/tKnowledge/tKnowledge.vue'),
@@ -139,7 +144,19 @@ const routes = [
   {
     path: '/teacher/analysis',
     name: 'tAnalysis',
-    component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue')
+    component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue'),
+    children: [
+      {
+        name: "classAnalysis",
+        path: "classAnalysis",
+        component: () => import('@/views/teacher/tAnalysis/children/classAnalysis.vue')
+      },
+      {
+        name: "studentAnalysis",
+        path: "studentAnalysis",
+        component: () => import("@/views/teacher/tAnalysis/children/studentAnalysis.vue")
+      }
+    ]
   },
 
   // 学生
