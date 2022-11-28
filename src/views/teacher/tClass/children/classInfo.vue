@@ -7,14 +7,13 @@
         <span><strong>班级描述：</strong>{{$store.state.tClass.classInfo.major}}</span>
         <span><strong>任课老师：</strong>{{$store.state.tClass.teacherInfo.name}}</span>
       </div>
-      <el-button type="success" size="mini" @click="$router.go(-1)">退出</el-button>
+      <el-button type="success" size="mini" @click="$router.go(-1)">返回</el-button>
     </div>
 
     <!-- 学生列表 -->
     <div class="studentBox">
       <h3 class="title">学生列表</h3>
-      <el-button type="primary" size="small" class="addStuBtn" @click="addStudentFn">新增学生</el-button>
-      <el-button type="primary" size="small" @click="unjoinStuFn">未加入班级学生</el-button>
+      <el-button type="primary" size="small" @click="unjoinStuFn">添加学生</el-button>
       <el-table
         :data="$store.state.tClass.studentList"
         stripe
@@ -41,28 +40,6 @@
           style="margin-top: 12px">
       </el-pagination>
     </div>
-
-    <!-- 新增学生对话框 -->
-    <el-dialog title="新增学生" :visible.sync="dialogUnJoinVisible" width="40%" @close="dialogCloseFn">
-      <el-form :model="addStuForm" ref="addStuRef" label-width="90px" :rules="addStuRules">
-        <el-form-item label="姓名:" prop="name">
-          <el-input v-model="addStuForm.name" minlength="1"></el-input>
-        </el-form-item>
-        <el-form-item label="学院:" prop="college">
-          <el-input v-model="addStuForm.college" minlength="1"></el-input>
-        </el-form-item>
-        <el-form-item label="专业:" prop="major">
-          <el-input v-model="addStuForm.major" minlength="1"></el-input>
-        </el-form-item>
-        <el-form-item label="电话号码:" prop="phone_number">
-          <el-input v-model="addStuForm.phone_number" minlength="1"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogUnJoinVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmAddStuFn" >保存</el-button>
-      </div>
-    </el-dialog>
 
      <!-- 未加入班级学生 -->
     <el-dialog title="未加入班级的学生" :visible.sync="dialogTableVisible" width="70%">
@@ -93,19 +70,12 @@
 </template>
 
 <script>
-import { addStudentAPI, getUnjoinStuAPI, deleteStuAPI, addStuToClassAPI } from '@/services/modules/teacher/tClass.js'
+import { getUnjoinStuAPI, deleteStuAPI, addStuToClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions } from 'vuex'
 export default {
   name: 'classInfo',
   data() {
     return {
-      addStuForm: {  // 未加入班级的信息
-        name: "",
-        college: "",
-        major: "",
-        phone_number: ""
-      }, 
-      dialogUnJoinVisible: false,  // 新增学生对话框是否显示
       dialogTableVisible: false,   // 未加入班级学生对话框是否显示
       unJoinClassList: [],  // 未加入班级学生列表    
       unJoinStuPage: {  // 未加入班级学生页码
@@ -113,40 +83,22 @@ export default {
         page_size: 10
       },   
       unJoinStuTotal: 0,
-      // 新增学生表单验证规则
-      addStuRules: {
-        name: [
-          {required: true, message: "请输入学生姓名", trigger: "blur"}
-        ],
-        college: [
-          {required: true, message: "请输入学院名", trigger: "blur"}
-        ],
-        major: [
-          {required: true, message: "请输入专业名", trigger: "blur"}
-        ],
-        phone_number: [
-          {required: true, message: "请输入学生电话号码", trigger: "blur"},
-          {pattern: /^1([3456789])\d{9}$/, message: "电话号码必须是11位且以1开头,第二位数字是3456789中的一位", trigger: "blur"}
-        ]
-      }
     }
   },
+  async mounted() {
+    let res = await getAppointedClassAPI(this.$store.state.tClass.classId)
+    this.$store.state.tClass.classInfo = res.data
+    this.getStuListActions({ cookie: this.$cookies.get("session_key") })
+    this.getTeacherInfoActions()
+  },
   methods: {
-    ...mapActions(['getStuListActions']),
+    ...mapActions(['getStuListActions', 'getTeacherInfoActions']),
     // 获取未加入班级学生
     async unjoinStuFn() {
       this.dialogTableVisible = true
       const res = await getUnjoinStuAPI(this.$cookies.get("session_key"), this.unJoinStuPage)
       this.unJoinStuTotal = res.total
       this.unJoinClassList = res.data
-    },
-    // 点击新增学生按钮
-    addStudentFn() {
-      this.dialogUnJoinVisible = true
-    },
-    // 关闭对话框
-    dialogCloseFn() {
-      this.$refs.addStuRef.resetFields()
     },
     // 未加入班级学生页码
     handleSizeChange(sizes) {
@@ -168,21 +120,6 @@ export default {
       this.$store.state.tClass.stuListPage.page_num = nowPage
       this.getStuListActions(this.$store.state.tClass.stuListPage)
     },
-    // 新增学生
-    confirmAddStuFn() {
-      this.$refs.addStuRef.validate(async valid => {
-        if (valid) {
-          const res = await addStudentAPI(this.$cookies.get("session_key"),this.addStuForm)
-          if (res.code === 0) {
-            this.$message.success(res.msg)
-            this.dialogUnJoinVisible = false
-          }   
-        } else {
-          return false
-        }
-      })
-         
-    }, 
     // 删除学生
     deleteStuFn(obj) {
       this.$confirm('是否删除学生？', '提示', {
@@ -256,6 +193,7 @@ export default {
     .title {
       font-size: 20px;
       font-weight: 500;
+      margin-bottom: 8px;
     }
     .addStuBtn {
       margin: 16px 0;

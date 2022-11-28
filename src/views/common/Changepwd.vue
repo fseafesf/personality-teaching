@@ -1,25 +1,25 @@
 <template>
   <div id="modal">
     <div id="modal-content">
-      <h1>个性化教学系统登录</h1>
+      <h1>修改密码</h1>
       <div id="login">
         <el-row class="input-line">
-          <el-col :span="4"><span class="text">账号：</span></el-col>
-          <el-col :span="20">
-            <el-input v-model="username" placeholder="请输入账号"></el-input>
+          <el-col :span="6"><span class="text">旧密码：</span></el-col>
+          <el-col :span="18">
+            <el-input v-model="old_pwd" placeholder="请输入旧密码"></el-input>
           </el-col>
         </el-row>
         <el-row class="input-line">
-          <el-col :span="4"><span class="text">密码：</span></el-col>
-          <el-col :span="20">
-            <el-input v-model="password" placeholder="请输入密码" show-password @keyup.enter.native="sendLogin"></el-input>
+          <el-col :span="6"><span class="text">新密码：</span></el-col>
+          <el-col :span="18">
+            <el-input v-model="new_pwd" placeholder="请输入新密码"  @keyup.enter.native="sendChange"></el-input>
           </el-col>
-          <el-button type="primary" id="login-btn" @click="sendLogin">登录</el-button>
+          <el-button type="primary" id="login-btn" @click="sendChange">确认修改</el-button>
         </el-row>
       </div>
       <div id="alert">
-        当前为内部测试账号
-        <p>用户名: cs / 密码:123456</p>
+        请牢记新修改的密码
+        <p>初始密码:123456</p>
       </div>
     </div>
     <div id="clock">
@@ -31,18 +31,18 @@
 </template>
 
 <script>
-import { login } from "@/services";
+import { changePwd } from "@/services";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 export default {
-  name: "Login",
+  name: "Changepwd",
   data() {
     return {
-      username: "",
-      password: "",
+      old_pwd: "",
+      new_pwd: "",
       time: "",
       date: "",
     };
@@ -55,26 +55,20 @@ export default {
     });
   },
   methods: {
-    sendLogin() {
-      if (this.username === "" || this.password === "") {
+    sendChange() {
+      if (this.old_pwd === "" || this.new_pwd === "") {
         alert("输入内容不能为空");
       } else {
-        if (this.username === 'xs' && this.password === '123456') {
-          this.$store.commit('changenavBarData')
-          return this.$router.push({ path: "/student/home" });
-        }
-
-        login({
-          username: this.username,
-          password: encrypt(this.password),
+        changePwd({
+          old_pwd: encrypt(this.old_pwd),
+          new_pwd: encrypt(this.new_pwd),
         }).then((res) => {
           console.log(res);
           if (res.code == 0) {
-            this.$router.replace({ path: "/home" }); //账号密码正确则成功跳转
-            // console.log(encrypt(this.password));
+            this.$router.replace({ path: "/home" }); //修改成功则跳转至首页
           } else {
-            this.username = "";
-            this.password = "";
+            this.old_pwd = "";
+            this.new_pwd = "";
           }
         });
       }
@@ -167,7 +161,6 @@ export default {
 
 #login {
   width: 380px;
-  // border: 1px solid black;
   position: absolute;
   left: 50%;
   top: 53%;

@@ -21,6 +21,11 @@ const routes = [
     component: () => import('@/views/common/Login.vue'),
   },
   {
+    path: '/changpwd',
+    name: 'Changepwd',
+    component: () => import('@/views/common/Changepwd.vue'),
+  },
+  {
     path: '/teacher/knowledge',
     name: 'tKnowledge',
     component: () => import('@/views/teacher/tKnowledge/tKnowledge.vue'),

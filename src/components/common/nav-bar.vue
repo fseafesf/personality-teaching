@@ -6,6 +6,7 @@
           <router-link :to="item.path">{{ item.name }}</router-link>
         </div>
       </div>
+      <Acount id="acount"/>
     </div>
   </div>
 </template>
@@ -13,8 +14,10 @@
 <script>
 
 import store from '../../store'
+import Acount from './acount.vue'
 
 export default {
+  components:{Acount},
   props: {
     navBarData: {
       type: Array,
@@ -74,7 +77,7 @@ export default {
   .content {
     display: flex;
     height: 100%;
-
+    position: relative;
     .title {
       width: 124px;
       height: 50px;
@@ -93,6 +96,12 @@ export default {
       &:hover {
         background-color: #3982ce;
       }
+    }
+    #acount{
+      margin-left: 150px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
   }
 }
