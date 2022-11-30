@@ -125,7 +125,6 @@ const routes = [
       }
     ]
   },
-
   {
     path: '/teacher/review',
     name: 'tReview',
@@ -149,10 +148,35 @@ const routes = [
 
   // 学生
   {
+    path: '/student',
+    redirect: '/student/home'
+  },
+  {
     path: '/student/home',
     name: 'sHome',
     component: () => import('@/views/student/sHome/sHome.vue')
   },
+  {
+    path: '/student/class',
+    name: 'sClass',
+    component: () => import('@/views/student/sHome/children/sClass.vue')
+  },
+  {
+    path: '/student/task',
+    name: 'sTask',
+    component: () => import('@/views/student/sHome/children/sTask.vue'),
+    meta: {
+      hideNavBar: true
+    }
+  },
+  {
+    path: '/student/answer',
+    name: 'sAnswer',
+    component: () => import('@/views/student/sHome/children/sAnswer.vue'),
+    meta: {
+      hideNavBar: true
+    }
+  }
 ]
 
 const router = new VueRouter({
@@ -161,17 +185,17 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.name != 'Login') {
-    if (cookies.get("session_key")) {
-      next()
-    } else {
-      router.replace({ path: '/login' })
-    }
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.name != 'Login') {
+//     if (cookies.get("session_key")) {
+//       next()
+//     } else {
+//       router.replace({ path: '/login' })
+//     }
+//   } else {
+//     next()
+//   }
+// })
 
 
 export default router

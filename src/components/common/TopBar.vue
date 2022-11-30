@@ -22,6 +22,7 @@
   align-items: center;
   position: fixed;
   left: 0;
+  z-index: 999;
 
   .title {
     display: flex;

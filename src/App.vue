@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <NavBar :nav-bar-data="$store.state.navBarData" />
+    <NavBar :nav-bar-data="$store.state.navBarData" v-if="!$route.meta.hideNavBar" />
     <router-view class="wrap-v1" />
     <Loading />
   </div>
 </template>
 
 <script>
-import NavBar from './components/common/nav-bar.vue'
 import Loading from './components/common/Loading.vue'
+import NavBar from './components/common/nav-bar.vue'
 
 export default {
   name: "App",
-  components: { NavBar, Loading, },
+  components: { NavBar, Loading },
   mounted() {
     // console.log(this.$route.meta);
   }
