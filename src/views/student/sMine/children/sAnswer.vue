@@ -21,7 +21,9 @@
 
       <div class="right wrap-v7" ref="rightRef">
         <div class="title">选择题</div>
-        <div class="index">1</div>
+        <div class="option-index">
+          <div class="index" v-for="(item, index) in 10">{{ index + 1 }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -116,6 +118,34 @@ export default {
       border-radius: 5px;
       top: 50px;
       margin-left: 920px;
+      box-sizing: border-box;
+
+      .title {
+        margin-bottom: 10px;
+      }
+
+      .option-index {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: 10px;
+        gap: 20px;
+
+        .index {
+          width: 20px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          border: 2px solid var(--primary-color);
+          border-radius: 50%;
+          padding: 4px;
+
+          &:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
 }
