@@ -1,4 +1,4 @@
-import { getClassAPI, getStuListAPI, getTeacherInfoAPI } from '@/services/modules/teacher/tClass.js'
+import { getClassAPI, getStuListAPI, getTeacherInfoAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
 const tClass = {
   state: () => ({
     name: 'tClass',
@@ -29,6 +29,14 @@ const tClass = {
     getStuList(state, val) {
       state.studentList = val.data
       state.studentTotal = val.total
+    },
+    // 保存班级id
+    saveClassId(state, data) {
+      state.classId = data
+    },
+    // 保存单个班级信息
+    getClassInfo(state, data) {
+      state.classInfo = data
     }
   },
   actions: {
@@ -46,13 +54,17 @@ const tClass = {
         store.commit('getTeacherInfo', res.data)
       }
     },
-    // 获取班级学生列表
-    async getStuListActions(store) {
-      const res = await getStuListAPI(store.state.classId, store.state.stuListPage)
-      if (res.code === 0) {
-        store.commit("getStuList", res)
-      }
+    // 查询单个班级
+    getPointedClassIdActions(store, classid, cookie) {
+      store.commit("saveClassId", classid)
+      getAppointedClassAPI(classid).then(res => {
+        res ? store.commit("getClassInfo", res.data) : ""
+      })
+      getStuListAPI(classid, store.state.stuListPage).then(res => {
+        res ? store.commit("getStuList", res) : ""
+      })
     }
+
   },
   getters: {
 

@@ -9,7 +9,6 @@ import tTest from './modules/teacher/tTest'
 import tTopic from './modules/teacher/tTopic'
 
 import home from './modules/common/home'
-import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
@@ -185,7 +184,4 @@ export default new Vuex.Store({
     tTest,
     tTopic
   },
-  plugins: [
-    createPersistedState()
-  ]
 })

@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { getUnjoinStuAPI, deleteStuAPI, addStuToClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
+import { getUnjoinStuAPI, deleteStuAPI, addStuToClassAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions } from 'vuex'
 export default {
   name: 'classInfo',
@@ -90,10 +90,8 @@ export default {
       keyword: "",
     }
   },
-  async mounted() {
-    let res = await getAppointedClassAPI(this.$store.state.tClass.classId)
-    this.$store.state.tClass.classInfo = res.data
-    this.getStuListActions({ cookie: this.$cookies.get("session_key") })
+  mounted() {
+    this.$store.dispatch("getPointedClassIdActions", this.$route.params.id)
     this.getTeacherInfoActions()
   },
   computed: {

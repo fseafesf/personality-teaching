@@ -86,7 +86,7 @@
 </template>
 
 <script >
-import { addClassAPI, deleteClassAPI, modifyClassAPI, addStudentAPI } from '@/services/modules/teacher/tClass.js'
+import { addClassAPI, deleteClassAPI, modifyClassAPI, addStudentAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions} from 'vuex';
 export default {
   data() {
@@ -181,10 +181,9 @@ export default {
       
     },
     // 查看班级信息
-    checkClassInfoFn(obj) {
-      this.$router.push( '/teacher/class/classInfo/')
+    async checkClassInfoFn(obj) {
+      this.$router.push({path:'/teacher/class/classInfo/' + obj.class_id})
       this.$store.state.tClass.classId = obj.class_id
-  
     },
     // 删除班级
      delClassBtn(obj) {

@@ -83,7 +83,7 @@ const routes = [
     component: () => import('@/views/teacher/tClass/tClass.vue'),
     children: [
       {
-        path: 'classInfo',
+        path: 'classInfo/:id',
         component: () => import('@/views/teacher/tClass/children/classInfo.vue'),
         meta: {
           isChildren: true,
