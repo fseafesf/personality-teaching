@@ -11,10 +11,14 @@
             <span>题目内容</span>
           </div>
           <div class="option">
-            <div class="option-item" v-for="(item, index) in 4">
-              <span class="option-label">{{ toSelect(index) }}</span>
-              <span>{{ item }}</span>
-            </div>
+            <el-radio-group v-model="radio" size="small">
+              <!-- size为small -->
+              <div class="option-label" v-for="(item, index) in 4">
+                <el-radio-button style="border-radius: 50%!important;" :label="toSelect(index)" />
+                <div class="option-content">{{ item }}</div>
+              </div>
+            </el-radio-group>
+
           </div>
         </template>
       </div>
@@ -39,7 +43,8 @@ export default {
   components: { TopBar },
   data() {
     return {
-      toSelect
+      toSelect,
+      radio: 'A'
     }
   },
   mounted() {
@@ -70,6 +75,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .el-radio-group {
+  font-size: 16px;
+}
+
+/deep/ .el-radio-button__inner {
+  width: 0px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .task {
   display: flex;
 
@@ -87,24 +105,14 @@ export default {
       .option {
         margin: 20px;
 
-        .option-item {
+        .option-label {
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-          .option-label {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            line-height: 20px;
-            text-align: center;
-            margin: 0 10px 8px 0;
-            background-color: var(--primary-color);
-            color: #fff;
-            padding: 2px;
-            border-radius: 50%;
-          }
-
-          &:hover {
-            background-color: #F7FAFC;
-            cursor: pointer;
+          .option-content {
+            margin-left: 10px;
           }
         }
       }
@@ -119,7 +127,6 @@ export default {
       border-radius: 5px;
       top: 50px;
       margin-left: 920px;
-      box-sizing: border-box;
 
       .title {
         margin-bottom: 10px;
@@ -135,7 +142,7 @@ export default {
           height: 20px;
           line-height: 20px;
           text-align: center;
-          border: 2px solid var(--primary-color);
+          border: 2px solid #eee;
           border-radius: 50%;
           padding: 4px;
 
