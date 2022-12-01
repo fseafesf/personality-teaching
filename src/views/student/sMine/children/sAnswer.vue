@@ -5,12 +5,20 @@
     </TopBar>
     <div class="answer-wrapper">
       <div class="left wrap-v6" ref="leftRef">
-        <template v-for="item in 100">
+        <template v-for="(item, index) in 10">
           <div>
-            {{ item }}
+            <span>{{ index + 1 }}、</span>
+            <span>题目内容</span>
+          </div>
+          <div class="option">
+            <div class="option-item" v-for="(item, index) in 4">
+              <span class="option-label">{{ toSelect(index) }}</span>
+              <span>{{ item }}</span>
+            </div>
           </div>
         </template>
       </div>
+
       <div class="right wrap-v7" ref="rightRef">
         <div class="title">选择题</div>
         <div class="index">1</div>
@@ -21,12 +29,22 @@
 
 <script >
 import TopBar from '@/components/common/TopBar.vue';
+import { getQuestionList } from '@/services';
+import { toSelect } from '@/utils/transfrom';
 
 export default {
-  name: "sAnswer",
+  name: "sTask",
   components: { TopBar },
+  data() {
+    return {
+      toSelect
+    }
+  },
   mounted() {
     // window.addEventListener('scroll', this.handleScroll, true)
+    // getQuestionList(1, 10).then(res => {
+    //   console.log(res)
+    // })
   },
   methods: {
     goback() {
@@ -63,6 +81,31 @@ export default {
       border-radius: 5px;
       box-sizing: border-box;
       padding: 20px;
+
+      .option {
+        margin: 20px;
+
+        .option-item {
+
+          .option-label {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            margin: 0 10px 8px 0;
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 2px;
+            border-radius: 50%;
+          }
+
+          &:hover {
+            background-color: #F7FAFC;
+            cursor: pointer;
+          }
+        }
+      }
     }
 
     .right {

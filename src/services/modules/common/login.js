@@ -7,9 +7,9 @@ export function login(data) {
   })
 }
 
-export function changePwd(data){
+export function changePwd(data) {
   return ptRequest.put({
-    url:'/pwd',
+    url: '/pwd',
     data
   })
 }

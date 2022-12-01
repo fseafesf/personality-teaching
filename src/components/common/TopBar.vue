@@ -1,14 +1,34 @@
 <template>
   <div class="top-bar">
-    <div class="title wrap-v1">
-      <slot>
-        默认标题
+    <div class="left" @click="leftClickHandler">
+      <slot name="left">
+        <span class="back el-icon-back">返回</span>
       </slot>
     </div>
+
+    <div class="title wrap-v1">
+      <div class="center">
+        <slot>
+          默认标题
+        </slot>
+      </div>
+    </div>
+
+    <div class="right"></div>
+
   </div>
 </template>
 
-<script setup>
+<script>
+
+export default {
+  emits: ['left-click'],
+  methods: {
+    leftClickHandler() {
+      this.$emit('left-click')
+    }
+  }
+}
 
 </script>
 
@@ -18,11 +38,21 @@
   height: 40px;
   background-color: #4498ee;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   position: fixed;
   left: 0;
   z-index: 999;
+  box-sizing: border-box;
+  padding: 20px;
+
+  .left {
+    color: #fff;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 
   .title {
     display: flex;

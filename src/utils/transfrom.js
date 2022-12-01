@@ -68,3 +68,38 @@ export function transfromStudent(arr) {
   });
   return res
 }
+
+export function transfromStatus(key) {
+  function statusClass(key){
+    switch (key) {
+      case -1:
+        return "uncommitted"
+      case 0:
+        return "unfinished"
+      case 1:
+        return "uncorrected"
+      case 2:
+        return "finished"
+      default:
+        break;
+    }
+  }
+  function statusText(key){
+    switch (key) {
+      case -1:
+        return "未提交"
+      case 0:
+        return "未批改完"
+      case 1:
+        return "未批改"
+      case 2:
+        return "已完成"
+      default:
+        break;
+    }
+  }
+  return {
+    statusClass,
+    statusText
+  }
+}

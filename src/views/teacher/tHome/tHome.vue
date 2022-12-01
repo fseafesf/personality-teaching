@@ -8,9 +8,9 @@
 import cookies from 'vue-cookies';
 export default {
   name: "Home",
-  beforeCreate(){
+  beforeCreate() {
     if (!cookies.get("session_key")) {
-      this.$router.replace({ path: '/login'})
+      this.$router.replace({ path: '/login' })
     }
   },
 }

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <NavBar :nav-bar-data="$store.state.navBarData" v-if="!$route.meta.hideNavBar" />
+    <NavBar :nav-bar-data="$store.state.navBarData" v-if="$store.state.navBarData.length && !$route.meta.hideNavBar" />
     <router-view class="wrap-v1" />
     <Loading />
   </div>

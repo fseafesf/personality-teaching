@@ -285,15 +285,14 @@ export default {
               exam_id: this.pageId,
               start_time: formDate(this.value1[0]),
               end_time: formDate(this.value1[1]),
-              comment: "123",
+              comment: this.comment,
             };
             releasePageClass(data).then((res) => {
               console.log(res);
               this.checkedClasses = [];
+              this.comment = ""
             });
           }
-          console.log("班级发布");
-          console.log(transfromClass(this.checkedClasses));
         } else if (this.radio === "个人") {
           if (this.multipleSelection.length === 0) {
             this.$message({
@@ -308,7 +307,7 @@ export default {
               exam_id: this.pageId,
               start_time: formDate(this.value1[0]),
               end_time: formDate(this.value1[1]),
-              comment: "123",
+              comment: this.comment,
             };
             releasePageStudent(data).then((res) => {
               console.log(res);

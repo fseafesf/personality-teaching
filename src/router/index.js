@@ -6,14 +6,14 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   },
 
   // 老师
   {
     path: '/home',
-    name: 'Home',
-    component: () => import('@/views/common/Home.vue')
+    name: 'tHome',
+    component: () => import('@/views/teacher/tHome/tHome.vue')
   },
   {
     path: '/login',
@@ -83,7 +83,7 @@ const routes = [
     component: () => import('@/views/teacher/tClass/tClass.vue'),
     children: [
       {
-        path: 'classInfo',
+        path: 'classInfo/:id',
         component: () => import('@/views/teacher/tClass/children/classInfo.vue'),
         meta: {
           isChildren: true,
@@ -126,45 +126,71 @@ const routes = [
     ]
   },
   {
-    path: '/teacher/review',
-    name: 'tReview',
-    component: () => import('@/views/teacher/tReview/tReview.vue'),
+    path: '/teacher/reviewHome',
+    name: 'tReviewHome',
+    component: () => import('@/views/teacher/tReview/index'),
+    redirect: '/teacher/reviewHome/review',
     children: [
       {
+        path: 'review',
+        name: 'tReview',
+        component: () => import('@/views/teacher/tReview/children/tReview.vue'),
+      },
+      {
         // name: 'correctPaper',
-        path: 'correctPaper',
-        component: () => import('@/views/teacher/tReview/children/correctPaper.vue'),
+        path: 'correctClass',
+        component: () => import('@/views/teacher/tReview/children/correctClass.vue'),
         meta: {
           isChildren: true,
         }
+      },
+      {
+        path: 'correctStudent',
+        component: () => import('@/views/teacher/tReview/children/correctStudent.vue')
+      },
+      {
+        path: 'correctReview',
+        component: () => import('@/views/teacher/tReview/children/correctReview.vue')
       }
     ]
   },
   {
     path: '/teacher/analysis',
     name: 'tAnalysis',
-    component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue')
+    component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue'),
+    children: [
+      {
+        name: "classAnalysis",
+        path: "classAnalysis",
+        component: () => import('@/views/teacher/tAnalysis/children/classAnalysis.vue')
+      },
+      {
+        name: "studentAnalysis",
+        path: "studentAnalysis",
+        component: () => import("@/views/teacher/tAnalysis/children/studentAnalysis.vue")
+      }
+    ]
   },
 
   // 学生
   {
     path: '/student',
-    redirect: '/student/home'
+    redirect: '/student/mine'
   },
   {
-    path: '/student/home',
-    name: 'sHome',
-    component: () => import('@/views/student/sHome/sHome.vue')
+    path: '/student/mine',
+    name: 'sMine',
+    component: () => import('@/views/student/sMine/sMine.vue')
   },
   {
     path: '/student/class',
     name: 'sClass',
-    component: () => import('@/views/student/sHome/children/sClass.vue')
+    component: () => import('@/views/student/sMine/children/sClass.vue')
   },
   {
     path: '/student/task',
     name: 'sTask',
-    component: () => import('@/views/student/sHome/children/sTask.vue'),
+    component: () => import('@/views/student/sMine/children/sTask.vue'),
     meta: {
       hideNavBar: true
     }
@@ -172,7 +198,7 @@ const routes = [
   {
     path: '/student/answer',
     name: 'sAnswer',
-    component: () => import('@/views/student/sHome/children/sAnswer.vue'),
+    component: () => import('@/views/student/sMine/children/sAnswer.vue'),
     meta: {
       hideNavBar: true
     }
