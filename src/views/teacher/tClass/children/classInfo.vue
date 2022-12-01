@@ -43,7 +43,11 @@
 
      <!-- 未加入班级学生 -->
     <el-dialog title="未加入班级的学生" :visible.sync="dialogTableVisible" width="70%">
-      <el-table :data="unJoinClassList" style="width: 100%">
+      <div>
+        <el-input v-model="keyword" placeholder="请输入学生姓名" class="searchStu"></el-input>
+        <el-button type="primary" @click="resetFn">重置</el-button>
+      </div>
+      <el-table :data="unJoinClass" style="width: 100%">
         <el-table-column type="index" label="序号" width="80px"></el-table-column>
         <el-table-column property="name" label="学生姓名"></el-table-column>
         <el-table-column property="college" label="学院"></el-table-column>
@@ -70,7 +74,7 @@
 </template>
 
 <script>
-import { getUnjoinStuAPI, deleteStuAPI, addStuToClassAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
+import { getUnjoinStuAPI, deleteStuAPI, addStuToClassAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions } from 'vuex'
 export default {
   name: 'classInfo',
@@ -83,13 +87,20 @@ export default {
         page_size: 10
       },   
       unJoinStuTotal: 0,
+      keyword: "",
     }
   },
-  async mounted() {
-    let res = await getAppointedClassAPI(this.$store.state.tClass.classId)
-    this.$store.state.tClass.classInfo = res.data
-    this.getStuListActions({ cookie: this.$cookies.get("session_key") })
+  mounted() {
+    this.$store.dispatch("getPointedClassIdActions", this.$route.params.id)
     this.getTeacherInfoActions()
+  },
+  computed: {
+    // 搜索功能
+    unJoinClass() {
+      return this.unJoinClassList.filter(item => {
+        return item.name.indexOf(this.keyword) !== -1
+      })
+    }
   },
   methods: {
     ...mapActions(['getStuListActions', 'getTeacherInfoActions']),
@@ -151,6 +162,10 @@ export default {
         this.getStuListActions({ cookie: this.$cookies.get("session_key") })
       }
     },
+    // 重置按钮
+    resetFn() {
+      this.keyword = ''
+    },
   }
 }
 </script>
@@ -198,5 +213,10 @@ export default {
     .addStuBtn {
       margin: 16px 0;
     }
+  }
+
+  .searchStu {
+    width: 300px;
+    margin-right: 10px;
   }
 </style>
