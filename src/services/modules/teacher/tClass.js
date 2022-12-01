@@ -5,7 +5,7 @@ import ptRequest from '../../request'
  * @param {*}  {page_num：分页页号 , page_size：分页大小} 
  * @returns 
  */
-export const getClassAPI = ({page_num, page_size}) => {
+export const getClassAPI = ({ page_num, page_size }) => {
   return ptRequest.get({
     url: '/teacher/class/list',
     params: {
@@ -83,7 +83,7 @@ export const getAppointedClassAPI = (class_id) => {
 /**
  * 获取学生列表
  */
-export const getStuListAPI = (class_id, { page_num, page_size } ) => {
+export const getStuListAPI = (class_id, { page_num, page_size }) => {
   return ptRequest.get({
     url: '/teacher/class/student/list',
     // headers: {
@@ -124,7 +124,7 @@ export const addStudentAPI = (cookie, { name, college, major, phone_number }) =>
  * @param {*} param1 { page_num：分页号, page_size：分页大小}
  * @returns 
  */
-export const getUnjoinStuAPI = (cookie,  {page_num, page_size} ) => {
+export const getUnjoinStuAPI = (cookie, { page_num, page_size }) => {
   return ptRequest.get({
     url: '/teacher/student/list',
     headers: {
@@ -144,7 +144,7 @@ export const getUnjoinStuAPI = (cookie,  {page_num, page_size} ) => {
  * @param {*} student_id 学生编号
  * @returns 
  */
-export const addStuToClassAPI = (cookie, class_id, student_id ) => {
+export const addStuToClassAPI = (cookie, class_id, student_id) => {
   return ptRequest.post({
     url: "/teacher/class/student",
     headers: {
@@ -163,7 +163,7 @@ export const addStuToClassAPI = (cookie, class_id, student_id ) => {
  * @param {*} param1 { class_id：班级编号, student_id：学生编号 }
  * @returns 
  */
- export const deleteStuAPI = (cookie, {class_id, student_id} ) => {
+export const deleteStuAPI = (cookie, { class_id, student_id }) => {
   return ptRequest.delete({
     url: '/teacher/class/student',
     headers: {

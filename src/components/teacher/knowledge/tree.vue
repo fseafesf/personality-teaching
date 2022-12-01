@@ -106,7 +106,7 @@ export default {
       this.$router.push({ path: '/teacher/knowledge/edit/' + data.id })
     },
     remove(node, data) {
-      this.$confirm('此操作将永久删除该题目, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该知识点, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

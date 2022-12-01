@@ -1,12 +1,15 @@
 <template>
   <div class="nav-bar">
     <div class="content wrap-v1">
-      <div v-for="(item, index) in $store.state.navBarData" :key="index">
-        <div class="title" :class="{ active: currentIndex === index }" @click="itemClick(index)">
-          <router-link :to="item.path">{{ item.name }}</router-link>
+      <div class="nav-wrapper">
+        <div v-for="(item, index) in $store.state.navBarData" :key="index">
+          <div class="title" :class="{ active: currentIndex === index }" @click="itemClick(index)">
+            <router-link :to="item.path">{{ item.name }}</router-link>
+          </div>
         </div>
       </div>
-      <Acount id="acount"/>
+
+      <Acount id="acount" />
     </div>
   </div>
 </template>
@@ -17,7 +20,7 @@ import store from '../../store'
 import Acount from './acount.vue'
 
 export default {
-  components:{Acount},
+  components: { Acount },
   props: {
     navBarData: {
       type: Array,
@@ -41,6 +44,7 @@ export default {
       // console.log(this.$props)
       const index = this.$store.state.navBarData.findIndex(item => {
         if (!item.children) return item.path === to.path
+        console.log(item.path, to.path)
         if (item.path === to.path) return item.path === to.path
 
         for (const iten of item.children) {
@@ -55,7 +59,7 @@ export default {
           }
         }
       })
-      // console.log('index', index)
+      console.log('index', index)
       store.commit("changeCurrentIndex", index)
       store.commit("changeCurrentNavBarData", index)
       this.currentIndex = index
@@ -78,6 +82,12 @@ export default {
     display: flex;
     height: 100%;
     position: relative;
+    justify-content: space-between;
+
+    .nav-wrapper {
+      display: flex;
+    }
+
     .title {
       width: 124px;
       height: 50px;
@@ -97,8 +107,10 @@ export default {
         background-color: #3982ce;
       }
     }
-    #acount{
-      margin-left: 150px;
+
+    #acount {
+      margin-top: 5px;
+      margin-right: 20px;
       display: flex;
       align-items: center;
       cursor: pointer;

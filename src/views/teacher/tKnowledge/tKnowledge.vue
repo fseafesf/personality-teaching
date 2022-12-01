@@ -1,12 +1,12 @@
 <template>
   <div class="knowledge">
-    <TopBar v-if="!$route.meta.hideTopBar" />
+    <NavBar v-if="!$route.meta.hideTopBar" />
     <router-view></router-view>
   </div>
 </template>
 
 <script >
-import TopBar from 'components/teacher/knowledge/top-bar.vue';
+import NavBar from 'components/teacher/knowledge/nav-bar.vue';
 
 export default {
   data() {
@@ -16,7 +16,7 @@ export default {
   },
   methods: {
   },
-  components: { TopBar }
+  components: { NavBar }
 };
 </script>
 

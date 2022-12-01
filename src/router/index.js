@@ -6,14 +6,14 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   },
 
   // 老师
   {
     path: '/home',
-    name: 'Home',
-    component: () => import('@/views/common/Home.vue')
+    name: 'tHome',
+    component: () => import('@/views/teacher/tHome/tHome.vue')
   },
   {
     path: '/login',
@@ -125,7 +125,6 @@ const routes = [
       }
     ]
   },
-
   {
     path: '/teacher/reviewHome',
     name: 'tReviewHome',
@@ -146,12 +145,12 @@ const routes = [
         }
       },
       {
-        path:'correctStudent',
-        component:() => import('@/views/teacher/tReview/children/correctStudent.vue')
+        path: 'correctStudent',
+        component: () => import('@/views/teacher/tReview/children/correctStudent.vue')
       },
       {
-        path:'correctReview',
-        component:() => import('@/views/teacher/tReview/children/correctReview.vue')
+        path: 'correctReview',
+        component: () => import('@/views/teacher/tReview/children/correctReview.vue')
       }
     ]
   },
@@ -175,10 +174,35 @@ const routes = [
 
   // 学生
   {
-    path: '/student/home',
-    name: 'sHome',
-    component: () => import('@/views/student/sHome/sHome.vue')
+    path: '/student',
+    redirect: '/student/mine'
   },
+  {
+    path: '/student/mine',
+    name: 'sMine',
+    component: () => import('@/views/student/sMine/sMine.vue')
+  },
+  {
+    path: '/student/class',
+    name: 'sClass',
+    component: () => import('@/views/student/sMine/children/sClass.vue')
+  },
+  {
+    path: '/student/task',
+    name: 'sTask',
+    component: () => import('@/views/student/sMine/children/sTask.vue'),
+    meta: {
+      hideNavBar: true
+    }
+  },
+  {
+    path: '/student/answer',
+    name: 'sAnswer',
+    component: () => import('@/views/student/sMine/children/sAnswer.vue'),
+    meta: {
+      hideNavBar: true
+    }
+  }
 ]
 
 const router = new VueRouter({
@@ -187,17 +211,17 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.name != 'Login') {
-    if (cookies.get("session_key")) {
-      next()
-    } else {
-      router.replace({ path: '/login' })
-    }
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.name != 'Login') {
+//     if (cookies.get("session_key")) {
+//       next()
+//     } else {
+//       router.replace({ path: '/login' })
+//     }
+//   } else {
+//     next()
+//   }
+// })
 
 
 export default router
