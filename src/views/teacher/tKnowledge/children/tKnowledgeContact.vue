@@ -17,11 +17,11 @@
         </div>
         <div class="connect" v-else>
           <div class="title">
-            {{ pointConnect.info.name }}
+            {{ pointConnect.info.name }}的前驱知识点
           </div>
           <div class="list">
             <div v-for="(item, index) in pointConnect.knowledge_connection_list" :key="item.id">
-              {{ item.p_knp_id == '' ? '请勾选左边的知识点树给中间的知识点树中的知识点添加依赖' : item.p_knp_id }}
+              {{ item.p_knp_id == '' ? '请勾选左边的知识点树给中间的知识点树中的知识点添加依赖' : '· ' + item.p_name }}
             </div>
           </div>
         </div>
@@ -114,7 +114,8 @@ export default {
       color: #4498EE;
 
       .list {
-        color: #000;
+        font-size: 16px;
+        color: var(--primary-color);
         display: flex;
         flex-direction: column;
 
