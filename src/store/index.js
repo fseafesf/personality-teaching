@@ -91,11 +91,23 @@ export default new Vuex.Store({
       },
       {
         name: '试卷评阅',
-        path: '/teacher/review',
+        path: '/teacher/reviewHome',
         children: [
           {
-            name: '学生列表',
-            path: '/teacher/review/correctPaper'
+            name:'试卷发布列表',
+            path:'/teacher/reviewHome/review'
+          },
+          {
+            name: '班级列表',
+            path: '/teacher/reviewHome/correctClass'
+          },
+          {
+            name:'学生列表',
+            path:'/teacher/reviewHome/correctStudent'
+          },
+          {
+            name:'评阅页面',
+            path:'/teacher/reviewHome/correctReview'
           }
         ]
       },

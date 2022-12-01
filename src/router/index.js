@@ -127,17 +127,31 @@ const routes = [
   },
 
   {
-    path: '/teacher/review',
-    name: 'tReview',
-    component: () => import('@/views/teacher/tReview/tReview.vue'),
+    path: '/teacher/reviewHome',
+    name: 'tReviewHome',
+    component: () => import('@/views/teacher/tReview/index'),
+    redirect: '/teacher/reviewHome/review',
     children: [
       {
+        path: 'review',
+        name: 'tReview',
+        component: () => import('@/views/teacher/tReview/children/tReview.vue'),
+      },
+      {
         // name: 'correctPaper',
-        path: 'correctPaper',
-        component: () => import('@/views/teacher/tReview/children/correctPaper.vue'),
+        path: 'correctClass',
+        component: () => import('@/views/teacher/tReview/children/correctClass.vue'),
         meta: {
           isChildren: true,
         }
+      },
+      {
+        path:'correctStudent',
+        component:() => import('@/views/teacher/tReview/children/correctStudent.vue')
+      },
+      {
+        path:'correctReview',
+        component:() => import('@/views/teacher/tReview/children/correctReview.vue')
       }
     ]
   },
