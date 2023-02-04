@@ -1,8 +1,6 @@
 <template>
   <div class="task">
-    <TopBar @left-click="goback">
-      作业
-    </TopBar>
+    <TopBar @left-click="goback"> 作业 </TopBar>
     <div class="task-wrapper">
       <div class="left wrap-v6" ref="leftRef">
         <template v-for="(item, index) in 10">
@@ -14,11 +12,13 @@
             <el-radio-group v-model="radio" size="small">
               <!-- size为small -->
               <div class="option-label" v-for="(item, index) in 4">
-                <el-radio-button style="border-radius: 50%!important;" :label="toSelect(index)" />
+                <el-radio-button
+                  style="border-radius: 50% !important"
+                  :label="toSelect(index)"
+                />
                 <div class="option-content">{{ item }}</div>
               </div>
             </el-radio-group>
-
           </div>
         </template>
       </div>
@@ -33,13 +33,13 @@
   </div>
 </template>
 
-<script >
-import TopBar from '@/components/common/TopBar.vue';
-import { getQuestionList } from '@/services';
-import { toSelect } from '@/utils/transfrom';
+<script>
+import TopBar from '@/components/common/TopBar.vue'
+import { getQuestionList } from '@/services'
+import { toSelect } from '@/utils/transfrom'
 
 export default {
-  name: "sTask",
+  name: 'sTask',
   components: { TopBar },
   data() {
     return {
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     goback() {
-      this.$router.push("/student/class");
+      this.$router.push('/student/mine')
     }
 
     //   handleScroll() {
@@ -67,7 +67,7 @@ export default {
     //     console.log(this.$refs.rightRef.offsetTop)
     //     this.$refs.rightRef.style.top = scrollTop + 50 + 'px'
     //   }
-  },
+  }
   // destroyed() {
   //   window.removeEventListener('scroll', this.handleScroll)
   // }
@@ -142,9 +142,9 @@ export default {
           height: 20px;
           line-height: 20px;
           text-align: center;
-          border: 2px solid #eee;
-          border-radius: 50%;
-          padding: 4px;
+          border: 2px solid #efefef;
+          padding: 8px;
+          border-radius: 5px;
 
           &:hover {
             background-color: var(--primary-color);

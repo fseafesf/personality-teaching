@@ -17,7 +17,7 @@ export default new Vuex.Store({
   state: {
     isLoading: false,  // 控制loading组件
     headerData: getCache('headerData') || [], // header数据
-    typeOptions: [
+    typeOptions: [ // 添加、编辑、搜索题目的题型映射
       {
         value: 1,
         label: '单选题'
@@ -39,7 +39,7 @@ export default new Vuex.Store({
         label: '简答题'
       }
     ],
-    levelOptions: [
+    levelOptions: [  // 添加、编辑、搜索题目，添加、编辑知识点的难度映射
       {
         value: 1,
         label: '简单'
@@ -60,7 +60,6 @@ export default new Vuex.Store({
       state.isLoading = status
     },
     changeHeaderData(state, data) {
-      // console.log('ok')
       state.headerData = data
     }
   },

@@ -106,11 +106,8 @@ export default {
       size: 10
     }
   },
-  // mounted() {
-  //   this.$store.dispatch('QuestionListActive')
-  // },
   destroyed() {
-    console.log('ok')
+    // console.log('ok')
   },
   methods: {
     // 搜索

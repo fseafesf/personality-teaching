@@ -3,6 +3,7 @@
     <div class="add-content">
       <!-- <tAddForm /> -->
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <!-- 题型 -->
         <el-form-item label="题型: " prop="type">
           <div class="topic-type">
             <el-select
@@ -22,50 +23,47 @@
           </div>
         </el-form-item>
 
+        <!-- 题目名称 -->
         <el-form-item label="题目名称:" prop="question_name">
           <el-input v-model="form.question_name"></el-input>
         </el-form-item>
 
+        <!-- 题干 -->
         <el-form-item label="题干:" prop="context">
           <el-input type="textarea" :rows="4" v-model="form.context"></el-input>
         </el-form-item>
 
+        <!-- 选项 -->
         <template v-if="form.type == 1 || form.type == 2">
           <el-form-item label="选项:"> </el-form-item>
           <el-form-item
-            label="A"
-            prop="question_option_list[0].Context"
+            v-for="(item, index) in form.question_option_list"
+            :label="mapABCDEF(index)"
+            :prop="getOptionProps(index)"
             :rules="[{ required: true, message: '选项不能为空' }]"
           >
-            <el-input v-model="form.question_option_list[0].Context"></el-input>
+            <el-input
+              v-model="form.question_option_list[index].Context"
+            ></el-input>
           </el-form-item>
-          <el-form-item
-            label="B"
-            prop="question_option_list[1].Context"
-            :rules="[{ required: true, message: '选项不能为空' }]"
-          >
-            <el-input v-model="form.question_option_list[1].Context"></el-input>
-          </el-form-item>
-          <el-form-item
-            label="C"
-            prop="question_option_list[2].Context"
-            :rules="[{ required: true, message: '选项不能为空' }]"
-          >
-            <el-input v-model="form.question_option_list[2].Context"></el-input>
-          </el-form-item>
-          <el-form-item
-            label="D"
-            prop="question_option_list[3].Context"
-            :rules="[{ required: true, message: '选项不能为空' }]"
-          >
-            <el-input v-model="form.question_option_list[3].Context"></el-input>
+
+          <!-- 添加/删除选项 -->
+          <el-form-item>
+            <el-button type="primary" plain @click="handleAddOption"
+              >添加选项</el-button
+            >
+            <el-button type="danger" plain @click="handleDeleteOption"
+              >删除选项</el-button
+            >
           </el-form-item>
         </template>
 
-        <el-form-item label="答案解析:" prop="answer">
+        <!-- 答案解析 -->
+        <el-form-item label="答案:" prop="answer">
           <el-input type="textarea" :rows="4" v-model="form.answer"></el-input>
         </el-form-item>
 
+        <!-- 知识点 -->
         <el-form-item label="知识点联系:">
           <tTree
             class="tree"
@@ -75,6 +73,7 @@
           />
         </el-form-item>
 
+        <!-- 难度 -->
         <el-form-item label="难度" prop="level">
           <el-select v-model="form.level" placeholder="难度">
             <el-option
@@ -87,6 +86,7 @@
           </el-select>
         </el-form-item>
 
+        <!-- 创建 -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
           <el-button @click="cancelHandleClick">取消</el-button>
@@ -98,6 +98,7 @@
 
 <script>
 import tTree from '@/components/teacher/knowledge/tTree.vue'
+import mapABCDEF from '@/utils/mapABCDEF'
 
 export default {
   components: { tTree },
@@ -107,19 +108,20 @@ export default {
       levelOptions: this.$store.state.levelOptions,
 
       form: {
-        question_name: '',
-        type: 1,
-        level: '',
-        create_user: '',
+        question_name: '', // 题目名称
+        type: 1, // 题型
+        level: '', // 难度
+        create_user: '', // 创建者
         question_option_list: [
+          // 选项
           { Context: '' },
           { Context: '' },
           { Context: '' },
           { Context: '' }
         ],
-        answer: '',
-        context: '',
-        knp_id: ''
+        answer: '', // 答案
+        context: '', // 题目内容
+        knp_id: '' //知识点
       },
       rules: {
         type: [{ required: true, message: '请选择难度' }],
@@ -127,13 +129,16 @@ export default {
         context: [{ required: true, message: '请输入题目内容' }],
         answer: [{ required: true, message: '请输入答案解析' }],
         level: [{ required: true, message: '请选择难度' }]
-      }
+      },
+      mapABCDEF // 映射ABCD函数
     }
   },
   methods: {
+    // 提交
     onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          console.log(this.form)
           this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
             this.$message({
               type: 'success',
@@ -147,14 +152,37 @@ export default {
         }
       })
     },
+
+    // 取消
     cancelHandleClick() {
       this.$router.push({ path: '/teacher/topic' })
     },
+
+    // 勾选知识点
     checkedClick(data, checked) {
       this.form.knp_id = data
     },
+
+    // 修改题型
     typeChangeHandler() {
       this.$refs['form'].clearValidate()
+    },
+
+    // 返回给选项ABCD的props的字符串 用来做验证参数是否合理
+    getOptionProps(index) {
+      return `question_option_list[${index}].Context`
+    },
+
+    // 添加选项
+    handleAddOption() {
+      this.form.question_option_list.push({
+        Context: ''
+      })
+    },
+
+    // 删除选项
+    handleDeleteOption() {
+      this.form.question_option_list.pop()
     }
   }
 }
@@ -184,13 +212,6 @@ export default {
         .el-select {
           width: 100px;
         }
-      }
-
-      .add-content {
-        margin-top: 10px;
-        padding: 10px;
-        background-color: #fff;
-        border-radius: 5px;
       }
     }
 

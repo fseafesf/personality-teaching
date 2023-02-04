@@ -25,6 +25,8 @@ const routes = [
     name: 'Changepwd',
     component: () => import('@/views/common/Changepwd.vue'),
   },
+
+  // 知识点
   {
     path: '/teacher/knowledge',
     name: 'tKnowledge',
@@ -55,6 +57,8 @@ const routes = [
       }
     ]
   },
+
+  // 题目
   {
     path: '/teacher/topic',
     name: 'tTopic',
@@ -177,16 +181,15 @@ const routes = [
     path: '/student',
     redirect: '/student/mine'
   },
+
+  // 个人中心
   {
     path: '/student/mine',
     name: 'sMine',
     component: () => import('@/views/student/sMine/sMine.vue')
   },
-  {
-    path: '/student/class',
-    name: 'sClass',
-    component: () => import('@/views/student/sMine/children/sClass.vue')
-  },
+
+  // 作业页面
   {
     path: '/student/task',
     name: 'sTask',
@@ -195,6 +198,8 @@ const routes = [
       hideNavBar: true
     }
   },
+
+  // 作业答案详情页
   {
     path: '/student/answer',
     name: 'sAnswer',
@@ -202,6 +207,13 @@ const routes = [
     meta: {
       hideNavBar: true
     }
+  },
+
+  // 学情分析
+  {
+    path: '/student/analysis',
+    name: 'sAnswer',
+    component: () => import('@/views/student/sAnalysis'),
   }
 ]
 
