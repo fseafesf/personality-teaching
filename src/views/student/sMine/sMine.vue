@@ -6,14 +6,24 @@
         <div>学号：xxx</div>
       </div>
       <div class="avatar">
-        <el-avatar :size="100" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+        <el-avatar
+          :size="100"
+          src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+        ></el-avatar>
       </div>
     </div>
-    <div class="class-wrapper">
-      <div class="title">我的班级</div>
-      <div class="class-item">
-        <template v-for="(item, index) in 5">
-          <sClassItem @click.native="handlerClick" />
+    <div class="task">
+      <div class="title">作业</div>
+      <div class="filter">
+        <span>筛选</span>
+        <el-radio v-model="radio" label="1">全部</el-radio>
+        <el-radio v-model="radio" label="2">已完成</el-radio>
+        <el-radio v-model="radio" label="3">未完成</el-radio>
+      </div>
+
+      <div class="task-item">
+        <template v-for="(item, index) in 3">
+          <STaskItem @click.native="taskItemClick" />
         </template>
       </div>
     </div>
@@ -21,20 +31,23 @@
 </template>
 
 <script>
-import sClassItem from '@/components/student/sMine/sClassItem'
+import STaskItem from '@/components/student/sMine/sTaskItem.vue'
 
 export default {
-  name: "sMine",
-  components: { sClassItem },
-  mounted() {
+  name: 'sMine',
+  components: { STaskItem },
+  data() {
+    return {
+      radio: '1'
+    }
   },
+  mounted() {},
   methods: {
-    handlerClick() {
-      this.$router.push('/student/class')
-    },
+    taskItemClick() {
+      this.$router.push('/student/task')
+    }
   }
 }
-
 </script>
 
 <style lang="less" scoped>
@@ -56,23 +69,27 @@ export default {
     }
   }
 
-  .class-wrapper {
+  // 作业
+  .task {
     margin-top: 10px;
     background: #fff;
     border-radius: 5px;
     padding: 20px;
-    min-height: 68vh;
 
     .title {
       font-size: 20px;
       font-weight: 700;
-      color: #4498EE;
+      color: #4498ee;
     }
 
-    .class-item {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .filter {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #999;
+
+      span {
+        margin-right: 20px;
+      }
     }
   }
 }

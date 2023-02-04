@@ -6,7 +6,7 @@
       style="width: 100%"
     >
       <el-table-column label="序号" width="60" type="index"> </el-table-column>
-      <el-table-column label="题目内容" width="600" prop="context">
+      <el-table-column label="题目内容" width="400" prop="context">
       </el-table-column>
       <el-table-column label="题型" width="100" prop="type"> </el-table-column>
       <el-table-column label="难易度" width="100" prop="level">

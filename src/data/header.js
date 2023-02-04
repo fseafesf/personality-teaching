@@ -131,11 +131,11 @@ export const sHeaderData = [
     ]
   },
   {
-    name: '知识点'
-    // path: '/student/mine',
+    name: '知识点',
+    path: '/login',
   },
   {
-    name: '作业'
-    // path: '/student/mine',
+    name: '学情分析',
+    path: '/student/analysis',
   }
 ]
