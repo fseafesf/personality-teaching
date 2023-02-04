@@ -1,10 +1,12 @@
 <template>
   <div class="knowledge-tree">
     <div class="left">
-      <Tree @nodeClick="nodeClick" :currentNode="currentNode" />
+      <tTree @nodeClick="nodeClick" :currentNode="currentNode" />
     </div>
     <div class="right">
-      <div class="title">{{ pointDetail ? pointDetail.name : '请点击知识点查看内容' }}</div>
+      <div class="title">
+        {{ pointDetail ? pointDetail.name : '请点击知识点查看内容' }}
+      </div>
       <div class="content">
         {{ pointDetail?.context }}
       </div>
@@ -12,15 +14,15 @@
   </div>
 </template>
 
-<script >
-import Tree from 'components/teacher/knowledge/tree.vue';
+<script>
+import tTree from 'components/teacher/knowledge/tTree.vue'
 
 export default {
-  components: { Tree },
+  components: { tTree },
   data() {
     return {
       currentId: ''
-    };
+    }
   },
   methods: {
     nodeClick(data) {
@@ -37,7 +39,7 @@ export default {
       return this.$store.state.tKnowledge.currentNode
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -65,7 +67,7 @@ export default {
     .title {
       font-size: 18px;
       font-weight: 700;
-      color: #4498EE;
+      color: #4498ee;
       margin-bottom: 10px;
     }
   }

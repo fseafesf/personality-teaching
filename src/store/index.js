@@ -15,11 +15,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isLoading: false,
-    navBarData: getCache('navBarData') || [],
-
-    currentIndex: 0,
-    currentNavBarData: {},
+    isLoading: false,  // 控制loading组件
+    headerData: getCache('headerData') || [], // header数据
     typeOptions: [
       {
         value: 1,
@@ -42,39 +39,32 @@ export default new Vuex.Store({
         label: '简答题'
       }
     ],
-    levelOptions: [{
-      value: 1,
-      label: '简单'
-    },
-    {
-      value: 2,
-      label: '中等'
-    },
-    {
-      value: 3,
-      label: '困难'
-    }]
+    levelOptions: [
+      {
+        value: 1,
+        label: '简单'
+      },
+      {
+        value: 2,
+        label: '中等'
+      },
+      {
+        value: 3,
+        label: '困难'
+      }
+    ]
   },
-  getters: {
-
-  },
+  getters: {},
   mutations: {
     changeIsLoading(state, status) {
       state.isLoading = status
     },
-    changeCurrentIndex(state, index) {
-      state.currentIndex = index
-    },
-    changeCurrentNavBarData(state, index) {
-      state.currentNavBarData = state.navBarData[index]
-    },
-    changenavBarData(state, data) {
+    changeHeaderData(state, data) {
       // console.log('ok')
-      state.navBarData = data
+      state.headerData = data
     }
   },
-  actions: {
-  },
+  actions: {},
   modules: {
     tHome,
     tAnalysis,
@@ -83,5 +73,5 @@ export default new Vuex.Store({
     tReview,
     tTest,
     tTopic
-  },
+  }
 })

@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <NavBar :nav-bar-data="$store.state.navBarData" v-if="$store.state.navBarData.length && !$route.meta.hideNavBar" />
+    <Header
+      :nav-bar-data="$store.state.headerData"
+      v-if="$store.state.headerData.length && !$route.meta.hideNavBar"
+    />
     <router-view class="wrap-v1" />
     <Loading />
   </div>
@@ -8,11 +11,11 @@
 
 <script>
 import Loading from './components/common/Loading.vue'
-import NavBar from './components/common/nav-bar.vue'
+import Header from './components/common/Header.vue'
 
 export default {
-  name: "App",
-  components: { NavBar, Loading },
+  name: 'App',
+  components: { Header, Loading },
   mounted() {
     // console.log(this.$route.meta);
   }

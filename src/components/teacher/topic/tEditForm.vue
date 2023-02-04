@@ -13,27 +13,36 @@
         <el-input type="textarea" :rows="4" v-model="form.context" />
       </el-form-item>
 
-      <template v-if="(form.type == 1 || form.type == 2) && form.question_option_list">
-        <el-form-item label="选项:">
-        </el-form-item>
-        <el-form-item label="A" prop="question_option_list[0].Context" :rules="[
-          { required: true, message: '选项不能为空' },
-        ]">
+      <template
+        v-if="(form.type == 1 || form.type == 2) && form.question_option_list"
+      >
+        <el-form-item label="选项:"> </el-form-item>
+        <el-form-item
+          label="A"
+          prop="question_option_list[0].Context"
+          :rules="[{ required: true, message: '选项不能为空' }]"
+        >
           <el-input v-model="form.question_option_list[0].Context" />
         </el-form-item>
-        <el-form-item label="B" prop="question_option_list[1].Context" :rules="[
-          { required: true, message: '选项不能为空' },
-        ]">
+        <el-form-item
+          label="B"
+          prop="question_option_list[1].Context"
+          :rules="[{ required: true, message: '选项不能为空' }]"
+        >
           <el-input v-model="form.question_option_list[1].Context" />
         </el-form-item>
-        <el-form-item label="C" prop="question_option_list[2].Context" :rules="[
-          { required: true, message: '选项不能为空' },
-        ]">
+        <el-form-item
+          label="C"
+          prop="question_option_list[2].Context"
+          :rules="[{ required: true, message: '选项不能为空' }]"
+        >
           <el-input v-model="form.question_option_list[2].Context" />
         </el-form-item>
-        <el-form-item label="D" prop="question_option_list[3].Context" :rules="[
-          { required: true, message: '选项不能为空' },
-        ]">
+        <el-form-item
+          label="D"
+          prop="question_option_list[3].Context"
+          :rules="[{ required: true, message: '选项不能为空' }]"
+        >
           <el-input v-model="form.question_option_list[3].Context" />
         </el-form-item>
       </template>
@@ -42,11 +51,25 @@
         <el-input type="textarea" :rows="4" v-model="editForm.answer" />
       </el-form-item>
       <el-form-item label="知识点联系:" label-width="100px">
-        <Tree :operation="false" @checkedClick="checkedClick" :show-checkbox="true" :defaultChecked="editForm.knp_id" />
+        <tTree
+          :operation="false"
+          @checkedClick="checkedClick"
+          :show-checkbox="true"
+          :defaultChecked="editForm.knp_id"
+        />
       </el-form-item>
       <el-form-item label="难度" prop="level">
-        <el-select v-model="form.level" placeholder="难度" :value="questionLevel(form.level)">
-          <el-option v-for="item in levelOptions" :key="item.value" :label="item.label" :value="item.value">
+        <el-select
+          v-model="form.level"
+          placeholder="难度"
+          :value="questionLevel(form.level)"
+        >
+          <el-option
+            v-for="item in levelOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
       </el-form-item>
@@ -60,12 +83,12 @@
 </template>
 
 <script>
-import { questionType } from '@/utils/questionType';
-import { questionLevel } from '@/utils/questLevel';
-import Tree from '../knowledge/tree.vue';
+import { questionType } from '@/utils/questionType'
+import { questionLevel } from '@/utils/questLevel'
+import tTree from '../knowledge/tTree.vue'
 
 export default {
-  components: { Tree },
+  components: { tTree },
   props: {
     typeValue: {
       type: String,
@@ -79,18 +102,10 @@ export default {
       levelOptions: this.$store.state.levelOptions,
       form: undefined,
       rules: {
-        question_name: [
-          { required: true, message: '请输入题目名称' },
-        ],
-        context: [
-          { required: true, message: '请输入题目内容' },
-        ],
-        answer: [
-          { required: true, message: '请输入答案解析' },
-        ],
-        level: [
-          { required: true, message: '请选择难度' },
-        ],
+        question_name: [{ required: true, message: '请输入题目名称' }],
+        context: [{ required: true, message: '请输入题目内容' }],
+        answer: [{ required: true, message: '请输入答案解析' }],
+        level: [{ required: true, message: '请选择难度' }]
       }
     }
   },
@@ -106,7 +121,7 @@ export default {
           { Context: '' },
           { Context: '' },
           { Context: '' },
-          { Context: '' },
+          { Context: '' }
         ],
         answer: '',
         context: '',
@@ -122,7 +137,8 @@ export default {
         form.answer = data.problem_info?.answer
         if (data.question_option) {
           for (let i = 0; i < form.question_option_list.length; i++) {
-            form.question_option_list[i].Context = data.question_option[i]?.Context
+            form.question_option_list[i].Context =
+              data.question_option[i]?.Context
           }
         }
         form.context = data.problem_info?.context
@@ -144,19 +160,20 @@ export default {
     onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.$store.dispatch('QuestionUpdataActive', this.form).then(res => {
-            this.$message({
-              type: 'success',
-              message: '修改成功!'
-            });
-            this.$router.push({ path: '/teacher/topic' })
-          })
+          this.$store
+            .dispatch('QuestionUpdataActive', this.form)
+            .then((res) => {
+              this.$message({
+                type: 'success',
+                message: '修改成功!'
+              })
+              this.$router.push({ path: '/teacher/topic' })
+            })
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
-
+      })
     },
     cancelHandleClick() {
       this.$router.push({ path: '/teacher/topic' })
@@ -168,6 +185,4 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>
