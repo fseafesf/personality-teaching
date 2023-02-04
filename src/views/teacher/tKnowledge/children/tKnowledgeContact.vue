@@ -1,27 +1,47 @@
 <template>
   <div class="knowledge-contact">
     <div class="contact-content">
+      <!-- 左边知识点树 -->
       <div class="contact-left">
-        <Tree :show-checkbox="true" :operation="false" :defaultChecked="defaultChecked" @checkedClick="checkedClick">
-        </Tree>
+        <tTree
+          :show-checkbox="true"
+          :operation="false"
+          :defaultChecked="defaultChecked"
+          @checkedClick="checkedClick"
+        >
+        </tTree>
       </div>
+
+      <!-- 添加依赖 -->
       <div class="contact-middle">
         <el-button type="primary" @click="addConnetHandler">增加依赖</el-button>
       </div>
+
+      <!-- 右边知识点树 -->
       <div class="contact-right">
-        <Tree :operation="false" @nodeClick="nodeClick"></Tree>
+        <tTree :operation="false" @nodeClick="nodeClick"></tTree>
       </div>
+
+      <!-- 知识点信息展示 -->
       <div class="contact-result">
-        <div class="default" v-if="!pointConnect.knowledge_connection_list?.length">
-          请勾选左边的知识点树给中间的知识点树中的知识点添加依赖
+        <div
+          class="default"
+          v-if="!pointConnect.knowledge_connection_list?.length"
+        >
+          请勾选左边的知识点给中间的知识点添加依赖
         </div>
         <div class="connect" v-else>
-          <div class="title">
-            {{ pointConnect.info.name }}的前驱知识点
-          </div>
+          <div class="title">{{ pointConnect.info.name }}的前驱知识点</div>
           <div class="list">
-            <div v-for="(item, index) in pointConnect.knowledge_connection_list" :key="item.id">
-              {{ item.p_knp_id == '' ? '请勾选左边的知识点树给中间的知识点树中的知识点添加依赖' : '· ' + item.p_name }}
+            <div
+              v-for="(item, index) in pointConnect.knowledge_connection_list"
+              :key="item.id"
+            >
+              {{
+                item.p_knp_id == ''
+                  ? '请勾选左边的知识点给中间的知识点添加依赖'
+                  : '· ' + item.p_name
+              }}
             </div>
           </div>
         </div>
@@ -30,42 +50,47 @@
   </div>
 </template>
 
-<script >
-import Tree from "components/teacher/knowledge/tree.vue";
-import { getPointById, updatePointConnect } from "@/services";
+<script>
+import tTree from 'components/teacher/knowledge/tTree.vue'
+import { getPointById, updatePointConnect } from '@/services'
 
 export default {
-  name: "contact",
+  name: 'contact',
   data() {
     return {
-      currentId: '',
-      p_knp_id: '',
-      pointDetail: {}
-    };
+      currentId: '', // 当前知识点id
+      p_knp_id: '', // 知识点id
+      pointDetail: {} // 知识点详情
+    }
   },
   components: {
-    Tree,
+    tTree
   },
   methods: {
+    // 点击知识点发请求知识点详情
     nodeClick(data) {
       if (data.id == this.currentId) return
       this.currentId = data.id
-      getPointById(data.id).then(res => {
-        res ? this.pointDetail = res.data : ''
+      getPointById(data.id).then((res) => {
+        res ? (this.pointDetail = res.data) : ''
       })
     },
+
+    // 勾选知识点
     checkedClick(data, checked) {
       this.p_knp_id = data
     },
+
+    // 添加知识点
     addConnetHandler() {
       console.log('ok')
-      updatePointConnect(this.currentId, this.p_knp_id).then(res => {
+      updatePointConnect(this.currentId, this.p_knp_id).then((res) => {
         this.$message({
           type: 'success',
           message: '添加成功'
         })
-        getPointById(this.currentId).then(res => {
-          res ? this.pointDetail = res.data : ''
+        getPointById(this.currentId).then((res) => {
+          res ? (this.pointDetail = res.data) : ''
         })
       })
     }
@@ -74,15 +99,17 @@ export default {
     pointConnect: function () {
       return this.pointDetail
     },
+
+    // 获取知识点详情中有联系的知识点 赋值给Tree组件勾选
     defaultChecked: function () {
       const checkedArr = []
-      this.pointDetail.knowledge_connection_list?.forEach(item => {
+      this.pointDetail.knowledge_connection_list?.forEach((item) => {
         checkedArr.push(item.p_knp_id)
-      });
+      })
       return checkedArr
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -95,7 +122,6 @@ export default {
     gap: 15px;
     justify-content: space-between;
     align-items: center;
-
 
     .contact-left,
     .contact-right,
@@ -111,7 +137,7 @@ export default {
       padding: 10px;
       font-size: 18px;
       font-weight: 700;
-      color: #4498EE;
+      color: #4498ee;
 
       .list {
         font-size: 16px;
