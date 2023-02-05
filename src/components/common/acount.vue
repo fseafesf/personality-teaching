@@ -151,13 +151,20 @@ export default {
     }
   }
 }
-.v-enter-active,
-.v-leave-active {
+.v-enter-active {
   transition: opacity 0.5s ease;
+  animation: bounce-in 0.2s;
 }
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
+.v-leave-active {
+  transition: opacity 0.3s ease;
+  animation: bounce-in 0.3s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 </style>
