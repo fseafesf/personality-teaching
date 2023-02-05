@@ -8,105 +8,16 @@ import tReview from './modules/teacher/tReview'
 import tTest from './modules/teacher/tTest'
 import tTopic from './modules/teacher/tTopic'
 
-import home from './modules/common/home'
-import createPersistedState from 'vuex-persistedstate'
+import tHome from './modules/teacher/tHome'
+import { getCache } from '@/utils/localstorage'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isLoading: false,
-    navBarData: [
-      {
-        name: '首页',
-        path: '/home'
-      },
-      {
-        name: '知识点管理',
-        path: '/teacher/knowledge',
-        children: [
-          {
-            name: '知识点树',
-            path: '/teacher/knowledge/tree',
-          },
-          {
-            name: '知识点联系',
-            path: '/teacher/knowledge/contact',
-          },
-          {
-            // name: '添加知识点',
-            path: '/teacher/knowledge/add',
-          },
-          {
-            // name: '编辑知识点',
-            path: '/teacher/knowledge/edit',
-          }
-        ]
-      },
-      {
-        name: '题目管理',
-        path: '/teacher/topic',
-        children: [
-          {
-            name: '添加题目',
-            path: '/teacher/topic/add',
-          },
-          {
-            name: '编辑题目',
-            path: '/teacher/topic/edit',
-          }
-        ]
-      },
-      {
-        name: '班级管理',
-        path: '/teacher/class',
-        children: [
-          {
-            name: '班级信息',
-            path: '/teacher/class/classInfo'
-          }
-        ]
-      },
-      {
-        name: '试卷管理',
-        path: '/teacher/examHome',
-        children: [
-          {
-            name: '试卷列表',
-            path: '/teacher/examHome/examPaper'
-          },
-          {
-            name: '新增试卷',
-            path: '/teacher/examHome/test'
-          },
-          {
-            name: '预览试卷',
-            path: '/teacher/examHome/preview'
-          },
-          {
-            name: '发布试卷',
-            path: '/teacher/examHome/release'
-          }
-        ]
-      },
-      {
-        name: '试卷评阅',
-        path: '/teacher/review',
-        children: [
-          {
-            name: '学生列表',
-            path: '/teacher/review/correctPaper'
-          }
-        ]
-      },
-      {
-        name: '学情分析',
-        path: '/teacher/analysis'
-      }
-    ],
-    currentIndex: 0,
-    currentNavBarData: {},
-    typeOptions: [
+    isLoading: false,  // 控制loading组件
+    headerData: getCache('headerData') || [], // header数据
+    typeOptions: [ // 添加、编辑、搜索题目的题型映射
       {
         value: 1,
         label: '单选题'
@@ -128,54 +39,38 @@ export default new Vuex.Store({
         label: '简答题'
       }
     ],
-    levelOptions: [{
-      value: 1,
-      label: '简单'
-    },
-    {
-      value: 2,
-      label: '中等'
-    },
-    {
-      value: 3,
-      label: '困难'
-    }]
+    levelOptions: [  // 添加、编辑、搜索题目，添加、编辑知识点的难度映射
+      {
+        value: 1,
+        label: '简单'
+      },
+      {
+        value: 2,
+        label: '中等'
+      },
+      {
+        value: 3,
+        label: '困难'
+      }
+    ]
   },
-  getters: {
-
-  },
+  getters: {},
   mutations: {
     changeIsLoading(state, status) {
       state.isLoading = status
     },
-    changeCurrentIndex(state, index) {
-      state.currentIndex = index
-    },
-    changeCurrentNavBarData(state, index) {
-      state.currentNavBarData = state.navBarData[index]
-    },
-    changenavBarData(state) {
-      console.log('ok')
-      state.navBarData = [
-        {
-          name: '我的',
-          path: '/student/home'
-        }
-      ]
+    changeHeaderData(state, data) {
+      state.headerData = data
     }
   },
-  actions: {
-  },
+  actions: {},
   modules: {
-    home,
+    tHome,
     tAnalysis,
     tClass,
     tKnowledge,
     tReview,
     tTest,
     tTopic
-  },
-  plugins: [
-    createPersistedState()
-  ]
+  }
 })

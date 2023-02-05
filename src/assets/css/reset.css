@@ -21,3 +21,11 @@ a {
 img {
   vertical-align: top;
 }
+
+button {
+  border: none;
+}
+
+button:hover {
+  cursor: pointer;
+}

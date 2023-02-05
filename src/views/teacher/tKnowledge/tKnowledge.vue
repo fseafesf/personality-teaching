@@ -1,25 +1,32 @@
 <template>
   <div class="knowledge">
-    <TopBar v-if="!$route.meta.hideTopBar" />
+    <NavBar v-if="!$route.meta.hideTopBar" :navBarData="navBarData" />
     <router-view></router-view>
   </div>
 </template>
 
-<script >
-import TopBar from 'components/teacher/knowledge/top-bar.vue';
+<script>
+import NavBar from 'components/common/NavBar.vue'
 
 export default {
   data() {
     return {
-      name: 'knowledge'
-    };
+      name: 'knowledge',
+      navBarData: [
+        {
+          name: '知识点树',
+          path: '/teacher/knowledge/tree'
+        },
+        {
+          name: '知识点联系',
+          path: '/teacher/knowledge/contact'
+        }
+      ]
+    }
   },
-  methods: {
-  },
-  components: { TopBar }
-};
+  methods: {},
+  components: { NavBar }
+}
 </script>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>

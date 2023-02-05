@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <NavBar :nav-bar-data="$store.state.navBarData" />
+    <Header
+      :nav-bar-data="$store.state.headerData"
+      v-if="$store.state.headerData.length && !$route.meta.hideNavBar"
+    />
     <router-view class="wrap-v1" />
     <Loading />
   </div>
 </template>
 
 <script>
-import NavBar from './components/common/nav-bar.vue'
 import Loading from './components/common/Loading.vue'
+import Header from './components/common/Header.vue'
 
 export default {
-  name: "App",
-  components: { NavBar, Loading, },
+  name: 'App',
+  components: { Header, Loading },
   mounted() {
     // console.log(this.$route.meta);
   }

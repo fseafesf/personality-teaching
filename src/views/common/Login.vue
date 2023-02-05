@@ -12,9 +12,16 @@
         <el-row class="input-line">
           <el-col :span="4"><span class="text">密码：</span></el-col>
           <el-col :span="20">
-            <el-input v-model="password" placeholder="请输入密码" show-password @keyup.enter.native="sendLogin"></el-input>
+            <el-input
+              v-model="password"
+              placeholder="请输入密码"
+              show-password
+              @keyup.enter.native="sendLogin"
+            ></el-input>
           </el-col>
-          <el-button type="primary" id="login-btn" @click="sendLogin">登录</el-button>
+          <el-button type="primary" id="login-btn" @click="sendLogin"
+            >登录</el-button
+          >
         </el-row>
       </div>
       <div id="alert">
@@ -31,81 +38,91 @@
 </template>
 
 <script>
-import { login } from "@/services";
-import { encrypt, decrypt } from "@/utils/jsencrypt";
+import { login } from '@/services'
+import { encrypt, decrypt } from '@/utils/jsencrypt'
+import { setCache } from '@/utils/localstorage'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
+import { tHeaderData, sHeaderData } from '@/data/header'
+
 Vue.use(VueRouter)
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     return {
-      username: "",
-      password: "",
-      time: "",
-      date: "",
-    };
+      username: '',
+      password: '',
+      time: '',
+      date: ''
+    }
   },
-
 
   mounted() {
     this.$nextTick(() => {
-      setInterval(this.upDateClock, 1000);
-    });
+      setInterval(this.upDateClock, 1000)
+    })
   },
   methods: {
     sendLogin() {
-      if (this.username === "" || this.password === "") {
-        alert("输入内容不能为空");
+      if (this.username === '' || this.password === '') {
+        alert('输入内容不能为空')
       } else {
+        let headerData = tHeaderData
+
         if (this.username === 'xs' && this.password === '123456') {
-          this.$store.commit('changenavBarData')
-          return this.$router.push({ path: "/student/home" });
+          headerData = sHeaderData
+          setCache('headerData', headerData)
+          this.$store.commit('changeHeaderData', headerData)
+          return this.$router.push({ path: '/student/mine' })
         }
 
         login({
           username: this.username,
-          password: encrypt(this.password),
+          password: encrypt(this.password)
         }).then((res) => {
-          console.log(res);
+          console.log(res)
           if (res.code == 0) {
-            this.$router.replace({ path: "/home" }); //账号密码正确则成功跳转
+            this.$store.commit('changeHeaderData', headerData)
+            setCache('headerData', headerData)
+
+            this.$router.replace({ path: '/home' }) //账号密码正确则成功跳转
             // console.log(encrypt(this.password));
           } else {
-            this.username = "";
-            this.password = "";
+            this.username = ''
+            this.password = ''
           }
-        });
+        })
       }
     },
     upDateClock: function (e) {
-      let d = new Date();
-      let year = d.getFullYear();
+      let d = new Date()
+      let year = d.getFullYear()
       if (year < 10) {
-        year = "0" + year;
+        year = '0' + year
       }
-      let mon = d.getMonth() + 1;
+      let mon = d.getMonth() + 1
       if (mon < 10) {
-        mon = "0" + mon;
+        mon = '0' + mon
       }
-      let day = d.getDate();
+      let day = d.getDate()
       if (day < 10) {
-        day = "0" + day;
+        day = '0' + day
       }
-      let hour = d.getHours();
+      let hour = d.getHours()
       if (hour < 10) {
-        hour = "0" + hour;
+        hour = '0' + hour
       }
-      let minute = d.getMinutes();
+      let minute = d.getMinutes()
       if (minute < 10) {
-        minute = "0" + minute;
+        minute = '0' + minute
       }
-      this.time = hour + ":" + minute;
-      this.date = year + "/" + mon + "/" + day;
-    },
-  },
-};
+      this.time = hour + ':' + minute
+      this.date = year + '/' + mon + '/' + day
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
