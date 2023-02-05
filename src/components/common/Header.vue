@@ -3,10 +3,7 @@
     <div class="content wrap-v1">
       <div class="nav-wrapper">
         <div v-for="(item, index) in $store.state.headerData" :key="index">
-          <div
-            class="title"
-            @click="itemClick(index)"
-          >
+          <div class="title">
             <router-link :to="item.path">{{ item.name }}</router-link>
           </div>
         </div>
