@@ -37,6 +37,7 @@
           v-model="keyword"
           placeholder="请输入内容"
           size="small"
+          clearable
         ></el-input>
         <el-button type="primary" size="small" @click="searchClick"
           >查询</el-button

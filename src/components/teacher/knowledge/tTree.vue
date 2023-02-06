@@ -80,7 +80,7 @@ export default {
   emits: ['checkedClick', 'nodeClick'],
   data() {
     return {
-      data: []
+      // data: []
     }
   },
   mounted() {
@@ -141,6 +141,7 @@ export default {
     }
   },
   watch: {
+    // 监听defaultChecked 用来更新默认选中的知识点
     defaultChecked: function (newValue) {
       this.$refs.tree.setCheckedKeys(newValue)
     },

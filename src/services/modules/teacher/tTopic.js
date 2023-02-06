@@ -1,7 +1,13 @@
 import ptRequest from '../../request'
 
 // 题目列表
-export function getQuestionList(type, level, context, page_size = 10, page_no = 1) {
+export function getQuestionList(
+  type,
+  level,
+  context,
+  page_size = 10,
+  page_no = 1
+) {
   return ptRequest.get({
     url: '/teacher/question/list',
     params: {
@@ -26,18 +32,38 @@ export function getQuestionById(question_id) {
 
 // 添加题目
 export function addQuestion(form) {
-  const { question_name, type, level, create_user, question_option_list, answer, context, knp_id } = form
-  // console.log(question_option_list)
-  // console.log( question_name, type, level, create_user, question_option_list, answer, context, knp_id);
+  const {
+    question_name,
+    type,
+    level,
+    create_user,
+    question_option_list,
+    answer,
+    answer_context,
+    context,
+    knp_id
+  } = form
+  console.log(
+    question_name,
+    type,
+    level,
+    create_user,
+    question_option_list,
+    answer,
+    answer_context,
+    context,
+    knp_id
+  )
   return ptRequest.post({
     url: '/teacher/question',
     data: {
-      question_name,
+      name: question_name,
       type,
       level,
       create_user: 'cs',
       question_option_list,
       answer,
+      answer_context,
       context,
       knp_id
     }
@@ -47,17 +73,27 @@ export function addQuestion(form) {
 // 删除题目
 export function deleteQuestion(question_id) {
   return ptRequest.delete({
-    url: '/teacher/question?question_id=' + question_id,
+    url: '/teacher/question?question_id=' + question_id
   })
 }
 
 // 更新题目
 export function updataQuestion(form) {
-  let { question_id, question_name, type, level, create_user, question_option_list, answer, context, knp_id } = form
+  let {
+    question_id,
+    question_name,
+    type,
+    level,
+    create_user,
+    question_option_list,
+    answer,
+    context,
+    knp_id
+  } = form
   // console.log(question_id, question_name, type, level, create_user, question_option_list, answer, context, knp_id);
 
   if (knp_id instanceof Array) {
-    knp_id.length ? knp_id = knp_id.join(',') : knp_id = ''
+    knp_id.length ? (knp_id = knp_id.join(',')) : (knp_id = '')
   }
 
   return ptRequest.put({

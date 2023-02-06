@@ -18,12 +18,12 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/common/Login.vue'),
+    component: () => import('@/views/common/Login.vue')
   },
   {
     path: '/changpwd',
     name: 'Changepwd',
-    component: () => import('@/views/common/Changepwd.vue'),
+    component: () => import('@/views/common/Changepwd.vue')
   },
 
   // 知识点
@@ -35,24 +35,28 @@ const routes = [
     children: [
       {
         path: 'tree',
-        component: () => import('@/views/teacher/tKnowledge/children/tKnowledgeTree.vue')
+        component: () =>
+          import('@/views/teacher/tKnowledge/children/tKnowledgeTree.vue')
       },
       {
         path: 'contact',
-        component: () => import('@/views/teacher/tKnowledge/children/tKnowledgeContact.vue')
+        component: () =>
+          import('@/views/teacher/tKnowledge/children/tKnowledgeContact.vue')
       },
       {
         path: 'add/:id',
-        component: () => import('@/views/teacher/tKnowledge/children/tAddKnowledge.vue'),
+        component: () =>
+          import('@/views/teacher/tKnowledge/children/tAddKnowledge.vue'),
         meta: {
-          hideTopBar: true,
+          hideTopBar: true
         }
       },
       {
         path: 'edit/:id',
-        component: () => import('@/views/teacher/tKnowledge/children/tEditKnowledge.vue'),
+        component: () =>
+          import('@/views/teacher/tKnowledge/children/tEditKnowledge.vue'),
         meta: {
-          hideTopBar: true,
+          hideTopBar: true
         }
       }
     ]
@@ -66,16 +70,18 @@ const routes = [
     children: [
       {
         path: 'add',
-        component: () => import('../views/teacher/tTopic/children/tAddTopic.vue'),
+        component: () =>
+          import('../views/teacher/tTopic/children/tAddTopic.vue'),
         meta: {
-          isChildren: true,
+          isChildren: true
         }
       },
       {
         path: 'edit/:id',
-        component: () => import('../views/teacher/tTopic/children/tEditTopic.vue'),
+        component: () =>
+          import('../views/teacher/tTopic/children/tEditTopic.vue'),
         meta: {
-          isChildren: true,
+          isChildren: true
         }
       }
     ]
@@ -88,18 +94,21 @@ const routes = [
     children: [
       {
         path: 'classInfo/:id',
-        component: () => import('@/views/teacher/tClass/children/classInfo.vue'),
+        component: () =>
+          import('@/views/teacher/tClass/children/classInfo.vue'),
         meta: {
-          isChildren: true,
-        },
+          isChildren: true
+        }
       },
       {
         path: 'classListing',
-        component: () => import('@/views/teacher/tClass/children/class-listing.vue')
+        component: () =>
+          import('@/views/teacher/tClass/children/class-listing.vue')
       },
       {
         path: 'unJoinStuListing',
-        component: () => import('@/views/teacher/tClass/children/student-listing.vue')
+        component: () =>
+          import('@/views/teacher/tClass/children/student-listing.vue')
       }
     ]
   },
@@ -112,7 +121,8 @@ const routes = [
       {
         path: 'examPaper',
         name: 'tEaxmPaper',
-        component: () => import('@/views/teacher/tTestPage/children/tExamPaper.vue')
+        component: () =>
+          import('@/views/teacher/tTestPage/children/tExamPaper.vue')
       },
       {
         path: 'test',
@@ -125,7 +135,8 @@ const routes = [
       {
         path: 'preview',
         name: 'tPreview',
-        component: () => import('@/views/teacher/tTestPage/children/tPreview.vue'),
+        component: () =>
+          import('@/views/teacher/tTestPage/children/tPreview.vue'),
         meta: {
           keepAlive: true
         }
@@ -133,7 +144,8 @@ const routes = [
       {
         path: 'release',
         name: 'tRelease',
-        component: () => import('@/views/teacher/tTestPage/children/tRelease.vue')
+        component: () =>
+          import('@/views/teacher/tTestPage/children/tRelease.vue')
       }
     ]
   },
@@ -146,23 +158,26 @@ const routes = [
       {
         path: 'review',
         name: 'tReview',
-        component: () => import('@/views/teacher/tReview/children/tReview.vue'),
+        component: () => import('@/views/teacher/tReview/children/tReview.vue')
       },
       {
         // name: 'correctPaper',
         path: 'correctClass',
-        component: () => import('@/views/teacher/tReview/children/correctClass.vue'),
+        component: () =>
+          import('@/views/teacher/tReview/children/correctClass.vue'),
         meta: {
-          isChildren: true,
+          isChildren: true
         }
       },
       {
         path: 'correctStudent',
-        component: () => import('@/views/teacher/tReview/children/correctStudent.vue')
+        component: () =>
+          import('@/views/teacher/tReview/children/correctStudent.vue')
       },
       {
         path: 'correctReview',
-        component: () => import('@/views/teacher/tReview/children/correctReview.vue')
+        component: () =>
+          import('@/views/teacher/tReview/children/correctReview.vue')
       }
     ]
   },
@@ -172,14 +187,16 @@ const routes = [
     component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue'),
     children: [
       {
-        name: "classAnalysis",
-        path: "classAnalysis",
-        component: () => import('@/views/teacher/tAnalysis/children/classAnalysis.vue')
+        name: 'classAnalysis',
+        path: 'classAnalysis',
+        component: () =>
+          import('@/views/teacher/tAnalysis/children/classAnalysis.vue')
       },
       {
-        name: "studentAnalysis",
-        path: "studentAnalysis",
-        component: () => import("@/views/teacher/tAnalysis/children/studentAnalysis.vue")
+        name: 'studentAnalysis',
+        path: 'studentAnalysis',
+        component: () =>
+          import('@/views/teacher/tAnalysis/children/studentAnalysis.vue')
       }
     ]
   },
@@ -221,7 +238,7 @@ const routes = [
   {
     path: '/student/analysis',
     name: 'sAnswer',
-    component: () => import('@/views/student/sAnalysis'),
+    component: () => import('@/views/student/sAnalysis')
   }
 ]
 
@@ -242,6 +259,5 @@ const router = new VueRouter({
 //     next()
 //   }
 // })
-
 
 export default router
