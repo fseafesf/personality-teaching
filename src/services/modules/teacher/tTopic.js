@@ -43,17 +43,17 @@ export function addQuestion(form) {
     context,
     knp_id
   } = form
-  console.log(
-    question_name,
-    type,
-    level,
-    create_user,
-    question_option_list,
-    answer,
-    answer_context,
-    context,
-    knp_id
-  )
+  // console.log(
+  //   question_name,
+  //   type,
+  //   level,
+  //   create_user,
+  //   question_option_list,
+  //   answer,
+  //   answer_context,
+  //   context,
+  //   knp_id
+  // )
   return ptRequest.post({
     url: '/teacher/question',
     data: {
@@ -80,34 +80,58 @@ export function deleteQuestion(question_id) {
 // 更新题目
 export function updataQuestion(form) {
   let {
-    question_id,
-    question_name,
-    type,
-    level,
-    create_user,
-    question_option_list,
     answer,
+    answer_context,
     context,
-    knp_id
+    create_user,
+    knp_ids,
+    knp_idStr,
+    level,
+    name, // 题目名称
+    question_id,
+    question_option,
+    type
   } = form
-  // console.log(question_id, question_name, type, level, create_user, question_option_list, answer, context, knp_id);
+  // console.log(
+  //   answer,
+  //   answer_context,
+  //   context,
+  //   create_user,
+  //   knp_ids,
+  //   knp_idStr,
+  //   level,
+  //   name,
+  //   question_id,
+  //   question_option,
+  //   type
+  // )
 
-  if (knp_id instanceof Array) {
-    knp_id.length ? (knp_id = knp_id.join(',')) : (knp_id = '')
+  // 参数knp_id需要的字符串
+  let knp_id = ''
+  if (knp_idStr) {
+    // 勾选有知识点
+    knp_id = knp_idStr
+    // console.log(knp_id, '1')
+  } else {
+    // 没勾选知识点 通过默认知识点的数组获取knp_id
+    knp_ids.length ? (knp_id = knp_ids.join(',')) : (knp_ids = '')
+    // console.log(knp_id, '2')
   }
 
+  // 接口的question_option_list字段与form解构出的字段不一样
   return ptRequest.put({
     url: '/teacher/question',
     data: {
-      question_id,
-      question_name,
-      type,
-      level,
-      create_user: 'cs',
-      question_option_list,
       answer,
+      answer_context,
       context,
-      knp_id
+      create_user,
+      knp_id,
+      level,
+      name,
+      question_id,
+      question_option_list: question_option,
+      type
     }
   })
 }
