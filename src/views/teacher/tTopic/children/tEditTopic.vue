@@ -95,10 +95,11 @@ export default {
   components: { tTree },
   data() {
     return {
-      questionType,
-      questionLevel,
-      levelOptions: this.$store.state.levelOptions,
-      form: undefined,
+      levelOptions: this.$store.state.levelOptions, // 映射难度
+
+      form: undefined, // form表单数据
+
+      // 参数校验
       rules: {
         name: [{ required: true, message: '请输入题目名称' }],
         context: [{ required: true, message: '请输入题目内容' }],
@@ -106,6 +107,8 @@ export default {
         level: [{ required: true, message: '请选择难度' }]
       },
 
+      questionType, // 映射题型工具函数
+      questionLevel, // 映射难度工具函数
       mapABCDEF // 映射ABCDEF工具函数
     }
   },
@@ -131,6 +134,7 @@ export default {
     },
 
     // 提交
+    // 请求更新的接口的参数与返回详情接口的字段有些不一致，再server的更新接口进行抽取
     onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -144,7 +148,7 @@ export default {
               this.$router.push({ path: '/teacher/topic' })
             })
         } else {
-          console.log('error submit!!')
+          console.log('校验失败!')
           return false
         }
       })
@@ -155,15 +159,15 @@ export default {
       this.$router.push({ path: '/teacher/topic' })
     },
 
-    // 勾选
+    // 掉tTree组件emit的勾选知识点方法
     checkedClick(data, checked) {
-      this.form.knp_id = data
+      // 点击后改为form表单添加knpid字段
+      this.form.knp_idStr = data
     }
   },
   computed: {
+    // 因为porps不推荐修改 我们可以拷贝一个form来使用
     editForm() {
-      console.log(this.$store.state.tTopic.currentTopicEditData, 'store')
-
       // 获取知识点联系的id
       let knp_ids = []
       if (this.$store.state.tTopic.currentTopicEditData) {
@@ -171,14 +175,13 @@ export default {
 
         if (data.knowledge_point_list) {
           for (const item of data.knowledge_point_list) {
-            console.log(item, 'item')
             item.knp_id ? knp_ids.push(item.knp_id) : ''
           }
         }
       }
 
       this.form = { ...this.$store.state.tTopic.currentTopicEditData, knp_ids }
-      console.log(this.form, 'form')
+      // console.log(this.form, 'form')
       return this.form
     }
   }
