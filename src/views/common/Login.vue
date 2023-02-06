@@ -67,7 +67,7 @@ export default {
   methods: {
     sendLogin() {
       if (this.username === '' || this.password === '') {
-        alert('输入内容不能为空')
+        alert('输入内容不能为空！')
       } else {
         let headerData = tHeaderData
 

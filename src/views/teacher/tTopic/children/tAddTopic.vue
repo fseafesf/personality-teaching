@@ -58,9 +58,69 @@
           </el-form-item>
         </template>
 
-        <!-- 答案解析 -->
-        <el-form-item label="答案:" prop="answer">
-          <el-input type="textarea" :rows="4" v-model="form.answer"></el-input>
+        <!-- 答案 -->
+        <template>
+          <!-- 选择题 -->
+          <template v-if="form.type == 1 || form.type == 2">
+            <el-form-item label="答案:" prop="answer">
+              <el-input
+                type="textarea"
+                :rows="1"
+                v-model="form.answer"
+              ></el-input>
+            </el-form-item>
+          </template>
+
+          <!-- 判断题 -->
+          <template v-else-if="form.type == 3">
+            <el-form-item label="答案:" prop="answer">
+              <el-select v-model="form.answer">
+                <el-option
+                  v-for="item in judgeOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+
+          <!-- 填空解析题 -->
+          <template v-else>
+            <el-form-item
+              v-for="(item, index) in form.answerArr"
+              label="答案:"
+              :prop="getAnswerProps(index)"
+              :rules="[{ required: true, message: '选项不能为空' }]"
+            >
+              <el-input
+                class="tk-input"
+                type="textarea"
+                :rows="2"
+                v-model="form.answerArr[index].Context"
+              ></el-input>
+            </el-form-item>
+
+            <!-- 添加/删除答案 -->
+            <el-form-item>
+              <el-button type="primary" plain @click="handleAddAnswer"
+                >添加答案</el-button
+              >
+              <el-button type="danger" plain @click="handleDeleteAnswer"
+                >删除答案</el-button
+              >
+            </el-form-item>
+          </template>
+        </template>
+
+        <!-- 解析 可选 -->
+        <el-form-item label="解析:">
+          <el-input
+            type="textarea"
+            :rows="4"
+            v-model="form.answer_context"
+          ></el-input>
         </el-form-item>
 
         <!-- 知识点 -->
@@ -104,9 +164,21 @@ export default {
   components: { tTree },
   data() {
     return {
-      typeOptions: this.$store.state.typeOptions,
-      levelOptions: this.$store.state.levelOptions,
+      typeOptions: this.$store.state.typeOptions, // 题型映射
+      levelOptions: this.$store.state.levelOptions, // 难度映射
+      judgeOption: [
+        // 判断题答案映射
+        {
+          value: 1,
+          label: '对'
+        },
+        {
+          value: 0,
+          label: '错'
+        }
+      ],
 
+      // 表单数据
       form: {
         question_name: '', // 题目名称
         type: 1, // 题型
@@ -120,9 +192,13 @@ export default {
           { Context: '' }
         ],
         answer: '', // 答案
+        answer_context: '', // 解析
         context: '', // 题目内容
-        knp_id: '' //知识点
+        knp_id: '', //知识点
+        answerArr: [{ Context: '' }] // 填空题答案数组 接口的answer为字符串 但我们有多个答案 可以通过数组转为字符串
       },
+
+      // 规则校验
       rules: {
         type: [{ required: true, message: '请选择难度' }],
         question_name: [{ required: true, message: '请输入题目名称' }],
@@ -136,16 +212,24 @@ export default {
   methods: {
     // 提交
     onSubmit() {
+      for (let i = 0; i < this.form.answerArr.length; i++) {
+        i === 0
+          ? (this.form.answer =
+              this.form.answer + this.form.answerArr[i].Context)
+          : (this.form.answer =
+              this.form.answer + '+' + this.form.answerArr[i].Context)
+      }
+
       this.$refs['form'].validate((valid) => {
         if (valid) {
           console.log(this.form)
-          this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
-            this.$message({
-              type: 'success',
-              message: '创建成功!'
-            })
-            this.$router.push({ path: '/teacher/topic' })
-          })
+          // this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
+          //   this.$message({
+          //     type: 'success',
+          //     message: '创建成功!'
+          //   })
+          //   this.$router.push({ path: '/teacher/topic' })
+          // })
         } else {
           console.log('error submit!!')
           return false
@@ -165,6 +249,7 @@ export default {
 
     // 修改题型
     typeChangeHandler() {
+      // 修改题型切换页面 清空校验
       this.$refs['form'].clearValidate()
     },
 
@@ -183,6 +268,23 @@ export default {
     // 删除选项
     handleDeleteOption() {
       this.form.question_option_list.pop()
+    },
+
+    // 添加填空题答案输入框
+    handleAddAnswer() {
+      this.form.answerArr.push({
+        Context: ''
+      })
+    },
+
+    // 删除填空题答案输入框
+    handleDeleteAnswer() {
+      this.form.answerArr.pop()
+    },
+
+    // 返回给填空题答案的props的字符串 用来做验证参数是否合理
+    getAnswerProps(index) {
+      return `answerArr[${index}].Context`
     }
   }
 }
