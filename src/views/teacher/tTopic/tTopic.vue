@@ -269,7 +269,7 @@ export default {
       }
 
       .pagination {
-        margin: 10px 0;
+        margin: 10px 0 0;
         padding: 5px;
         background-color: #fff;
         border-radius: 5px;

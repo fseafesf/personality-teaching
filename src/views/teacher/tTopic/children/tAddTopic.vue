@@ -126,7 +126,7 @@
           </template>
         </template>
 
-        <!-- 解析 可选 -->
+        <!-- 解析 可选非必须 -->
         <el-form-item label="解析:">
           <el-input
             type="textarea"
@@ -224,7 +224,7 @@ export default {
   methods: {
     // 提交
     onSubmit() {
-      // 收集填空题答案
+      // 收集填空题答案 因为接口只有一个答案参数answer 而填空题可能有多个答案 所以我们通过+拼接成一个答案传递给 answer 如 "填空1+填空2"
       for (let i = 0; i < this.form.answerArr.length; i++) {
         i === 0
           ? (this.form.answer =
