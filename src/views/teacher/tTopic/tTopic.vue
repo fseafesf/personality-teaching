@@ -3,6 +3,7 @@
     <template v-if="!$route.meta.isChildren">
       <!-- 搜索框 -->
       <div class="search">
+        <!-- 题型 -->
         <el-select
           class="search-item"
           v-model="type"
@@ -18,6 +19,8 @@
           >
           </el-option>
         </el-select>
+
+        <!-- 难度 -->
         <el-select
           class="search-item"
           v-model="level"
@@ -33,12 +36,16 @@
           >
           </el-option>
         </el-select>
+
+        <!-- 搜索框 -->
         <el-input
           v-model="keyword"
           placeholder="请输入内容"
           size="small"
           clearable
         ></el-input>
+
+        <!-- 按钮 -->
         <el-button type="primary" size="small" @click="searchClick"
           >查询</el-button
         >
@@ -54,6 +61,7 @@
             :operation="false"
             @nodeClick="nodeClick"
             :currentNode="currentKId"
+            :highlight="isHighlight"
           ></tTree>
         </div>
 
@@ -107,6 +115,7 @@ export default {
       typeOptions: this.$store.state.typeOptions,
       type: '',
       levelOptions: this.$store.state.levelOptions,
+      isHighlight: true, // 是否高亮当前选中知识点
       level: '', // 难度
       keyword: '', // 关键字
       knp_id: '', // 知识点ID
@@ -116,6 +125,7 @@ export default {
   },
   mounted() {
     // 我们进入在tTable中请求 因为这样更新的时候 table也能自动发请求获取新的数据
+    // 如果在这里请求 编辑后就不请求 展示的还是之前的数据
     // this.$store.dispatch('QuestionListActive', {
     //   type: this.type,
     //   level: this.level,
@@ -149,6 +159,7 @@ export default {
       this.knp_id = ''
 
       // 取消知识点树高亮
+      this.isHighlight = false
     },
 
     // 添加
@@ -192,6 +203,9 @@ export default {
       this.knp_id = data.id
       // 保存当前知识点id到vuex中 用于默认高亮
       this.$store.commit('changecurrendKId', data.id)
+
+      // 当前知识点树高亮
+      this.isHighlight = true
     }
   },
   computed: {
