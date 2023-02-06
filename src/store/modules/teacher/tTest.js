@@ -79,29 +79,44 @@ const tTest = {
         }).catch(err => reject(err))
       })
     },
+    
     getProblems(context, payload) {
       return new Promise((reslove, reject) => {
-        getQuestionList(payload?.type, payload?.level, payload?.context, payload?.page_size, payload?.page_no).then(res => {
-          console.log(res)
-          reslove(res.data.total)
-          context.commit('initProblems', res.data.list)
-        }).catch(err => reject(err))
+        getQuestionList(payload?.type,
+          payload?.level,
+          payload?.context,
+          payload?.page_size,
+          payload?.page_no)
+          .then(res => {
+            console.log(res)
+            reslove(res.data.total)
+            context.commit('initProblems', res.data.list)
+          }).catch(err => reject(err))
       })
     },
+
     getClasses(context, payload) {
       return new Promise((reslove, reject) => {
-        getClassAPI({ page_num: payload.page_num, page_size: payload.page_size = 20 }).then(res => {
+        getClassAPI({
+          page_num: payload.page_num,
+          page_size: payload.page_size
+        }).then(res => {
           reslove(res.data)
           context.commit('initClasses', res.data)
         }).catch(err => reject(err))
       })
     },
+
     getStudents(context, payload) {
       return new Promise((reslove, reject) => {
-        getStuListAPI(payload.cookie, payload.class_id, { page_num: payload.page_num = 1, page_size: payload.page_size = 40 }).then(res => {
-          reslove(res)
-          context.commit('initStudents', res.data)
-        }).catch(err => reject(err))
+        getStuListAPI(payload.class_id,
+          {
+            page_num: payload.page_num = 1,
+            page_size: payload.page_size = 40
+          }).then(res => {
+            reslove(res)
+            context.commit('initStudents', res.data)
+          }).catch(err => reject(err))
       })
     }
   },

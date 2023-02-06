@@ -105,7 +105,8 @@ export default {
         query:{
           exam_id: this.examId,
           class_id:this.classId,
-          student_id:row.id
+          student_id:row.id,
+          status:row.status
         }
       })
     }

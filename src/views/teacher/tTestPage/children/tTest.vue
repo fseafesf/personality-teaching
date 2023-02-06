@@ -14,11 +14,7 @@
             <div class="mt-content" :class="show ? 'show' : ''">123</div>
           </div>
         </div>
-        <el-tree
-          :data="data"
-          :props="defaultProps"
-          @node-click="handleNodeClick"
-        ></el-tree>
+        <tTree :operation="false" @nodeClick="handleNodeClick"></tTree>
       </div>
       <div class="middle_content wrap-v4">
         <div class="filter-box">
@@ -119,6 +115,7 @@ import Problem from "components/teacher/Test/tTest/tproblem.vue";
 import ProblemHead from "components/teacher/Test/tTest/tproblemHead.vue";
 import ToolMenu from "components/teacher/Test/tTest/toolMenu.vue";
 import RightDrawer from "components/teacher/Test/tTest/trightDrawer.vue";
+import tTree from "@/components/teacher/knowledge/tTree.vue";
 import { mapState, mapActions, mapMutations } from "vuex";
 import { setCache, getCache, clearCache } from "@/utils/localstorage";
 import { getQuestionList } from "@/services";
@@ -331,6 +328,7 @@ export default {
     Judge: () => import("@/components/teacher/Test/tQuestion/tJudge.vue"),
     Fill: () => import("@/components/teacher/Test/tQuestion/tFill.vue"),
     Answer: () => import("@/components/teacher/Test/tQuestion/tAnswer.vue"),
+    tTree,
   },
 };
 </script>

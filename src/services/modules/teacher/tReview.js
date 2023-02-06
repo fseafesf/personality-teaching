@@ -1,10 +1,11 @@
 import sxRequest from '../../request'
 
-export function getReviewClasses(data) {
+export function getReviewClasses(exam_id) {
+    console.log(exam_id)
     return sxRequest.get({
         url: '/teacher/review/class',
         params: {
-            ...data
+            exam_id
         }
     })
 }

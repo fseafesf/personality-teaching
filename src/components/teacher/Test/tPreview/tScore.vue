@@ -32,7 +32,7 @@ export default {
   name: "score",
   data() {
     return {
-      typeArr: ["单选", "多选", "填空", "判断", "简答"],
+      typeArr: ["单选", "多选", "判断","填空" , "简答"],
       typeIndex: ["一", "二", "三", "四", "五"],
     };
   },

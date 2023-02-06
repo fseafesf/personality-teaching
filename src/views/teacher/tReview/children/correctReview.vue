@@ -1,5 +1,8 @@
 <template>
   <div class="correctReview">
+    <el-backtop :bottom="100">
+      <div>UP</div>
+    </el-backtop>
     <div class="back" @click="back">
       <i class="el-icon-back"></i>
       <span class="back-content">返回学生列表</span>
@@ -15,36 +18,158 @@
         <span>班级</span>
       </div>
       <div class="review-content">
-        <div class="content-left"></div>
-        <div class="content-right"></div>
+        <div class="content-left">
+          <ReviewCard
+            ref="modal"
+            v-for="(item, index) in problemList"
+            :key="item.question_id"
+            :index="index"
+            :problem="item"
+          >
+          </ReviewCard>
+        </div>
+        <div class="content-right">
+          <div class="title"><span> 题目列表 </span></div>
+          <div class="record">
+            <ReviewRecord
+              v-for="(item, index) in problemList"
+              :key="item.question_id"
+              :index="index"
+              :problem="item"
+              @click.native="handlerClick(index)"
+            ></ReviewRecord>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="review-foot">123</div>
+    <div class="review-foot">
+      <div class="total">
+        <span>客观题总分:{{ this.totalObjectiveScore }}</span>
+        <span>总分:{{ this.totalScore }}</span>
+      </div>
+      <div class="operate">
+        <el-button size="mini" @click="complete">完成批阅</el-button>
+        <el-button size="mini" :disabled="disabled" @click="nextPage"
+          >下一份</el-button
+        >
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { searchPage } from '@/services'
+import { mapActions, mapMutations, mapState, mapGetters } from 'vuex'
+import { group, breakGroup } from 'utils/groupByType'
+import ReviewCard from '@/components/teacher/review/reviewCard.vue'
+import ReviewRecord from '@/components/teacher/review/reviewRecord.vue'
+import { watch } from 'vue'
 export default {
-  name: "correctReview",
+  name: 'correctReview',
   data() {
-    return {};
+    return {
+      examId: String,
+      classId: String,
+      studentId: String,
+      status: Number,
+      problemList: [],
+      distance: 0,
+      disabled: false
+    }
   },
-  created() {},
+  created() {
+    this.examId = this.$route.query.exam_id
+    this.classId = this.$route.query.class_id
+    this.studentId = this.$route.query.student_id
+    this.status = this.$route.query.status
+    this.getPageInfo()
+    /* 
+    // 清空分数map
+    if(status === -1){
+      this.initScore(this.problemList);
+    }
+    else{
+      获取当前学生当前试卷的批阅情况
+    }
+    */
+  },
   methods: {
+    ...mapMutations('tReview', ['initScore']),
     back() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
+    async getPageInfo() {
+      await searchPage(this.$cookies.get('session_key'), this.examId).then(
+        (res) => {
+          this.problemList = breakGroup(JSON.parse(res.data.questions))
+          this.initScore(this.problemList)
+          console.log(this.problemList)
+        }
+      )
+    },
+    handlerClick(index) {
+      for (let i = 0; i < index; i++) {
+        this.distance += this.$refs.modal[i].$el.offsetHeight
+      }
+      document.documentElement.scrollTop = this.distance + 310
+      // console.log(this.$refs.modal[0].$el.offsetHeight);
+      this.distance = 0
+
+      console.log(index)
+      console.log(this.$refs.modal)
+    },
+
+    complete() {},
+
+    nextPage() {
+      console.log(this.studentId)
+      let index = this.reviewStudents.findIndex((item) => {
+        return item.id === this.studentId
+      })
+      if (index === this.reviewStudents.length - 1) {
+        this.disabled = true
+        return
+      }
+      this.$router.replace({
+        path: '/teacher/reviewHome/correctReview',
+        query: {
+          exam_id: this.examId,
+          class_id: this.classId,
+          student_id: this.reviewStudents[index + 1].id,
+          status: this.status
+        }
+      })
+      console.log(index)
+      console.log(this.reviewStudents[index + 1])
+    }
   },
-  computed: {},
-};
+  computed: {
+    ...mapState('tReview', [
+      'currentPageScore',
+      'currentProblem',
+      'totalScore',
+      'totalObjectiveScore',
+      'reviewStudents'
+    ]),
+    ...mapGetters('tReview', ['TotalScore', 'TotalObjectiveScore'])
+  },
+  components: {
+    ReviewCard,
+    ReviewRecord
+  },
+  watch:{
+    '$route'(to,from){
+      this.$router.go(0)
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
 .correctReview {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow: auto;
+  height: calc(100% - 80px);
   .back {
     display: flex;
     align-items: center;
@@ -81,6 +206,7 @@ export default {
       display: flex;
       width: 90%;
       margin: 40px auto 10px;
+      overflow: scroll;
       .content-left {
         width: 70%;
         background-color: #fff;
@@ -89,13 +215,51 @@ export default {
         flex: 1;
         background-color: #fff;
         margin-left: 20px;
-        height: 400px;
+        max-height: 600px;
+        .title {
+          height: 0;
+          border: 1px dashed gray;
+          margin: 20px 15px;
+          opacity: 0.5;
+          position: relative;
+          span {
+            position: absolute;
+            left: 40%;
+            top: -10px;
+          }
+        }
+        .record {
+          margin: auto;
+          display: flex;
+          flex-wrap: wrap;
+        }
       }
     }
   }
   .review-foot {
+    height: 50px;
+    background-color: #4498ee;
+    display: flex;
+    align-items: baseline;
+    .total {
       height: 50px;
-      background-color: #4498ee;
+      flex: 1;
+      display: flex;
+      padding-left: 120px;
+      span {
+        margin: 20px 40px 10px;
+      }
     }
+    .operate {
+      height: 50px;
+      flex: 1.5;
+      display: flex;
+      align-items: center;
+
+      button {
+        margin: 0 20px;
+      }
+    }
+  }
 }
 </style>

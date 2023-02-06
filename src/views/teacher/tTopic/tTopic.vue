@@ -160,8 +160,8 @@ export default {
     },
 
     // 点击知识点
-    nodeClick() {
-      console.log('nodeClick')
+    nodeClick(data) {
+      console.log('nodeClick',data)
     }
   }
 }

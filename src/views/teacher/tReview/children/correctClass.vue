@@ -41,7 +41,7 @@ export default {
   },
   created() {
     this.pageId = this.$route.query.exam_id;
-    // this.getClass();
+    this.getClass();
     this.classes = this.reviewClasses;
   },
   methods: {
@@ -50,10 +50,7 @@ export default {
       this.$router.go(-1);
     },
     async getClass() {
-      let data = {
-        exam_id: this.pageId,
-      };
-      await getReviewClasses(data).then((res) => {
+      await this.getInitReviewClasses(this.pageId).then((res) => {
         console.log(res);
       });
     },

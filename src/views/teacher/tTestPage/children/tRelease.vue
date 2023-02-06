@@ -51,11 +51,7 @@
               >
               </el-option>
             </el-select>
-            <el-input
-              placeholder="请输入内容"
-              v-model="input"
-              size="small"
-            >
+            <el-input placeholder="请输入内容" v-model="input" size="small">
             </el-input>
             <el-button type="primary" size="mini" @click="searchStu"
               >搜索</el-button
@@ -131,8 +127,8 @@ export default {
 
       // 班级列表请求参数
       classQueryInfo: {
-        page_num: 1,
-        page_size: 10,
+        page_num: 1, // 分页页号
+        page_size: 10, // 分页大小
       },
 
       // 班级全选
@@ -185,6 +181,7 @@ export default {
     ...mapActions("tTest", ["getClasses", "getStudents"]),
     formDate,
     getClass() {
+      console.log(this.classQueryInfo);
       this.getClasses(this.classQueryInfo).then((res) => {
         this.classList = this.classes;
         this.options = this.classList;
@@ -290,7 +287,7 @@ export default {
             releasePageClass(data).then((res) => {
               console.log(res);
               this.checkedClasses = [];
-              this.comment = ""
+              this.comment = "";
             });
           }
         } else if (this.radio === "个人") {
@@ -319,12 +316,12 @@ export default {
   },
   watch: {
     input: {
-      handler(newVal,oldVal){
-        console.log(newVal)
-        if(newVal.trim() == ""){
-          this.seTableData = JSON.parse(JSON.stringify(this.tableData))
+      handler(newVal, oldVal) {
+        console.log(newVal);
+        if (newVal.trim() == "") {
+          this.seTableData = JSON.parse(JSON.stringify(this.tableData));
         }
-      }
+      },
     },
   },
   computed: {
