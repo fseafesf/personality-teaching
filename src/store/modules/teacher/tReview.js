@@ -51,8 +51,8 @@ const tReview = {
     },
 
     // param 传入当前批阅试卷的题目数组
-    initScore(state, params) {
-      for (const problem of params) {
+    initScore(state, param) {
+      for (const problem of param) {
         state.currentPageScore.set(problem.question_id, "0")
       }
     },
