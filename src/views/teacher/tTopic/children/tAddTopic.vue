@@ -86,8 +86,8 @@
             </el-form-item>
           </template>
 
-          <!-- 填空解析题 -->
-          <template v-else>
+          <!-- 填空题 -->
+          <template v-else-if="form.type == 4">
             <el-form-item
               v-for="(item, index) in form.answerArr"
               label="答案:"
@@ -110,6 +110,18 @@
               <el-button type="danger" plain @click="handleDeleteAnswer"
                 >删除答案</el-button
               >
+            </el-form-item>
+          </template>
+
+          <!-- 简答题 -->
+          <template v-else-if="form.type == 5">
+            <el-form-item label="答案:" prop="answer">
+              <el-input
+                class="tk-input"
+                type="textarea"
+                :rows="5"
+                v-model="form.answer"
+              ></el-input>
             </el-form-item>
           </template>
         </template>
@@ -203,7 +215,7 @@ export default {
         type: [{ required: true, message: '请选择难度' }],
         question_name: [{ required: true, message: '请输入题目名称' }],
         context: [{ required: true, message: '请输入题目内容' }],
-        answer: [{ required: true, message: '请输入答案解析' }],
+        answer: [{ required: true, message: '请输入答案' }],
         level: [{ required: true, message: '请选择难度' }]
       },
       mapABCDEF // 映射ABCD函数

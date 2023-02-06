@@ -10,9 +10,10 @@ import { questionLevel } from '@/utils/questLevel'
 
 const tTopic = {
   state: () => ({
-    topicTableData: [],
+    topicTableData: [], // 题目列表
     total: '',
-    currentTopicEditData: {} // id获取的题目详情
+    currentTopicEditData: {}, // id获取的题目详情
+    currendKId: '' // 当前知识点id
   }),
   mutations: {
     changeCurrentTopicEditData(state, data) {
@@ -24,6 +25,8 @@ const tTopic = {
         state.total = data.total
         return
       }
+
+      // 映射难度、题目类型文本
       const mapData = data.list.map((item) => {
         item.type = questionType(item.type)
         item.level = questionLevel(item.level)
@@ -31,6 +34,11 @@ const tTopic = {
       })
       state.topicTableData = mapData
       state.total = data.total
+    },
+
+    // 改变当前知识点id
+    changecurrendKId(state, data) {
+      state.currendKId = data
     }
   },
   actions: {
@@ -40,6 +48,7 @@ const tTopic = {
         payload?.type,
         payload?.level,
         payload?.keyword,
+        payload?.knp_id,
         payload?.size,
         payload?.page
       )

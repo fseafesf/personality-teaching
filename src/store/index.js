@@ -15,9 +15,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isLoading: false,  // 控制loading组件
+    isLoading: false, // 控制loading组件
     headerData: getCache('headerData') || [], // header数据
-    typeOptions: [ // 添加、编辑、搜索题目的题型映射
+    typeOptions: [
+      // 添加、编辑、搜索题目的题型映射
       {
         value: 1,
         label: '单选题'
@@ -39,7 +40,8 @@ export default new Vuex.Store({
         label: '简答题'
       }
     ],
-    levelOptions: [  // 添加、编辑、搜索题目，添加、编辑知识点的难度映射
+    levelOptions: [
+      // 添加、编辑、搜索题目，添加、编辑知识点的难度映射
       {
         value: 1,
         label: '简单'

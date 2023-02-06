@@ -25,9 +25,11 @@ export default {
     }
   },
   methods: {
+    // 点击知识点
     nodeClick(data) {
       if (data.id == this.currentId) return
       this.currentId = data.id
+      // 会把当前知识点id存到vuex中
       this.$store.dispatch('PointByIdActive', data.id)
     }
   },
@@ -35,6 +37,8 @@ export default {
     pointDetail: function () {
       return this.$store.state.tKnowledge.pointDetail.info
     },
+
+    // 获取选中的当前知识点id
     currentNode() {
       return this.$store.state.tKnowledge.currentNode
     }

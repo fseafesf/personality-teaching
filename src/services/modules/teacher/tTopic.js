@@ -5,6 +5,7 @@ export function getQuestionList(
   type,
   level,
   context,
+  knp_id,
   page_size = 10,
   page_no = 1
 ) {
@@ -14,6 +15,7 @@ export function getQuestionList(
       type,
       level,
       context,
+      knp_id,
       page_size,
       page_no
     }
