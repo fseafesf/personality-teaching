@@ -47,6 +47,9 @@ export default {
     keyword: {
       type: String
     },
+    knp_id: {
+      type: String
+    },
     size: {
       type: Number,
       default: 10
@@ -56,14 +59,17 @@ export default {
     }
   },
   mounted() {
+    // 我们进入在tTable中请求 因为这样更新的时候 table也能自动发请求获取新的数据
     this.updateTable()
   },
   methods: {
+    // 第一次进入table和table更新发请求
     updateTable() {
       this.$store.dispatch('QuestionListActive', {
         type: this.$props.type,
         level: this.$props.level,
         keyword: this.$props.keyword,
+        knp_id: this.$props.knp_id,
         size: this.$props.size,
         page: this.$props.page
       })

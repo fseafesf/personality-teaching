@@ -48,8 +48,13 @@
       </div>
 
       <div class="content">
+        <!-- 知识点树 -->
         <div class="left">
-          <tTree :operation="false" @nodeClick="nodeClick"></tTree>
+          <tTree
+            :operation="false"
+            @nodeClick="nodeClick"
+            :currentNode="currentKId"
+          ></tTree>
         </div>
 
         <div class="right">
@@ -62,6 +67,7 @@
               :type="+type"
               :level="+level"
               :keyword="keyword"
+              :knp_id="knp_id"
               :size="size"
               :page="currentPage"
             />
@@ -101,11 +107,23 @@ export default {
       typeOptions: this.$store.state.typeOptions,
       type: '',
       levelOptions: this.$store.state.levelOptions,
-      level: '',
-      keyword: '',
-      currentPage: 1,
-      size: 10
+      level: '', // 难度
+      keyword: '', // 关键字
+      knp_id: '', // 知识点ID
+      currentPage: 1, // 当前页面
+      size: 10 // 页面条数
     }
+  },
+  mounted() {
+    // 我们进入在tTable中请求 因为这样更新的时候 table也能自动发请求获取新的数据
+    // this.$store.dispatch('QuestionListActive', {
+    //   type: this.type,
+    //   level: this.level,
+    //   keyword: this.keyword,
+    //   knp_id: this.knp_id,
+    //   size: this.size,
+    //   page: this.page
+    // })
   },
   destroyed() {
     // console.log('ok')
@@ -128,6 +146,9 @@ export default {
       this.keyword = ''
       this.type = ''
       this.level = ''
+      this.knp_id = ''
+
+      // 取消知识点树高亮
     },
 
     // 添加
@@ -142,6 +163,7 @@ export default {
         type: this.type,
         level: this.level,
         keyword: this.keyword,
+        knp_id: this.knp_id,
         size
       })
       this.currentPage = 1
@@ -153,6 +175,7 @@ export default {
         type: this.type,
         level: this.level,
         keyword: this.keyword,
+        knp_id: this.knp_id,
         size: this.size,
         page
       })
@@ -162,7 +185,19 @@ export default {
 
     // 点击知识点
     nodeClick(data) {
-      console.log('nodeClick',data)
+      // console.log('nodeClick', data)
+      this.$store.dispatch('QuestionListActive', {
+        knp_id: data.id
+      })
+      this.knp_id = data.id
+      // 保存当前知识点id到vuex中 用于默认高亮
+      this.$store.commit('changecurrendKId', data.id)
+    }
+  },
+  computed: {
+    // 获取选中的当前知识点Id
+    currentKId() {
+      return this.$store.state.tTopic.currendKId
     }
   }
 }

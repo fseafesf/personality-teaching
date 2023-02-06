@@ -42,9 +42,18 @@
           </el-form-item>
         </template>
 
-        <!-- 解析 -->
-        <el-form-item label="答案解析:" prop="answer">
+        <!-- 答案 -->
+        <el-form-item label="答案:" prop="answer">
           <el-input type="textarea" :rows="4" v-model="editForm.answer" />
+        </el-form-item>
+
+        <!-- 解析 -->
+        <el-form-item label="解析:">
+          <el-input
+            type="textarea"
+            :rows="4"
+            v-model="editForm.answer_context"
+          />
         </el-form-item>
 
         <!-- 知识点联系 -->
@@ -181,7 +190,7 @@ export default {
       }
 
       this.form = { ...this.$store.state.tTopic.currentTopicEditData, knp_ids }
-      // console.log(this.form, 'form')
+      console.log(this.form, 'form')
       return this.form
     }
   }
