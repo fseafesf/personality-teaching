@@ -9,7 +9,7 @@
           node-key="id"
           default-expand-all
           :expand-on-click-node="false"
-          highlight-current
+          :highlight-current="highlight"
           :current-node-key="currentNode"
           @check-change="checkedClickHandler"
           @node-click="nodeClickHandler"
@@ -57,6 +57,7 @@ import { deletePoint } from '@/services'
 export default {
   props: {
     operation: {
+      // 是否显示添加、删除等操作
       type: Boolean,
       default: true
     },
@@ -65,16 +66,24 @@ export default {
       default: 0
     },
     showCheckbox: {
+      // 显示复选框
       type: Boolean,
       default: false
     },
     defaultChecked: {
+      // 默认选中
       type: Array,
       default: () => []
     },
     currentNode: {
+      // 当前节点id
       type: String,
       default: ''
+    },
+    highlight: {
+      // 是否高亮当前节点
+      type: Boolean,
+      default: true
     }
   },
   emits: ['checkedClick', 'nodeClick'],
@@ -84,6 +93,7 @@ export default {
     }
   },
   mounted() {
+    // 第一次进入tTree和tTree编辑更新发请求 如果一个页面又两颗树 会请求两次 但无所谓了 这项目又没有几百万的请求量
     // this.$store.dispatch('PointOneActive')
     this.$store.dispatch('PointListActive')
   },
