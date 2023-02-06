@@ -10,9 +10,11 @@
       </div>
       <div class="stuBody">
         <div class="search">
-          <el-input placeholder="请输入内容" v-model="input" clearable>
+          <!-- <el-input placeholder="请输入内容" v-model="input" clearable>
           </el-input>
-          <el-button type="primary" size="small">主要按钮</el-button>
+          <el-button @click="searchStudent" type="primary" size="small"
+            >主要按钮</el-button
+          > -->
         </div>
         <div class="list">
           <el-table :data="seStudents" border style="width: 100%">
@@ -70,51 +72,59 @@
 </template>
 
 <script>
-import { transfromStatus } from "@/utils/transfrom";
-import { mapActions, mapState } from "vuex";
-import { formDate } from "@/utils/Date/formatDate";
+import { transfromStatus } from '@/utils/transfrom'
+import { mapActions, mapState } from 'vuex'
+import { formDate } from '@/utils/Date/formatDate'
 export default {
-  name: "correctStudent",
+  name: 'correctStudent',
   data() {
     return {
       examId: String,
       classId: String,
-      input: "",
+      input: '',
       students: [],
-      seStudents: [],
-    };
+      seStudents: []
+    }
   },
   created() {
-    this.examId = this.$route.query.exam_id;
-    this.classId = this.$route.query.class_id;
-    this.getStudents();
+    this.examId = this.$route.query.exam_id
+    this.classId = this.$route.query.class_id
+    this.getStudents()
   },
   methods: {
+    ...mapActions('tReview', ['getInitStudents']),
     transfromStatus,
     formDate,
     back() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     getStudents() {
-      this.students = this.reviewStudents;
-      this.seStudents = JSON.parse(JSON.stringify(this.students));
+      this.getInitStudents({
+        exam_id: this.examId,
+        class_id: this.classId
+      }).then((res) => {
+        console.log(res)
+        this.students = this.reviewStudents
+        this.seStudents = JSON.parse(JSON.stringify(this.students))
+      })
     },
-    handleReview(index,row){
+    handleReview(index, row) {
+      console.log(row)
       this.$router.push({
-        path:'/teacher/reviewHome/correctReview',
-        query:{
+        path: '/teacher/reviewHome/correctReview',
+        query: {
           exam_id: this.examId,
-          class_id:this.classId,
-          student_id:row.id,
-          status:row.status
+          class_id: this.classId,
+          student_id: row.student_id,
+          status: row.status
         }
       })
-    }
+    },
   },
   computed: {
-    ...mapState("tReview", ["reviewStudents"]),
-  },
-};
+    ...mapState('tReview', ['reviewStudents'])
+  }
+}
 </script>
 
 <style lang="less" scoped>

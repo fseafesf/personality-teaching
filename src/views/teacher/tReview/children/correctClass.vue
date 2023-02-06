@@ -9,7 +9,7 @@
         class="class"
         v-for="(item, index) in classes"
         :key="index"
-        @click="handleClick(item.id)"
+        @click="handleClick(item.class_id)"
       >
         <div class="class-title">
           <span>{{ item.college }}</span>
@@ -42,7 +42,6 @@ export default {
   created() {
     this.pageId = this.$route.query.exam_id;
     this.getClass();
-    this.classes = this.reviewClasses;
   },
   methods: {
     ...mapActions("tReview", ["getInitReviewClasses"]),
@@ -51,7 +50,8 @@ export default {
     },
     async getClass() {
       await this.getInitReviewClasses(this.pageId).then((res) => {
-        console.log(res);
+        console.log(res)
+        this.classes = this.reviewClasses;
       });
     },
     handleClick(class_id) {

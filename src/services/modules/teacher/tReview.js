@@ -1,7 +1,6 @@
 import sxRequest from '../../request'
 
 export function getReviewClasses(exam_id) {
-    console.log(exam_id)
     return sxRequest.get({
         url: '/teacher/review/class',
         params: {
@@ -10,17 +9,23 @@ export function getReviewClasses(exam_id) {
     })
 }
 
-export function getReviewStudents(data) {
+export function getReviewStudents({class_id,exam_id}) {
     return sxRequest.get({
         url: '/teacher/review/student/list',
-        data
+        params:{
+            class_id,
+            exam_id
+        }
     })
 }
 
-export function getStudentsAnswer(data) {
+export function getStudentsAnswer({exam_id,student_id}) {
     return sxRequest.get({
         url: '/teacher/review/student',
-        data
+        params:{
+            exam_id,
+            student_id
+        }
     })
 }
 

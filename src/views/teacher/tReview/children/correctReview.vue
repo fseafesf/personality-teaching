@@ -9,7 +9,7 @@
     </div>
     <div class="review-page">
       <div class="review-title">
-        <span>试卷标题</span>
+        <span>{{ exam_name || '' }}</span>
       </div>
       <div class="review-info">
         <span>姓名</span>
@@ -53,13 +53,12 @@
           >下一份</el-button
         >
       </div>
-      <div class="operate"></div>
     </div>
   </div>
 </template>
 
 <script>
-import { searchPage } from '@/services'
+import { searchPage, getStudentsAnswer } from '@/services'
 import { mapActions, mapMutations, mapState, mapGetters } from 'vuex'
 import { group, breakGroup } from 'utils/groupByType'
 import ReviewCard from '@/components/teacher/review/reviewCard.vue'
@@ -75,7 +74,8 @@ export default {
       status: Number,
       problemList: [],
       distance: 0,
-      disabled: false
+      disabled: false,
+      exam_name: ''
     }
   },
   created() {
@@ -84,29 +84,44 @@ export default {
     this.studentId = this.$route.query.student_id
     this.status = this.$route.query.status
     this.getPageInfo()
-    /* 
+    this.getInitStudents({
+      exam_id: this.examId,
+      class_id: this.classId
+    })
     // 清空分数map
-    if(status === -1){
-      this.initScore(this.problemList);
+
+    if (this.status === 1) {
+      this.initScore(this.problemList)
+    } else {
+      // 获取当前学生当前试卷的批阅情况
+      console.log('批改过')
     }
-    else{
-      获取当前学生当前试卷的批阅情况
-    }
-    */
+
+    this.getStudentScore()
   },
   methods: {
     ...mapMutations('tReview', ['initScore']),
+    ...mapActions('tReview', ['getInitStudents']),
     back() {
       this.$router.go(-1)
     },
     async getPageInfo() {
       await searchPage(this.$cookies.get('session_key'), this.examId).then(
         (res) => {
+          console.log(res)
+          this.exam_name = res.data.exam_name
           this.problemList = breakGroup(JSON.parse(res.data.questions))
           this.initScore(this.problemList)
-          console.log(this.problemList)
         }
       )
+    },
+    async getStudentScore() {
+      await getStudentsAnswer({
+        exam_id: this.examId,
+        student_id: this.studentId
+      }).then((res) => {
+        console.log(res)
+      })
     },
     handlerClick(index) {
       for (let i = 0; i < index; i++) {
@@ -115,18 +130,16 @@ export default {
       document.documentElement.scrollTop = this.distance + 310
       // console.log(this.$refs.modal[0].$el.offsetHeight);
       this.distance = 0
-
-      console.log(index)
-      console.log(this.$refs.modal)
     },
 
     complete() {},
 
     nextPage() {
-      console.log(this.studentId)
       let index = this.reviewStudents.findIndex((item) => {
-        return item.id === this.studentId
+        console.log(this.studentId, item.student_id)
+        return item.student_id === this.studentId
       })
+      console.log(index)
       if (index === this.reviewStudents.length - 1) {
         this.disabled = true
         return
@@ -136,7 +149,7 @@ export default {
         query: {
           exam_id: this.examId,
           class_id: this.classId,
-          student_id: this.reviewStudents[index + 1].id,
+          student_id: this.reviewStudents[index + 1].student_id,
           status: this.status
         }
       })
@@ -158,8 +171,8 @@ export default {
     ReviewCard,
     ReviewRecord
   },
-  watch:{
-    '$route'(to,from){
+  watch: {
+    $route(to, from) {
       this.$router.go(0)
     }
   }
