@@ -66,6 +66,8 @@ export default {
         if (valid) {
           const { knp_id, parent_knp_id, level, name, context, create_user } =
             this.pointDetail
+
+          // 发请求更新
           updatePoint(
             knp_id,
             parent_knp_id,

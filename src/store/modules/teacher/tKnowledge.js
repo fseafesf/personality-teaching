@@ -3,10 +3,10 @@ import { mapTree } from "@/utils/mapTree"
 
 const tKnowledge = {
   state: () => ({
-    points: [],
+    points: [], // 知识点树
     ponitOnes: [],
-    pointDetail: {},
-    currentNode: ''
+    pointDetail: {}, // 当前知识点信息
+    currentNode: ''  // 当前知识点id
   }),
   mutations: {
     changePoints(state, data) {

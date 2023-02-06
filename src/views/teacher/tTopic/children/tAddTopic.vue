@@ -212,6 +212,7 @@ export default {
   methods: {
     // 提交
     onSubmit() {
+      // 收集填空题答案
       for (let i = 0; i < this.form.answerArr.length; i++) {
         i === 0
           ? (this.form.answer =
@@ -223,13 +224,13 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           console.log(this.form)
-          // this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
-          //   this.$message({
-          //     type: 'success',
-          //     message: '创建成功!'
-          //   })
-          //   this.$router.push({ path: '/teacher/topic' })
-          // })
+          this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
+            this.$message({
+              type: 'success',
+              message: '创建成功!'
+            })
+            this.$router.push({ path: '/teacher/topic' })
+          })
         } else {
           console.log('error submit!!')
           return false

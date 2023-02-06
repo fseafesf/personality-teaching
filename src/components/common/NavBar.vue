@@ -1,7 +1,7 @@
 <template>
   <div class="top-bar">
     <template v-for="(item, index) in navBarData">
-      <div class="title" @click="itemClick(index)">
+      <div class="title">
         <router-link :to="item.path">{{ item.name }}</router-link>
       </div>
     </template>
