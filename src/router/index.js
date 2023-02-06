@@ -92,6 +92,14 @@ const routes = [
         meta: {
           isChildren: true,
         },
+      },
+      {
+        path: 'classListing',
+        component: () => import('@/views/teacher/tClass/children/class-listing.vue')
+      },
+      {
+        path: 'unJoinStuListing',
+        component: () => import('@/views/teacher/tClass/children/student-listing.vue')
       }
     ]
   },

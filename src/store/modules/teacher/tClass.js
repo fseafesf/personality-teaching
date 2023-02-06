@@ -1,4 +1,4 @@
-import { getClassAPI, getStuListAPI, getTeacherInfoAPI, getAppointedClassAPI } from '@/services/modules/teacher/tClass.js'
+import { getClassAPI, getStuListAPI, getTeacherInfoAPI, getAppointedClassAPI, getUnjoinStuAPI } from '@/services/modules/teacher/tClass.js'
 const tClass = {
   state: () => ({
     name: 'tClass',
@@ -17,6 +17,12 @@ const tClass = {
     },
     studentList: [],  // 存放班级学生信息
     studentTotal: 0,  //存放学生总数
+    unJoinStuPage: {  // 未加入班级学生页码
+      page_num: 1,
+      page_size: 20
+    },
+    unJoinClassList: [],  // 未加入班级学生列表
+    unJoinStuTotal: 0  // 未加入班级学生总数
   }),
   mutations: {
     getClassList(state, val) {
@@ -37,6 +43,10 @@ const tClass = {
     // 保存单个班级信息
     getClassInfo(state, data) {
       state.classInfo = data
+    },
+    getUnJoinClsStu(state, val) {
+      state.unJoinClassList = val.data
+      state.unJoinStuTotal = val.total
     }
   },
   actions: {
@@ -55,16 +65,26 @@ const tClass = {
       }
     },
     // 查询单个班级
-    getPointedClassIdActions(store, classid, cookie) {
+    getPointedClassIdActions(store, classid) {
       store.commit("saveClassId", classid)
       getAppointedClassAPI(classid).then(res => {
         res ? store.commit("getClassInfo", res.data) : ""
       })
-      getStuListAPI(classid, store.state.stuListPage).then(res => {
-        res ? store.commit("getStuList", res) : ""
-      })
+    },
+    // 查询班级学生列表
+    async getStuListActions(store) {
+      let res = await getStuListAPI(store.state.classId, store.state.stuListPage)
+      if (res.code === 0) {
+        store.commit("getStuList", res)
+      }
+    },
+    // 查询未加入班级学生列表
+    async getUnJoinClsStuActions(store) {
+      let res = await getUnjoinStuAPI(store.state.unJoinStuPage)
+      if (res.code === 0) {
+        store.commit('getUnJoinClsStu', res)
+      }
     }
-
   },
   getters: {
 
