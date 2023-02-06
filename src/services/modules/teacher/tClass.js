@@ -124,12 +124,9 @@ export const addStudentAPI = (cookie, { name, college, major, phone_number }) =>
  * @param {*} param1 { page_num：分页号, page_size：分页大小}
  * @returns 
  */
-export const getUnjoinStuAPI = (cookie, { page_num, page_size }) => {
+export const getUnjoinStuAPI = ({ page_num, page_size }) => {
   return ptRequest.get({
     url: '/teacher/student/list',
-    headers: {
-      'Cookie': `session_key=${cookie}`
-    },
     params: {
       page_num,
       page_size

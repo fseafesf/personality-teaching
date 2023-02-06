@@ -13,7 +13,7 @@
     <!-- 学生列表 -->
     <div class="studentBox">
       <h3 class="title">学生列表</h3>
-      <el-button type="primary" size="small" @click="unjoinStuFn">添加学生</el-button>
+      <el-button type="primary" size="small" @click="unJoinStuFn">添加学生</el-button>
       <el-table
         :data="$store.state.tClass.studentList"
         stripe
@@ -33,7 +33,7 @@
           @size-change="stuHandleSizeChange"
           @current-change="stuHandleCurrentChange"
           :current-page="$store.state.tClass.stuListPage.page_num"
-          :page-sizes = "[10, 20, 30]"
+          :page-sizes = "[5, 10, 30]"
           :page-size="$store.state.tClass.stuListPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="+this.$store.state.tClass.studentTotal"
@@ -45,6 +45,7 @@
     <el-dialog title="未加入班级的学生" :visible.sync="dialogTableVisible" width="70%">
       <div>
         <el-input v-model="keyword" placeholder="请输入学生姓名" class="searchStu"></el-input>
+        <!-- <el-button type="primary" @click="searchFn">查询</el-button> -->
         <el-button type="primary" @click="resetFn">重置</el-button>
       </div>
       <el-table :data="unJoinClass" style="width: 100%">
@@ -62,11 +63,11 @@
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="unJoinStuPage.page_num"
+          :current-page="$store.state.tClass.unJoinStuPage.page_num"
           :page-sizes = "[10, 20, 30]"
-          :page-size="unJoinStuPage.page_size"
+          :page-size="$store.state.tClass.unJoinStuPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="unJoinStuTotal"
+          :total="+$store.state.tClass.unJoinStuTotal"
           style="margin-top: 12px">
       </el-pagination>
     </el-dialog>
@@ -74,78 +75,79 @@
 </template>
 
 <script>
-import { getUnjoinStuAPI, deleteStuAPI, addStuToClassAPI } from '@/services/modules/teacher/tClass.js'
+import { deleteStuAPI, addStuToClassAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions } from 'vuex'
 export default {
   name: 'classInfo',
   data() {
     return {
       dialogTableVisible: false,   // 未加入班级学生对话框是否显示
-      unJoinClassList: [],  // 未加入班级学生列表    
-      unJoinStuPage: {  // 未加入班级学生页码
-        page_num: 1,
-        page_size: 10
-      },   
-      unJoinStuTotal: 0,
       keyword: "",
     }
   },
   mounted() {
     this.$store.dispatch("getPointedClassIdActions", this.$route.params.id)
     this.getTeacherInfoActions()
+    this.getStuListActions()
   },
   computed: {
     // 搜索功能
     unJoinClass() {
-      return this.unJoinClassList.filter(item => {
+      return this.$store.state.tClass.unJoinClassList.filter(item => {
         return item.name.indexOf(this.keyword) !== -1
       })
     }
   },
   methods: {
-    ...mapActions(['getStuListActions', 'getTeacherInfoActions']),
+    ...mapActions(['getStuListActions', 'getTeacherInfoActions', 'getUnJoinClsStuActions']),
     // 获取未加入班级学生
-    async unjoinStuFn() {
+    async unJoinStuFn() {
       this.dialogTableVisible = true
-      const res = await getUnjoinStuAPI(this.$cookies.get("session_key"), this.unJoinStuPage)
-      this.unJoinStuTotal = res.total
-      this.unJoinClassList = res.data
+      this.getUnJoinClsStuActions()
     },
     // 未加入班级学生页码
     handleSizeChange(sizes) {
-      this.unJoinStuPage.page_size = sizes
-      this.unJoinStuPage.page_num = 1
-      this.unjoinStuFn()
+      this.$store.state.tClass.unJoinStuPage.page_size = sizes
+      this.$store.state.tClass.unJoinStuPage.page_num = 1
+      this.unJoinStuFn()
     },
     handleCurrentChange(nowPage) {
-      this.unJoinStuPage.page_num = nowPage
-      this.unjoinStuFn()
+      this.$store.state.tClass.unJoinStuPage.page_num = nowPage
+      this.unJoinStuFn()
     },
     // 学生列表页面改变
     stuHandleSizeChange(sizes) {
       this.$store.state.tClass.stuListPage.page_num = 1
       this.$store.state.tClass.stuListPage.page_size = sizes
-      this.getStuListActions(this.$store.state.tClass.stuListPage)
+      // this.getStuListActions(this.$store.state.tClass.stuListPage)
+      this.getStuListActions()
     },
     stuHandleCurrentChange(nowPage) {
       this.$store.state.tClass.stuListPage.page_num = nowPage
-      this.getStuListActions(this.$store.state.tClass.stuListPage)
+      // this.getStuListActions(this.$store.state.tClass.stuListPage)
+      this.getStuListActions()
     },
     // 删除学生
     deleteStuFn(obj) {
-      this.$confirm('是否删除学生？', '提示', {
+      this.$confirm('是否将' + obj.name + '移出' + this.$store.state.tClass.classInfo.name + '？', '提示', {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
         const res = await deleteStuAPI(this.$cookies.get("session_key"),{class_id:this.$store.state.tClass.classId, student_id:obj.student_id})
         if (res.code === 0) {
-          this.getStuListActions({ cookie: this.$cookies.get("session_key") })
+          // this.getStuListActions({ cookie: this.$cookies.get("session_key") })
           this.$message({
             type: 'success',
             message: '删除成功！'
           })
         }
+        if (this.$store.state.tClass.studentList.length === 1) { 
+          if (this.$store.state.tClass.stuListPage.page_num > 1) {
+            this.$store.state.tClass.stuListPage.page_num--
+          }
+        }
+        this.getStuListActions()
       }).catch(() => {
           this.$message({
             type: 'info',
@@ -158,7 +160,7 @@ export default {
       const res = await addStuToClassAPI(this.$cookies.get("session_key"), this.$store.state.tClass.classId, obj.student_id)
       if (res.code === 0) {
         this.$message.success(res.msg)
-        this.unjoinStuFn()
+        this.unJoinStuFn()
         this.getStuListActions({ cookie: this.$cookies.get("session_key") })
       }
     },
@@ -166,6 +168,13 @@ export default {
     resetFn() {
       this.keyword = ''
     },
+    // 查询学生
+    // searchFn() {
+    //   this.searchList = this.$store.state.tClass.unJoinClassList.filter(item => {
+    //     return item.name.indexOf(this.keyword) !== -1
+    //   })
+    //   this.stuNum = this.searchList.length
+    // }
   }
 }
 </script>
