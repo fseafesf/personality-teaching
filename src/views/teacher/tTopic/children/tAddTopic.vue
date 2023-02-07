@@ -60,14 +60,28 @@
 
         <!-- 答案 -->
         <template>
-          <!-- 选择题 -->
-          <template v-if="form.type == 1 || form.type == 2">
+          <!-- 单选题 -->
+          <template v-if="form.type == 1">
             <el-form-item label="答案:" prop="answer">
-              <el-input
-                type="textarea"
-                :rows="1"
-                v-model="form.answer"
-              ></el-input>
+              <el-radio-group v-model="form.answer">
+                <el-radio
+                  v-for="(item, index) in form.question_option_list"
+                  :label="mapABCDEF(index)"
+                ></el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </template>
+
+          <!-- 多选 -->
+          <template v-if="form.type == 2">
+            <el-form-item label="答案:" prop="dx_answer">
+              <el-checkbox-group v-model="form.dx_answer">
+                <el-checkbox
+                  v-for="(item, index) in form.question_option_list"
+                  :label="mapABCDEF(index)"
+                  name="type"
+                ></el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </template>
 
@@ -203,7 +217,8 @@ export default {
           { Context: '' },
           { Context: '' }
         ],
-        answer: '', // 答案
+        answer: '', // 单选、判断、简答题答案
+        dx_answer: [], // 多选题答案
         answer_context: '', // 解析
         context: '', // 题目内容
         knp_id: '', //知识点
@@ -216,6 +231,7 @@ export default {
         question_name: [{ required: true, message: '请输入题目名称' }],
         context: [{ required: true, message: '请输入题目内容' }],
         answer: [{ required: true, message: '请输入答案' }],
+        dx_answer: [{ required: true, message: '请选择答案' }],
         level: [{ required: true, message: '请选择难度' }]
       },
       mapABCDEF // 映射ABCD函数
@@ -224,25 +240,29 @@ export default {
   methods: {
     // 提交
     onSubmit() {
-      // 收集填空题答案 因为接口只有一个答案参数answer 而填空题可能有多个答案 所以我们通过+拼接成一个答案传递给 answer 如 "填空1+填空2"
-      for (let i = 0; i < this.form.answerArr.length; i++) {
-        i === 0
-          ? (this.form.answer =
-              this.form.answer + this.form.answerArr[i].Context)
-          : (this.form.answer =
-              this.form.answer + '+' + this.form.answerArr[i].Context)
+      // 如果是多选题和填空题 收集多选、填空题答案 因为接口只有一个答案参数answer(字符串) 而填空题可能有多个答案[数组] 所以我们通过+拼接成一个答案传递给answer 如 "填空1+填空2"
+      if (this.form.type === 4) {
+        for (let i = 0; i < this.form.answerArr.length; i++) {
+          i === 0
+            ? (this.form.answer =
+                this.form.answer + this.form.answerArr[i].Context)
+            : (this.form.answer =
+                this.form.answer + '+' + this.form.answerArr[i].Context)
+        }
       }
 
       this.$refs['form'].validate((valid) => {
         if (valid) {
           console.log(this.form)
-          this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
-            this.$message({
-              type: 'success',
-              message: '创建成功!'
-            })
-            this.$router.push({ path: '/teacher/topic' })
-          })
+
+          // 发请求提交
+          // this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
+          //   this.$message({
+          //     type: 'success',
+          //     message: '创建成功!'
+          //   })
+          //   this.$router.push({ path: '/teacher/topic' })
+          // })
         } else {
           console.log('error submit!!')
           return false

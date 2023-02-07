@@ -87,6 +87,7 @@ const routes = [
     ]
   },
 
+  // 班级
   {
     path: '/teacher/class',
     name: 'tClass',
@@ -112,6 +113,8 @@ const routes = [
       }
     ]
   },
+
+  // 试卷
   {
     path: '/teacher/examHome',
     name: 'tExamHome',
@@ -149,6 +152,8 @@ const routes = [
       }
     ]
   },
+
+  // 评阅
   {
     path: '/teacher/reviewHome',
     name: 'tReviewHome',
@@ -181,6 +186,8 @@ const routes = [
       }
     ]
   },
+
+  // 学情分析
   {
     path: '/teacher/analysis',
     name: 'tAnalysis',

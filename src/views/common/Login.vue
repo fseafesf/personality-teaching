@@ -78,6 +78,8 @@ export default {
           return this.$router.push({ path: '/student/mine' })
         }
 
+        console.log(this.username, encrypt(this.password))
+
         login({
           username: this.username,
           password: encrypt(this.password)

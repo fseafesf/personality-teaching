@@ -63,7 +63,7 @@ export default {
     this.updateTable()
   },
   methods: {
-    // 第一次进入table和table更新发请求
+    // 第一次进入table和table编辑更新发请求
     updateTable() {
       this.$store.dispatch('QuestionListActive', {
         type: this.$props.type,
