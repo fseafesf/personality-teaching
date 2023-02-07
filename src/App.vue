@@ -1,10 +1,17 @@
 <template>
   <div id="app">
-    <Header
-      :nav-bar-data="$store.state.headerData"
-      v-if="$store.state.headerData.length && !$route.meta.hideNavBar"
-    />
-    <router-view class="wrap-v1" />
+    <!-- 登录页不显示Header -->
+    <template v-if="$route.path == '/' || $route.path == '/login'">
+      <router-view class="wrap-v1" />
+    </template>
+    <template v-else>
+      <!-- <Layout> -->
+      <Header />
+      <router-view class="wrap-v1" />
+      <!-- </Layout> -->
+    </template>
+
+    <!-- 加载页面 -->
     <Loading />
   </div>
 </template>
@@ -17,7 +24,7 @@ export default {
   name: 'App',
   components: { Header, Loading },
   mounted() {
-    // console.log(this.$route.meta);
+    console.log(this.$route)
   }
 }
 </script>
