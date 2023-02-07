@@ -83,7 +83,6 @@ export default {
 
     // 添加知识点
     addConnetHandler() {
-      console.log('ok')
       updatePointConnect(this.currentId, this.p_knp_id).then((res) => {
         this.$message({
           type: 'success',
@@ -100,7 +99,7 @@ export default {
       return this.pointDetail
     },
 
-    // 获取知识点详情中有联系的知识点 赋值给Tree组件勾选
+    // 获取知识点详情中有联系的知识点 赋值给tTree组件勾选
     defaultChecked: function () {
       const checkedArr = []
       this.pointDetail.knowledge_connection_list?.forEach((item) => {

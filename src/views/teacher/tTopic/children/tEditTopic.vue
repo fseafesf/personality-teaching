@@ -42,21 +42,17 @@
           </el-form-item>
         </template>
 
-        <!-- 答案
-        <el-form-item label="答案:" prop="answer">
-          <el-input type="textarea" :rows="4" v-model="editForm.answer" />
-        </el-form-item> -->
-
         <!-- 答案 -->
         <template>
           <!-- 选择题 -->
           <template v-if="form.type == 1 || form.type == 2">
             <el-form-item label="答案:" prop="answer">
-              <el-input
-                type="textarea"
-                :rows="1"
-                v-model="form.answer"
-              ></el-input>
+              <el-radio-group v-model="form.answer">
+                <el-radio
+                  v-for="(item, index) in form.question_option"
+                  :label="mapABCDEF(index)"
+                ></el-radio>
+              </el-radio-group>
             </el-form-item>
           </template>
 
@@ -179,7 +175,7 @@ export default {
       rules: {
         name: [{ required: true, message: '请输入题目名称' }],
         context: [{ required: true, message: '请输入题目内容' }],
-        answer: [{ required: true, message: '请输入答案解析' }],
+        answer: [{ required: true, message: '请输入答案' }],
         level: [{ required: true, message: '请选择难度' }]
       },
 
@@ -235,11 +231,14 @@ export default {
       // 收集填空题答案 因为接口只有一个答案参数answer 而填空题可能有多个答案 所以我们通过+拼接成一个答案传递给 answer 如 "填空1+填空2"
 
       // 1.先把this.form中的answer转为空 再拼接
-      this.form.answer = ''
-      for (let i = 0; i < this.form.answerArr.length; i++) {
-        i === 0
-          ? (this.form.answer = this.form.answer + this.form.answerArr[i])
-          : (this.form.answer = this.form.answer + '+' + this.form.answerArr[i])
+      if (this.form.type === 4) {
+        this.form.answer = ''
+        for (let i = 0; i < this.form.answerArr.length; i++) {
+          i === 0
+            ? (this.form.answer = this.form.answer + this.form.answerArr[i])
+            : (this.form.answer =
+                this.form.answer + '+' + this.form.answerArr[i])
+        }
       }
 
       this.$refs['form'].validate((valid) => {
