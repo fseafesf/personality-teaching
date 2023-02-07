@@ -19,12 +19,12 @@ import Acount from './acount.vue'
 
 export default {
   components: { Acount },
-  props: {
-    navBarData: {
-      type: Array,
-      default: () => []
-    }
-  },
+  // props: {
+  //   navBarData: {
+  //     type: Array,
+  //     default: () => []
+  //   }
+  // },
   data() {
     return {}
   },
