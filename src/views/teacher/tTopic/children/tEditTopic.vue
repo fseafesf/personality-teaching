@@ -44,8 +44,8 @@
 
         <!-- 答案 -->
         <template>
-          <!-- 选择题 -->
-          <template v-if="form.type == 1 || form.type == 2">
+          <!-- 单择题 -->
+          <template v-if="form.type == 1">
             <el-form-item label="答案:" prop="answer">
               <el-radio-group v-model="form.answer">
                 <el-radio
@@ -56,25 +56,33 @@
             </el-form-item>
           </template>
 
+          <!-- 多选题 -->
+          <template v-if="form.type == 2">
+            <el-form-item label="答案:" prop="answer">
+              <el-checkbox-group v-model="form.dx_answer">
+                <el-checkbox
+                  v-for="(item, index) in form.question_option"
+                  :label="mapABCDEF(index)"
+                  name="type"
+                ></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </template>
+
           <!-- 判断题 -->
           <template v-else-if="form.type == 3">
             <el-form-item label="答案:" prop="answer">
-              <el-select v-model="form.answer">
-                <el-option
-                  v-for="item in judgeOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
+              <el-radio-group v-model="form.answer">
+                <el-radio label="对"></el-radio>
+                <el-radio label="错"></el-radio>
+              </el-radio-group>
             </el-form-item>
           </template>
 
           <!-- 填空题 -->
           <template v-else-if="form.type == 4">
             <el-form-item
-              v-for="(item, index) in form.answerArr"
+              v-for="(item, index) in form.tk_answer"
               label="答案:"
               :prop="getAnswerProps(index)"
               :rules="[{ required: true, message: '选项不能为空' }]"
@@ -83,7 +91,7 @@
                 class="tk-input"
                 type="textarea"
                 :rows="2"
-                v-model="form.answerArr[index]"
+                v-model="form.tk_answer[index]"
               ></el-input>
             </el-form-item>
 
@@ -151,6 +159,7 @@ import { questionLevel } from '@/utils/questLevel'
 import tTree from '@/components/teacher/knowledge/tTree.vue'
 
 import mapABCDEF from '@/utils/mapABCDEF'
+import { arr2string } from '@/utils/topic'
 
 export default {
   components: { tTree },
@@ -181,7 +190,8 @@ export default {
 
       questionType, // 映射题型工具函数
       questionLevel, // 映射难度工具函数
-      mapABCDEF // 映射ABCDEF工具函数
+      mapABCDEF, // 映射ABCDEF工具函数
+      arr2string // 将多选题、填空题答案数组转成字符串的工具函数
     }
   },
   mounted() {
@@ -205,40 +215,33 @@ export default {
       this.form.question_option.pop()
     },
 
-    // 删除选项
-    handleDeleteOption() {
-      this.form.question_option_list.pop()
-    },
-
     // 添加填空题答案输入框
     handleAddAnswer() {
-      this.form.answerArr.push('')
+      this.form.tk_answer.push('')
     },
 
     // 删除填空题答案输入框
     handleDeleteAnswer() {
-      this.form.answerArr.pop()
+      this.form.tk_answer.pop()
     },
 
     // 返回给填空题答案的props的字符串 用来做验证参数是否合理
     getAnswerProps(index) {
-      return `answerArr[${index}]`
+      return `tk_answer[${index}]`
     },
 
     // 提交
     // 请求更新的接口的参数与返回详情接口的字段有些不一致，再server的更新接口进行抽取
     onSubmit() {
-      // 收集填空题答案 因为接口只有一个答案参数answer 而填空题可能有多个答案 所以我们通过+拼接成一个答案传递给 answer 如 "填空1+填空2"
+      // 收集填空题、选择题答案 因为接口只有一个答案参数answer 而多选题、填空题可能有多个答案的数组 所以我们通过+拼接成一个答案传递给 answer 如 "填空1+填空2"
 
-      // 1.先把this.form中的answer转为空 再拼接
-      if (this.form.type === 4) {
+      // 先把this.form中的answer转为空 再拼接
+      if (this.form.type === 2) {
         this.form.answer = ''
-        for (let i = 0; i < this.form.answerArr.length; i++) {
-          i === 0
-            ? (this.form.answer = this.form.answer + this.form.answerArr[i])
-            : (this.form.answer =
-                this.form.answer + '+' + this.form.answerArr[i])
-        }
+        this.form.answer = this.arr2string(this.form.dx_answer)
+      } else if (this.form.type === 4) {
+        this.form.answer = ''
+        this.form.answer = this.arr2string(this.form.tk_answer)
       }
 
       this.$refs['form'].validate((valid) => {
@@ -277,8 +280,9 @@ export default {
       // 获取知识点联系的id
       let knp_ids = []
 
-      // 如果是填空题 获取分割后的答案数组
-      let answerArr = []
+      // 如果是填空题和多选题 获取分割后的答案数组
+      let tk_answer = []
+      let dx_answer = []
 
       if (this.$store.state.tTopic.currentTopicEditData) {
         const data = this.$store.state.tTopic.currentTopicEditData
@@ -290,17 +294,21 @@ export default {
           }
         }
 
-        // 如果为填空题 需要对答案answer进行分离转成数组
+        // 多选题与填空题答案需要的上一个数组展示
+        // 如果为多选题、填空题 需要对答案answer进行分离转成数组
         // 添加填空题的时候 多个answer用+进行拼接 可以过+分割获取答案数组
-        if (data.type === 4) {
-          answerArr = data.answer.split('+')
+        if (data.type === 2) {
+          dx_answer = data.answer.split('+')
+        } else if (data.type === 4) {
+          tk_answer = data.answer.split('+')
         }
       }
 
       this.form = {
         ...this.$store.state.tTopic.currentTopicEditData,
         knp_ids,
-        answerArr
+        tk_answer,
+        dx_answer
       }
       console.log(this.form, 'form')
       return this.form

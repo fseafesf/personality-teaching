@@ -88,22 +88,17 @@
           <!-- 判断题 -->
           <template v-else-if="form.type == 3">
             <el-form-item label="答案:" prop="answer">
-              <el-select v-model="form.answer">
-                <el-option
-                  v-for="item in judgeOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
+              <el-radio-group v-model="form.answer">
+                <el-radio label="对"></el-radio>
+                <el-radio label="错"></el-radio>
+              </el-radio-group>
             </el-form-item>
           </template>
 
           <!-- 填空题 -->
           <template v-else-if="form.type == 4">
             <el-form-item
-              v-for="(item, index) in form.answerArr"
+              v-for="(item, index) in form.tk_answer"
               label="答案:"
               :prop="getAnswerProps(index)"
               :rules="[{ required: true, message: '选项不能为空' }]"
@@ -112,7 +107,7 @@
                 class="tk-input"
                 type="textarea"
                 :rows="2"
-                v-model="form.answerArr[index].Context"
+                v-model="form.tk_answer[index]"
               ></el-input>
             </el-form-item>
 
@@ -185,6 +180,7 @@
 <script>
 import tTree from '@/components/teacher/knowledge/tTree.vue'
 import mapABCDEF from '@/utils/mapABCDEF'
+import { arr2string } from '@/utils/topic'
 
 export default {
   components: { tTree },
@@ -222,7 +218,7 @@ export default {
         answer_context: '', // 解析
         context: '', // 题目内容
         knp_id: '', //知识点
-        answerArr: [{ Context: '' }] // 填空题答案数组 接口的answer为字符串 但我们有多个答案 可以通过数组转为字符串
+        tk_answer: [''] // 填空题答案数组 接口的answer为字符串 但我们有多个答案 可以通过数组转为字符串
       },
 
       // 规则校验
@@ -234,21 +230,25 @@ export default {
         dx_answer: [{ required: true, message: '请选择答案' }],
         level: [{ required: true, message: '请选择难度' }]
       },
-      mapABCDEF // 映射ABCD函数
+      mapABCDEF, // 映射ABCD函数
+      arr2string // 将多选题、填空题答案数组转成字符串的工具函数
     }
   },
   methods: {
     // 提交
     onSubmit() {
-      // 如果是多选题和填空题 收集多选、填空题答案 因为接口只有一个答案参数answer(字符串) 而填空题可能有多个答案[数组] 所以我们通过+拼接成一个答案传递给answer 如 "填空1+填空2"
+      // 多选题
+      // 多选题答案是一个数组 添加接口只有一个答案参数answer(字符串) 我们需要将数组转成字符串
+      if (this.form.type === 2) {
+        this.form.answer = '' // 先置为空
+        this.form.answer = this.arr2string(this.form.dx_answer)
+      }
+
+      // 填空题
+      // 收集填空题答案 因为接口只有一个答案参数answer(字符串) 而填空题可能有多个答案[数组] 所以我们通过+拼接成一个答案传递给answer 如 "填空1+填空2"
       if (this.form.type === 4) {
-        for (let i = 0; i < this.form.answerArr.length; i++) {
-          i === 0
-            ? (this.form.answer =
-                this.form.answer + this.form.answerArr[i].Context)
-            : (this.form.answer =
-                this.form.answer + '+' + this.form.answerArr[i].Context)
-        }
+        this.form.answer = '' // 先置为空
+        this.form.answer = this.arr2string(this.form.tk_answer)
       }
 
       this.$refs['form'].validate((valid) => {
@@ -256,13 +256,13 @@ export default {
           console.log(this.form)
 
           // 发请求提交
-          // this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
-          //   this.$message({
-          //     type: 'success',
-          //     message: '创建成功!'
-          //   })
-          //   this.$router.push({ path: '/teacher/topic' })
-          // })
+          this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
+            this.$message({
+              type: 'success',
+              message: '创建成功!'
+            })
+            this.$router.push({ path: '/teacher/topic' })
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -282,7 +282,25 @@ export default {
 
     // 修改题型
     typeChangeHandler() {
-      // 修改题型切换页面 清空校验
+      // 1.清空表单数据 除题型外
+      this.form.question_name = '' // 题目名称
+      this.form.level = '' // 难度
+      this.form.question_option_list = [
+        // 选项
+        { Context: '' },
+        { Context: '' },
+        { Context: '' },
+        { Context: '' }
+      ]
+      this.form.answer = '' // 单选、判断、简答题答案
+      this.form.dx_answer = [] // 多选题答案
+      this.form.answer_context = '' // 解析
+      this.form.context = '' // 题目内容
+      this.form.answer_context = '' // 解析
+      this.form.knp_id = '' // 知识点
+      this.form.tk_answer = [''] // 填空题答案数组 接口的answer为字符串 但我们有多个答案 可以通过数组转为字符串
+
+      // 2.清空校验
       this.$refs['form'].clearValidate()
     },
 
@@ -305,19 +323,17 @@ export default {
 
     // 添加填空题答案输入框
     handleAddAnswer() {
-      this.form.answerArr.push({
-        Context: ''
-      })
+      this.form.tk_answer.push('')
     },
 
     // 删除填空题答案输入框
     handleDeleteAnswer() {
-      this.form.answerArr.pop()
+      this.form.tk_answer.pop()
     },
 
     // 返回给填空题答案的props的字符串 用来做验证参数是否合理
     getAnswerProps(index) {
-      return `answerArr[${index}].Context`
+      return `tk_answer[${index}]`
     }
   }
 }
