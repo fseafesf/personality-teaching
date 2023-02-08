@@ -23,9 +23,7 @@ import Header from './components/common/Header.vue'
 export default {
   name: 'App',
   components: { Header, Loading },
-  mounted() {
-    console.log(this.$route)
-  }
+  mounted() {}
 }
 </script>
 
