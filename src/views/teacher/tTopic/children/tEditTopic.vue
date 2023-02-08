@@ -213,6 +213,10 @@ export default {
     // 删除选项
     handleDeleteOption() {
       this.form.question_option.pop()
+
+      // 判断删除的最后一个选项是否被勾选为答案
+      // 如果被勾选 删除的时候取消勾选
+      // this.form.dx_answer.pop()
     },
 
     // 添加填空题答案输入框

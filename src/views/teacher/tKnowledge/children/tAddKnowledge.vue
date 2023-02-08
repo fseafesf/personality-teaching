@@ -47,27 +47,47 @@ export default {
     }
   },
   methods: {
+    // 提交
     onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.$store
-            .dispatch('PointAddActive', {
-              ...this.form,
-              parent_knp_id: this.$route.params.id
-            })
-            .then((res) => {
-              this.$message({
-                type: 'success',
-                message: '添加成功!'
+          // 如果是添加一级知识点 parent_knp_id为它本身 不需要要传
+          if (this.$route.params.id === '1') {
+            // 一级知识点 不需要 parent_knp_id 为它本身
+            this.$store
+              .dispatch('PointAddActive', {
+                ...this.form
               })
-              this.$router.push({ path: '/teacher/knowledge/tree' })
-            })
+              .then((res) => {
+                this.$message({
+                  type: 'success',
+                  message: '添加成功!'
+                })
+                this.$router.push({ path: '/teacher/knowledge/tree' })
+              })
+          } else {
+            // 子知识点 需要parent_knp_id
+            this.$store
+              .dispatch('PointAddActive', {
+                ...this.form,
+                parent_knp_id: this.$route.params.id
+              })
+              .then((res) => {
+                this.$message({
+                  type: 'success',
+                  message: '添加成功!'
+                })
+                this.$router.push({ path: '/teacher/knowledge/tree' })
+              })
+          }
         } else {
           console.log('error submit!!')
           return false
         }
       })
     },
+
+    // 取消
     cancelHandleClick() {
       this.$router.push({ path: '/teacher/knowledge/tree' })
     }
