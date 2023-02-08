@@ -223,7 +223,7 @@ export default {
 
       // 规则校验
       rules: {
-        type: [{ required: true, message: '请选择难度' }],
+        type: [{ required: true, message: '请选择题目类型' }],
         question_name: [{ required: true, message: '请输入题目名称' }],
         context: [{ required: true, message: '请输入题目内容' }],
         answer: [{ required: true, message: '请输入答案' }],

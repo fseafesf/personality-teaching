@@ -40,8 +40,10 @@ export default {
         context: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入题目名称' }],
-        context: [{ required: true, message: '请输入题目内容' }],
+        name: [
+          { required: true, max: 30, message: '请输入30字以内的知识点名称' }
+        ],
+        context: [{ required: true, message: '请输入知识点内容' }],
         level: [{ required: true, message: '请选择难度' }]
       }
     }
