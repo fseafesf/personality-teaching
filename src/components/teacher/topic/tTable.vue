@@ -35,6 +35,11 @@
 
 <script>
 export default {
+  emits: [
+    // 暴露给父组件的两个事件
+    'editTopic', // 复选框点击
+    'deleteTopic' // 点击知识点节点
+  ],
   data() {
     return {}
   },
@@ -79,28 +84,15 @@ export default {
         page: this.$props.page
       })
     },
+
+    // 编辑
     handleEdit(index, row) {
-      this.$router.push({ path: '/teacher/topic/edit/' + row.question_id })
+      this.$emit('editTopic', row)
     },
+
+    // 删除
     handleDelete(index, row) {
-      this.$confirm('此操作将永久删除该题目, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$store
-            .dispatch('QuestionDeleteActive', row.question_id)
-            .then((res) => {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-              this.updateTable()
-              // this.$store.dispatch('QuestionListActive')
-            })
-        })
-        .catch(() => {})
+      this.$emit('deleteTopic', row)
     }
   }
 }
