@@ -69,7 +69,7 @@
 </template>
 
 <script >
-import { addStudentAPI } from '@/services/modules/teacher/tClass.js'
+import { addStudentAPI, deleteUnJoinStuAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions} from 'vuex';
 export default {
   data() {
@@ -94,7 +94,7 @@ export default {
           {required: true, message: "请输入专业名", trigger: "blur"}
         ],
         phone_number: [
-          {required: true, message: "请输入学生电话号码", trigger: "blur"},
+          {required: false, message: "请输入学生电话号码", trigger: "blur"},
           {pattern: /^1([3456789])\d{9}$/, message: "电话号码必须是11位且以1开头,第二位数字是3456789中的一位", trigger: "blur"}
         ]
       },
@@ -150,7 +150,7 @@ export default {
       this.$refs.addStuRef.validate(async valid => {
         if (valid) {
           if (!this.isEdit) {  // 新增学生
-            const res = await addStudentAPI(this.$cookies.get("session_key"),this.addStuForm)
+            const res = await addStudentAPI(this.addStuForm)
             if (res.code === 0) {
               this.$message.success(res.msg)
             }   
@@ -183,8 +183,16 @@ export default {
         confirmButtonText: "删除",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() => {
+      }).then(async () => {
         console.log("删除学生")
+        // const res = await deleteUnJoinStuAPI(obj.student_id)
+        // console.log(res.code)
+        // if (res.code === 0) {
+        //   this.$message({
+        //     type: 'success',
+        //     message: '删除成功！'
+        //   })
+        // }
 
         if (this.$store.state.tClass.unJoinClassList.length === 1) {
           if (this.$store.state.tClass.unJoinStuPage.page_num > 1) {

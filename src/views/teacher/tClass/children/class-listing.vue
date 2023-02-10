@@ -12,9 +12,9 @@
         <el-table-column prop="name" label="班级名" width="240px"></el-table-column>
         <el-table-column prop="college" label="学院名"></el-table-column>
         <el-table-column prop="major" label="专业"></el-table-column>
-        <el-table-column label="操作" width="240px">
+        <el-table-column label="操作" width="260px">
           <template v-slot="scope">
-            <el-button type="primary" size="mini" @click.stop="checkClassInfoFn(scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" @click.stop="checkClassInfoFn(scope.row)">学生配置</el-button>
             <el-button type="primary" size="mini" @click="modifyClassFn(scope.row)">修改</el-button>
             <el-button type="danger" size="mini" @click="delClassBtn(scope.row)">删除</el-button>
           </template>
@@ -38,7 +38,7 @@
       <el-dialog
         title="班级信息"
         :visible.sync="dialogVisible"
-        width="40%"
+        width="36%"
         @close="dialogCloseFn">
         <el-form :model="addClassForm" ref="addClassRef" label-width="100px" :rules="classInfoRules">
           <el-form-item label="班级名称:" prop="name">
@@ -67,6 +67,24 @@ import { addClassAPI, deleteClassAPI, modifyClassAPI, addStudentAPI } from '@/se
 import { mapActions} from 'vuex';
 export default {
   data() {
+    const sameClsName = (rules, value, callback) => {  
+      try {
+        this.$store.state.tClass.classList.forEach(item => {
+          if (item.name == value) {
+            throw new Error("class-name-error")
+          }
+        })
+        callback()
+      } catch (e) {
+        if (e.message == "class-name-error") {
+          this.$message({
+            message: '该班级已存在，请重新输入',
+            type: "warning"
+          })
+          return false
+        }
+      }
+    }
     return {
       dialogVisible: false,
       // 添加班级的数据对象
@@ -80,7 +98,8 @@ export default {
       // 表单验证规则
       classInfoRules: {
         name: [
-          {required: true, message: "请输入班级名", trigger: 'blur'}
+          { required: true, message: "请输入班级名", trigger: 'blur' },
+          { validator: sameClsName, trigger: "blur"}
         ],
         college: [
           {required: true, message: "请输入学院名", trigger: "blur"}
@@ -115,13 +134,11 @@ export default {
         if (valid) {
           if (!this.isEdit) {  /// 创建班级
             const res = await addClassAPI(this.addClassForm)
-            // console.log(res)
             if (res.code === 0) {
               this.$message.success(res.msg)
             }
           } else {  // 修改班级信息
             const res = await modifyClassAPI({ class_id: this.editClassId, ...this.addClassForm })
-            // console.log(res)
             if (res.code === 0) {
               this.$message.success(res.msg)
             }      
@@ -148,7 +165,7 @@ export default {
       }).then(async () => {
         const res = await deleteClassAPI(obj.class_id)
         if (res.code === 0) {
-          this.$message.success(res.msg)
+          // this.$message.success(res.msg)
           this.$message({
             type: 'success',
             message: '删除成功！'
@@ -194,6 +211,24 @@ export default {
       // this.getClassInfoActions(this.$store.state.tClass.classPage)
       this.getClassInfoActions()
     },
+   /*  clsNameCheck() {
+      try {
+        this.$store.state.tClass.classList.forEach(item => {
+          if (item.name == this.addClassForm.name) {
+            throw new Error("class-name-error")
+          }
+        })
+        return true
+      } catch (e) {
+        if (e.message == "class-name-error") {
+          this.$message({
+            message: '该班级已存在，请重新输入',
+            type: "warning"
+          })
+          return false
+        }
+      }
+    } */
   }
 };
 </script>
@@ -229,5 +264,8 @@ export default {
     background-color: #fff;
     border-radius: 4px;
     margin-top: 4px;
+  }
+  div.el-input {
+    width: 350px;
   }
 </style>
