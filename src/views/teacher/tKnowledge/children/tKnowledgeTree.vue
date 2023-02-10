@@ -1,6 +1,14 @@
 <template>
   <div class="knowledge-tree">
     <div class="left">
+      <el-button
+        class="add-btn"
+        type="primary"
+        size="mini"
+        plain
+        @click="handleAddClick"
+        >添加一级知识点</el-button
+      >
       <tTree @nodeClick="nodeClick" :currentNode="currentNode" />
     </div>
     <div class="right">
@@ -31,6 +39,12 @@ export default {
       this.currentId = data.id
       // 会把当前知识点id存到vuex中
       this.$store.dispatch('PointByIdActive', data.id)
+    },
+
+    // 添加一级知识点
+    handleAddClick() {
+      // 1代表添加一级知识点 用于在添加知识点页面是区分一级知识点
+      this.$router.push({ path: '/teacher/knowledge/add/' + 1 })
     }
   },
   computed: {
@@ -61,6 +75,10 @@ export default {
   }
 
   .left {
+    .add-btn {
+      margin: 10px;
+    }
+
     width: 400px;
   }
 

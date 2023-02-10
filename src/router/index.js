@@ -88,7 +88,11 @@ const routes = [
     ]
   },
 
+<<<<<<< HEAD
   // 班级管理
+=======
+  // 班级
+>>>>>>> origin/main
   {
     path: '/teacher/class',
     name: 'tClass',
@@ -115,6 +119,8 @@ const routes = [
       }
     ]
   },
+
+  // 试卷
   {
     path: '/teacher/examHome',
     name: 'tExamHome',
@@ -152,6 +158,8 @@ const routes = [
       }
     ]
   },
+
+  // 评阅
   {
     path: '/teacher/reviewHome',
     name: 'tReviewHome',
@@ -184,6 +192,10 @@ const routes = [
       }
     ]
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
   // 学情分析
   {
     path: '/teacher/analysis',

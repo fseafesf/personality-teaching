@@ -36,7 +36,29 @@ body {
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
+/* 一行超过父盒子的宽度变.... */
+.text-nowrap {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 /* 全局修改Tree组件的选中背景颜色 */
 .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
   background-color: hsla(210, 94%, 50%, 0.2) !important;
+}
+
+/* 全局修改tTable组件的的内容超过宽度变成...  */
+.el-table td.el-table__cell div {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* 全局修改tTree组件的的内容超过宽度变成...  */
+.tree .custom-tree-container .custom-tree-node .label {
+  width: 230px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="topic top-page">
+    <!-- 数据展示页面 -->
     <template v-if="!$route.meta.isChildren">
       <!-- 搜索框 -->
       <div class="search">
@@ -78,6 +79,8 @@
               :knp_id="knp_id"
               :size="size"
               :page="currentPage"
+              @editTopic="handleEdit"
+              @deleteTopic="handleDelete"
             />
           </div>
 
@@ -98,7 +101,11 @@
       </div>
     </template>
 
-    <!-- 子页面 -->
+    <!-- 添加、编辑子页面 -->
+    <!--
+      这样做的好处是改页面不会被卸载 所以currentPage、size等参数会保留 当我们编辑、添加题目的时候还是在当前页面 不会被重置
+      缺点：需要我们在tTable中的mouted发请求获取数据才能保证添加、编辑会重新刷新一次
+    -->
     <router-view></router-view>
   </div>
 </template>
@@ -126,14 +133,14 @@ export default {
   mounted() {
     // 我们进入在tTable中请求 因为这样更新的时候 table也能自动发请求获取新的数据
     // 如果在这里请求 编辑后就不请求 展示的还是之前的数据
-    // this.$store.dispatch('QuestionListActive', {
-    //   type: this.type,
-    //   level: this.level,
-    //   keyword: this.keyword,
-    //   knp_id: this.knp_id,
-    //   size: this.size,
-    //   page: this.page
-    // })
+    this.$store.dispatch('QuestionListActive', {
+      type: this.type,
+      level: this.level,
+      keyword: this.keyword,
+      knp_id: this.knp_id,
+      size: this.size,
+      page: this.page
+    })
   },
   destroyed() {
     // console.log('ok')
@@ -206,6 +213,45 @@ export default {
 
       // 当前知识点树高亮
       this.isHighlight = true
+    },
+
+    // 编辑题目
+    handleEdit(row) {
+      this.$router.push({ path: '/teacher/topic/edit/' + row.question_id })
+    },
+
+    // 删除题目
+    handleDelete(row) {
+      if (this.$store.state.tTopic.topicTableData.length === 1) {
+        this.currentPage -= 1
+      }
+
+      this.$confirm('此操作将永久删除该题目, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$store
+            .dispatch('QuestionDeleteActive', row.question_id)
+            .then((res) => {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+
+              // 删除成功后重新获取数据
+              this.$store.dispatch('QuestionListActive', {
+                type: this.type,
+                level: this.level,
+                keyword: this.keyword,
+                knp_id: this.knp_id,
+                size: this.size,
+                page: this.currentPage
+              })
+            })
+        })
+        .catch(() => {})
     }
   },
   computed: {

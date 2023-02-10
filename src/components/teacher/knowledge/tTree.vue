@@ -86,7 +86,11 @@ export default {
       default: true
     }
   },
-  emits: ['checkedClick', 'nodeClick'],
+  emits: [
+    // 暴露给父组件的两个事件
+    'checkedClick', // 复选框点击
+    'nodeClick' // 点击知识点节点
+  ],
   data() {
     return {
       // data: []
@@ -146,6 +150,7 @@ export default {
   },
 
   computed: {
+    // 从store中获取知识点树列表
     treeData() {
       return this.$store.state.tKnowledge.points
     }
