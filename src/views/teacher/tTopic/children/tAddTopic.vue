@@ -340,6 +340,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/* 全局修改tTree组件的的内容超过宽度变成...  */
+/deep/ .tree .custom-tree-container .custom-tree-node .label {
+  width: 500px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .add-topic {
   .add-content {
     margin-top: 10px;

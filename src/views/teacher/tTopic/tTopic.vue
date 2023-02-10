@@ -103,7 +103,7 @@
 
     <!-- 添加、编辑子页面 -->
     <!--
-      这样做的好处是改页面不会被卸载 所以currentPage、size等参数会保留 当我们编辑、添加题目的时候还是在当前页面 不会被重置
+      这样做的好处是该页面不会被卸载 所以currentPage、size等参数会保留 当我们编辑、添加题目的时候还是在当前页面 不会被重置 可以省去很多代码
       缺点：需要我们在tTable中的mouted发请求获取数据才能保证添加、编辑会重新刷新一次
     -->
     <router-view></router-view>
@@ -132,15 +132,15 @@ export default {
   },
   mounted() {
     // 我们进入在tTable中请求 因为这样更新的时候 table也能自动发请求获取新的数据
-    // 如果在这里请求 编辑后就不请求 展示的还是之前的数据
-    this.$store.dispatch('QuestionListActive', {
-      type: this.type,
-      level: this.level,
-      keyword: this.keyword,
-      knp_id: this.knp_id,
-      size: this.size,
-      page: this.page
-    })
+    // 如果在这里请求 因为该页面不会被卸载 所以不会被触发
+    // this.$store.dispatch('QuestionListActive', {
+    //   type: this.type,
+    //   level: this.level,
+    //   keyword: this.keyword,
+    //   knp_id: this.knp_id,
+    //   size: this.size,
+    //   page: this.page
+    // })
   },
   destroyed() {
     // console.log('ok')
@@ -222,6 +222,7 @@ export default {
 
     // 删除题目
     handleDelete(row) {
+      // 如果删除的是页面最后一条数据 需要将页面改为上一页
       if (this.$store.state.tTopic.topicTableData.length === 1) {
         this.currentPage -= 1
       }
@@ -294,7 +295,7 @@ export default {
     display: flex;
 
     .left {
-      width: 300px;
+      width: 350px;
       border-radius: 5px;
       box-sizing: border-box;
       padding: 3px;
