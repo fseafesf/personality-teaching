@@ -103,12 +103,9 @@ export const getStuListAPI = (class_id, { page_num, page_size }) => {
  * @param {*} param1 { name：姓名, college：学院, major：专业, phone_number：电话号码 }
  * @returns 
  */
-export const addStudentAPI = (cookie, { name, college, major, phone_number }) => {
+export const addStudentAPI = ({ name, college, major, phone_number }) => {
   return ptRequest.post({
     url: '/teacher/student',
-    headers: {
-      'Cookie': `session_key=${cookie}`
-    },
     data: {
       name,
       college,
@@ -141,12 +138,12 @@ export const getUnjoinStuAPI = ({ page_num, page_size }) => {
  * @param {*} student_id 学生编号
  * @returns 
  */
-export const addStuToClassAPI = (cookie, class_id, student_id) => {
+export const addStuToClassAPI = (class_id, student_id) => {
   return ptRequest.post({
     url: "/teacher/class/student",
-    headers: {
+    /* headers: {
       "Cookie": `session_key=${cookie}`
-    },
+    }, */
     params: {
       class_id,
       student_id
@@ -160,12 +157,9 @@ export const addStuToClassAPI = (cookie, class_id, student_id) => {
  * @param {*} param1 { class_id：班级编号, student_id：学生编号 }
  * @returns 
  */
-export const deleteStuAPI = (cookie, { class_id, student_id }) => {
+export const deleteStuAPI = ({ class_id, student_id }) => {
   return ptRequest.delete({
     url: '/teacher/class/student',
-    headers: {
-      'Cookie': `session_key=${cookie}`
-    },
     params: {
       class_id,
       student_id
@@ -180,5 +174,18 @@ export const deleteStuAPI = (cookie, { class_id, student_id }) => {
 export const getTeacherInfoAPI = () => {
   return ptRequest.get({
     url: '/teacher/info',
+  })
+}
+
+/**
+ * 删除未加入班级学生
+ * student_id 学生id
+ */
+export const deleteUnJoinStuAPI = (student_id) => {
+  return ptRequest.delete({
+    url: "/teacher/student",
+    params: {
+      student_id
+    }
   })
 }

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import cookies from 'vue-cookies'
+import classDetail from "@/views/teacher/tAnalysis/children/classAnalysisDetail.vue"
 Vue.use(VueRouter)
 
 const routes = [
@@ -87,9 +88,11 @@ const routes = [
     ]
   },
 
+  // 班级管理
   {
     path: '/teacher/class',
     name: 'tClass',
+    redirect: "/teacher/class/classListing",
     component: () => import('@/views/teacher/tClass/tClass.vue'),
     children: [
       {
@@ -181,23 +184,37 @@ const routes = [
       }
     ]
   },
+  // 学情分析
   {
     path: '/teacher/analysis',
     name: 'tAnalysis',
+    redirect: "/teacher/analysis/studentAnalysis",
     component: () => import('@/views/teacher/tAnalysis/tAnalysis.vue'),
     children: [
       {
         name: 'classAnalysis',
         path: 'classAnalysis',
-        component: () =>
-          import('@/views/teacher/tAnalysis/children/classAnalysis.vue')
+        component: () => import('@/views/teacher/tAnalysis/children/classAnalysis.vue'),
+        children: [
+          {
+            name: "classAnalysisDetail",
+            path: "classAnalysisDetail",
+            component: classDetail,
+            props($route) {
+              return {
+                id: $route.query.id,
+                className: $route.query.className,
+              }
+            }
+          }
+        ]
       },
       {
         name: 'studentAnalysis',
         path: 'studentAnalysis',
         component: () =>
           import('@/views/teacher/tAnalysis/children/studentAnalysis.vue')
-      }
+      },
     ]
   },
 
@@ -237,7 +254,7 @@ const routes = [
   // 学情分析
   {
     path: '/student/analysis',
-    name: 'sAnswer',
+    name: 'sAnalysis',
     component: () => import('@/views/student/sAnalysis')
   }
 ]

@@ -89,6 +89,7 @@ export default {
     this.$store.dispatch("getPointedClassIdActions", this.$route.params.id)
     this.getTeacherInfoActions()
     this.getStuListActions()
+    console.log(this.$store.state.tClass.studentList)
   },
   computed: {
     // 搜索功能
@@ -119,12 +120,10 @@ export default {
     stuHandleSizeChange(sizes) {
       this.$store.state.tClass.stuListPage.page_num = 1
       this.$store.state.tClass.stuListPage.page_size = sizes
-      // this.getStuListActions(this.$store.state.tClass.stuListPage)
       this.getStuListActions()
     },
     stuHandleCurrentChange(nowPage) {
       this.$store.state.tClass.stuListPage.page_num = nowPage
-      // this.getStuListActions(this.$store.state.tClass.stuListPage)
       this.getStuListActions()
     },
     // 删除学生
@@ -134,9 +133,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const res = await deleteStuAPI(this.$cookies.get("session_key"),{class_id:this.$store.state.tClass.classId, student_id:obj.student_id})
+        const res = await deleteStuAPI({class_id:this.$store.state.tClass.classId, student_id:obj.student_id})
         if (res.code === 0) {
-          // this.getStuListActions({ cookie: this.$cookies.get("session_key") })
           this.$message({
             type: 'success',
             message: '删除成功！'
@@ -157,7 +155,7 @@ export default {
     },
     // 添加学生到指定班级
     async addStuToClassFn(obj) {
-      const res = await addStuToClassAPI(this.$cookies.get("session_key"), this.$store.state.tClass.classId, obj.student_id)
+      const res = await addStuToClassAPI(this.$store.state.tClass.classId, obj.student_id)
       if (res.code === 0) {
         this.$message.success(res.msg)
         this.unJoinStuFn()
