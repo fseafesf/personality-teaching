@@ -19,14 +19,18 @@
       </div>
       <div class="review-content">
         <div class="content-left">
-          <ReviewCard
-            ref="modal"
-            v-for="(item, index) in problemList"
-            :key="item.question_id"
-            :index="index"
-            :problem="item"
-          >
-          </ReviewCard>
+          <template v-if="startRendering">
+            <ReviewCard
+              ref="modal"
+              v-for="(item, index) in problemList"
+              :key="item.question_id"
+              :index="index"
+              :problem="item"
+              :status="status"
+              :pageScore="pageScore"
+            >
+            </ReviewCard>
+          </template>
         </div>
         <div class="content-right">
           <div class="title"><span> 题目列表 </span></div>
@@ -58,12 +62,13 @@
 </template>
 
 <script>
-import { searchPage, getStudentsAnswer } from '@/services'
+import { searchPage, getStudentsAnswer, updateReview } from '@/services'
 import { mapActions, mapMutations, mapState, mapGetters } from 'vuex'
 import { group, breakGroup } from 'utils/groupByType'
 import ReviewCard from '@/components/teacher/review/reviewCard.vue'
 import ReviewRecord from '@/components/teacher/review/reviewRecord.vue'
 import { watch } from 'vue'
+import _ from 'lodash'
 export default {
   name: 'correctReview',
   data() {
@@ -75,7 +80,10 @@ export default {
       problemList: [],
       distance: 0,
       disabled: false,
-      exam_name: ''
+      exam_name: '',
+      answers: '',
+      startRendering: false,
+      pageScore: Array
     }
   },
   created() {
@@ -90,17 +98,17 @@ export default {
     })
     // 清空分数map
 
+    // 未批改 的 直接全部初始为0分
     if (this.status === 1) {
+      console.log('1233432534253324')
       this.initScore(this.problemList)
     } else {
-      // 获取当前学生当前试卷的批阅情况
+      this.getStudentScore()
       console.log('批改过')
     }
-
-    this.getStudentScore()
   },
   methods: {
-    ...mapMutations('tReview', ['initScore']),
+    ...mapMutations('tReview', ['initScore', 'initCorrectedScore']),
     ...mapActions('tReview', ['getInitStudents']),
     back() {
       this.$router.go(-1)
@@ -108,7 +116,7 @@ export default {
     async getPageInfo() {
       await searchPage(this.$cookies.get('session_key'), this.examId).then(
         (res) => {
-          console.log(res)
+          // console.log(res)
           this.exam_name = res.data.exam_name
           this.problemList = breakGroup(JSON.parse(res.data.questions))
           this.initScore(this.problemList)
@@ -121,6 +129,12 @@ export default {
         student_id: this.studentId
       }).then((res) => {
         console.log(res)
+        this.answers = res.data.answers
+        this.initCorrectedScore(JSON.parse(res.data.score))
+        this.pageScore = _.cloneDeep(JSON.parse(res.data.score))
+        this.$nextTick(() => {
+          this.startRendering = true
+        })
       })
     },
     handlerClick(index) {
@@ -128,11 +142,29 @@ export default {
         this.distance += this.$refs.modal[i].$el.offsetHeight
       }
       document.documentElement.scrollTop = this.distance + 310
-      // console.log(this.$refs.modal[0].$el.offsetHeight);
       this.distance = 0
     },
 
-    complete() {},
+    complete() {
+      console.log([...this.currentPageScore.entries()])
+      let data = {
+        exam_id: this.examId,
+        student_id: this.studentId,
+        answers: this.answers,
+        score: JSON.stringify([...this.currentPageScore.entries()]),
+        status: 0
+      }
+      console.log(this.correctedProblems)
+      updateReview(data).then((res) => {
+        if(res.code === 0){
+          this.$message({
+            type:'success',
+            message:'评阅成功'
+          })
+        }
+        console.log(res)
+      })
+    },
 
     nextPage() {
       let index = this.reviewStudents.findIndex((item) => {
@@ -142,6 +174,10 @@ export default {
       console.log(index)
       if (index === this.reviewStudents.length - 1) {
         this.disabled = true
+        this.$message({
+          type:'warning',
+          message:'当前已经是最后一份'
+        })
         return
       }
       this.$router.replace({

@@ -61,7 +61,7 @@ export default {
     },
   },
   created(){
-    console.log(this.typeProblem)
+    // console.log(this.typeProblem)
   },
   methods: {
     ...mapMutations("tTest", ["addProblem", "deleteProblem"]),

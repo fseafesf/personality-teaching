@@ -1,5 +1,5 @@
-import { getPageList, getReviewClasses ,getReviewStudents} from '@/services'
-import _ from 'lodash'
+import { getPageList, getReviewClasses, getReviewStudents } from '@/services'
+import _, { reject } from 'lodash'
 
 const tReview = {
   namespaced: true,
@@ -11,12 +11,12 @@ const tReview = {
 
     // 发布的试卷对应的班级
     reviewClasses: [
-     
+
     ],
 
     // 班级对应的学生，
     reviewStudents: [
-      
+
     ],
 
     // 当前评阅试卷的每道题分数
@@ -25,11 +25,16 @@ const tReview = {
     // 当前评阅试卷客观题目每道题分数
     currentPageObjectiveScore: new Map(),
 
+    // 当前评阅试卷的每道题是否评阅过
+    currentProblemStatus: new Map(),
+
     // 当前批阅题目
     currentProblem: "",
 
+
+
     totalScore: 0,
-    totalObjectiveScore:0
+    totalObjectiveScore: 0
 
   }),
   mutations: {
@@ -51,8 +56,15 @@ const tReview = {
     // param 传入当前批改过试卷的批改信息
     initCorrectedScore(state, params) {
       for (const param of params) {
+        console.log(param)
         state.currentPageScore.set(param[0], param[1])
       }
+
+    },
+
+    // 
+    initStatus(state, param) {
+
     },
 
     // param传入批阅分数时的题目id以及分数
@@ -98,7 +110,9 @@ const tReview = {
     // 清除客观题总分
     clearTotalObjectiveScore(state) {
       state.totalObjectiveScore = 0
-    }
+    },
+
+
   },
   actions: {
 
@@ -126,9 +140,9 @@ const tReview = {
       })
     },
 
-    getInitStudents({commit},payload){
-      return new Promise((reslove,reject) => {
-        getReviewStudents({...payload}).then(res => {
+    getInitStudents({ commit }, payload) {
+      return new Promise((reslove, reject) => {
+        getReviewStudents({ ...payload }).then(res => {
           commit('init', {
             key: 'reviewStudents',
             val: res.data
@@ -137,7 +151,8 @@ const tReview = {
           reslove(res)
         }).catch(err => reject(err))
       })
-    }
+    },
+
   },
   getters: {
     // getters 作为属性去用的话 会缓存结果 要每次调用 得用方法

@@ -79,17 +79,18 @@ const tTest = {
         }).catch(err => reject(err))
       })
     },
-    
+
     getProblems(context, payload) {
       return new Promise((reslove, reject) => {
         getQuestionList(payload?.type,
           payload?.level,
           payload?.context,
+          payload?.knp_id,
           payload?.page_size,
           payload?.page_no)
           .then(res => {
             console.log(res)
-            reslove(res.data.total)
+            reslove(res)
             context.commit('initProblems', res.data.list)
           }).catch(err => reject(err))
       })

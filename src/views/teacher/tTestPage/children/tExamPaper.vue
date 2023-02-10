@@ -69,168 +69,168 @@
 </template>
 
 <script>
-import { deletePage, searchPage, search, createPage } from "@/services";
-import { mapActions, mapMutations, mapState } from "vuex";
-import { setCache, getCache, clearCache } from "@/utils/localstorage";
-import { formDate } from "@/utils/Date/formatDate";
+import { deletePage, searchPage, search, createPage } from '@/services'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import { setCache, getCache, clearCache } from '@/utils/localstorage'
+import { formDate } from '@/utils/Date/formatDate'
 export default {
-  name: "tExamPaper",
+  name: 'tExamPaper',
   data() {
     return {
-      input: "",
+      input: '',
       tableData: [],
       total: 0,
       param: {
         page: 1,
-        page_size: 10,
-      },
-    };
+        page_size: 10
+      }
+    }
   },
   created() {
     this.clearPageData({
-      key: "title",
-      val: "",
-    });
+      key: 'title',
+      val: ''
+    })
     this.clearPageData({
-      key: "exam_id",
-      val: "",
-    });
+      key: 'exam_id',
+      val: ''
+    })
     this.clearPageData({
-      key: "selectProblem",
-      val: [],
-    });
+      key: 'selectProblem',
+      val: []
+    })
     this.clearPageData({
-      key: "comment",
-      val: "",
-    });
-    clearCache("exam_id");
-    clearCache("title");
-    clearCache("selectProblem");
-    clearCache("comment");
-    this.getPages();
+      key: 'comment',
+      val: ''
+    })
+    clearCache('exam_id')
+    clearCache('title')
+    clearCache('selectProblem')
+    clearCache('comment')
+    this.getPages()
   },
   mounted() {},
   methods: {
-    ...mapMutations("tTest", ["initPages", "clearPageData"]),
-    ...mapActions("tTest", ["getInitPages", "getProblems"]),
+    ...mapMutations('tTest', ['initPages', 'clearPageData']),
+    ...mapActions('tTest', ['getInitPages', 'getProblems']),
     formDate,
     // 获取试卷列表
     getPages() {
       this.getInitPages({
-        cookie: this.$cookies.get("session_key"),
-        ...this.param,
+        cookie: this.$cookies.get('session_key'),
+        ...this.param
       }).then((res) => {
-        this.total = res;
-        this.tableData = this.pages;
-      });
+        this.total = res
+        this.tableData = this.pages
+      })
     },
 
     // 查询试卷
     queryPaper() {
       console.log(
         typeof JSON.stringify({
-          text: this.input,
+          text: this.input
         })
-      );
-      if (this.input.trim() !== "") {
-        search(this.$cookies.get("session_key"), {
-          text: this.input,
+      )
+      if (this.input.trim() !== '') {
+        search(this.$cookies.get('session_key'), {
+          text: this.input
         })
           .then((res) => {
-            console.log(res);
-            this.tableData = res.data.exam_list;
+            console.log(res)
+            this.tableData = res.data.exam_list
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       }
     },
     // 新增试卷
     composePaper() {
       this.$router.replace({
-        path: "/teacher/examHome/test",
-      });
+        path: '/teacher/examHome/test'
+      })
     },
 
     // 编辑试卷
     handleEdit(index, row) {
       this.$router.replace({
-        path: "/teacher/examHome/preview",
+        path: '/teacher/examHome/preview',
         query: {
-          id: row.exam_id,
-        },
-      });
-      setCache("exam_id", row.exam_id);
+          id: row.exam_id
+        }
+      })
+      setCache('exam_id', row.exam_id)
     },
 
     // 复制试卷
     handleCopy(index, row) {
-      searchPage("", row.exam_id).then((res) => {
-        let data = new FormData();
-        data.append("exam_name", res.data.exam_name);
-        data.append("questions", res.data.questions);
-        data.append("comment", res.data.comment);
+      searchPage('', row.exam_id).then((res) => {
+        let data = new FormData()
+        data.append('exam_name', res.data.exam_name + '_副本')
+        data.append('questions', res.data.questions)
+        data.append('comment', res.data.comment)
         // console.log(data)
-        createPage("", data).then(() => {
+        createPage('', data).then(() => {
           this.$message({
-            type: "success",
-            message: "复制成功",
-          });
-          this.getPages();
-        });
-      });
+            type: 'success',
+            message: '复制成功'
+          })
+          this.getPages()
+        })
+      })
     },
 
     // 删除试卷
     handleDelete(index, row) {
-      this.$confirm("此操作将永久删除该试卷, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('此操作将永久删除该试卷, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          deletePage(this.$cookies.get("session_key"), row.exam_id).then(
+          deletePage(this.$cookies.get('session_key'), row.exam_id).then(
             (res) => {
               this.$message({
-                type: "success",
-                message: "删除成功!",
-                duration: 1000,
-              });
-              this.getPages();
+                type: 'success',
+                message: '删除成功!',
+                duration: 1000
+              })
+              this.getPages()
             }
-          );
+          )
         })
-        .catch(() => {});
+        .catch(() => {})
     },
 
     //发布试卷
     handleRelease(index, row) {
-      console.log(row.exam_id);
+      console.log(row.exam_id)
       this.$router.replace({
-        path: "/teacher/examHome/release",
+        path: '/teacher/examHome/release',
         query: {
-          id: row.exam_id,
-        },
-      });
+          id: row.exam_id
+        }
+      })
     },
     handleCurrentChange(newPage) {
-      this.param.page = newPage;
-      this.getPages();
-    },
+      this.param.page = newPage
+      this.getPages()
+    }
   },
   computed: {
-    ...mapState("tTest", ["pages"]),
+    ...mapState('tTest', ['pages'])
   },
   watch: {
     input: {
       handler(newVal, oldVal) {
-        if (newVal.trim() == "") {
-          this.tableData = this.pages;
+        if (newVal.trim() == '') {
+          this.tableData = this.pages
         }
-      },
-    },
-  },
-};
+      }
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

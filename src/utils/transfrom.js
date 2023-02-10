@@ -75,11 +75,11 @@ export function transfromStatus(key) {
       case -1:
         return "uncommitted"
       case 0:
-        return "unfinished"
+        return "finished"
       case 1:
         return "uncorrected"
       case 2:
-        return "finished"
+        return "unfinished"
       default:
         break;
     }
@@ -89,11 +89,11 @@ export function transfromStatus(key) {
       case -1:
         return "未提交"
       case 0:
-        return "未批改完"
+        return "已完成"
       case 1:
         return "未批改"
       case 2:
-        return "已完成"
+        return "未批改完成"
       default:
         break;
     }

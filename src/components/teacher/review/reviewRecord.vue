@@ -33,9 +33,6 @@ export default {
   },
   computed: {
     ...mapState("tReview", ["currentPageScore", "currentProblem"]),
-    params() {
-      return Array.from(this.currentPageScore);
-    },
   },
   watch: {
     currentProblem: {

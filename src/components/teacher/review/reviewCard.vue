@@ -38,9 +38,17 @@ export default {
       input: ''
     }
   },
+  beforeCreate() {},
   created() {
-    // console.log("card-执行")
+    console.log('card-执行', this.status, this.param)
     this.currentView = this.typeComponent[this.problem.type - 1]
+    if (this.status !== '1') {
+      this.changeTotalScore(this.TotalScore())
+      this.changeTotalObjectiveScore(this.TotalObjectiveScore())
+      this.input = this.pageScore.filter((item) => {
+        return item[0] === this.problem.question_id
+      })[0][1]
+    }
     if ([1, 2, 3].includes(this.problem.type)) {
       this.scoreDisabled = true
       /* 
@@ -64,8 +72,15 @@ export default {
         value: this.currentPageScore.get(this.problem.question_id)
       })
     }
-    this.input = this.currentPageScore.get(this.problem.question_id)
+
+    if (this.status === 1) {
+      this.input = this.param.get(this.problem.question_id)
+    }
+
     this.$watch('input', this.handler)
+  },
+  mounted() {
+    console.log('mounted')
   },
   props: {
     problem: {
@@ -74,6 +89,12 @@ export default {
     },
     index: {
       type: Number
+    },
+    status: {
+      type: String
+    },
+    pageScore: {
+      type: Array
     }
   },
   methods: {
@@ -81,8 +102,8 @@ export default {
       'setScore',
       'changeCurrentProblem',
       'setObjectiveScore',
-      "changeTotalScore",
-      "changeTotalObjectiveScore"
+      'changeTotalScore',
+      'changeTotalObjectiveScore'
     ]),
     handler(newVal, oldVal) {
       if (newVal.trim() !== '') {
@@ -90,6 +111,7 @@ export default {
           question_id: this.problem.question_id,
           value: newVal
         })
+
         this.changeTotalScore(this.TotalScore())
         this.changeTotalObjectiveScore(this.TotalObjectiveScore())
         console.log(this.TotalScore())
@@ -106,7 +128,10 @@ export default {
   },
   computed: {
     ...mapState('tReview', ['currentPageScore']),
-    ...mapGetters('tReview', ['TotalScore',"TotalObjectiveScore"])
+    ...mapGetters('tReview', ['TotalScore', 'TotalObjectiveScore']),
+    param() {
+      return this.currentPageScore
+    }
   },
   watch: {}
 }

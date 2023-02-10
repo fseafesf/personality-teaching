@@ -87,7 +87,12 @@ export default {
 
     // 编辑
     handleEdit(index, row) {
+<<<<<<< Updated upstream
       this.$emit('editTopic', row)
+=======
+      console.log(row)
+      this.$router.push({ path: '/teacher/topic/edit/' + row.question_id })
+>>>>>>> Stashed changes
     },
 
     // 删除

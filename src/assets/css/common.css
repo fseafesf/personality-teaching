@@ -57,7 +57,7 @@ body {
 
 /* 全局修改tTree组件的的内容超过宽度变成...  */
 .tree .custom-tree-container .custom-tree-node .label {
-  width: 230px;
+  width: 200px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

@@ -154,72 +154,6 @@ export default {
         page_size: 10,
         page_no: 1
       },
-
-      //左侧知识点树
-      data: [
-        {
-          label: '一级 1',
-          id: 1,
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  label: '三级 1-1-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 2',
-          id: 2,
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 3',
-          id: 3,
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1'
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      },
       problemData: {}
     }
   },
@@ -240,10 +174,18 @@ export default {
     ...mapActions('tTest', ['getProblems']),
     toType,
     toDifficult,
-    receive() {
-      this.getProblems(this.queryInfo).then((res) => {
-        this.total = res
-        this.getListData()
+    receive(param) {
+      this.getProblems({ ...this.queryInfo, ...param }).then((res) => {
+        console.log(res)
+        this.total = res.data.total
+        if (res.data.list !== null) {
+          this.getListData()
+        } else {
+          this.$message({
+            type:'warning',
+            message:'没有与该知识点相关的题目'
+          })
+        }
       })
     },
     getListData() {
@@ -259,22 +201,25 @@ export default {
       this.currentLevel = param
     },
     handleNodeClick(data) {
-      let temp = []
+      // let temp = []
       console.log(data)
       this.currentLevel = 0
       this.currentType = 0
-      this.filterTree(data, temp)
-      console.log(temp)
+      // this.filterTree(data, temp)
+      // console.log(temp)
+      this.receive({ knp_id: data.id })
     },
-    filterTree(data, temp) {
-      temp.push(data.id)
-      if (!!data.children) {
-        console.log(data.children)
-        data.children.forEach((element) => {
-          this.filterTree(element, temp)
-        })
-      }
-    },
+    // filterTree(data, temp) {
+    //   temp.contact(this.list.filter((item) => {
+
+    //   }))
+    //   if (!!data.children) {
+    //     // console.log(data.children)
+    //     data.children.forEach((element) => {
+    //       this.filterTree(element, temp)
+    //     })
+    //   }
+    // },
     handleMouse() {
       this.show = !this.show
     },
@@ -364,7 +309,10 @@ export default {
       height: 500px;
       margin: 10px 50px 0 0;
       background: white;
-
+      overflow: hidden;
+      .label {
+        width: 20px !important;
+      }
       .list-tree-mt {
         position: relative;
         z-index: 10;

@@ -110,6 +110,13 @@ export default {
     },
     handleReview(index, row) {
       console.log(row)
+      if (row.status === -1) {
+        this.$message({
+          type: 'warn',
+          message: '当前学生未提交'
+        })
+        return
+      }
       this.$router.push({
         path: '/teacher/reviewHome/correctReview',
         query: {
@@ -119,7 +126,7 @@ export default {
           status: row.status
         }
       })
-    },
+    }
   },
   computed: {
     ...mapState('tReview', ['reviewStudents'])
