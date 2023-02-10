@@ -79,7 +79,7 @@ export default {
       margin: 10px;
     }
 
-    width: 400px;
+    width: 450px;
   }
 
   .right {

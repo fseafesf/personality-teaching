@@ -104,7 +104,16 @@ export default {
   methods: {
     // 添加
     append(data) {
-      this.$router.push({ path: '/teacher/knowledge/add/' + data.id })
+      // 最多可以添加6级知识点 如果大于不能添加
+      if (data.level === 6) {
+        this.$confirm(`最多只能嵌套6个知识点`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+      } else {
+        this.$router.push({ path: '/teacher/knowledge/add/' + data.id })
+      }
     },
 
     // 编辑
@@ -136,6 +145,7 @@ export default {
 
     // 勾选
     checkedClickHandler(data, checked) {
+      // 将获取勾选的知识点数组转成字符串
       this.$emit(
         'checkedClick',
         this.$refs.tree.getCheckedKeys().join(','),
