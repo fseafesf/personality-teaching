@@ -1,7 +1,15 @@
 <template>
   <div id="modal">
     <div id="modal-content">
-      <h1>个性化教学系统登录</h1>
+      <h1>个性化教学系统</h1>
+
+      <!-- 选择标签 -->
+      <el-tabs v-model="activeName" @tab-click="handleTabClick">
+        <el-tab-pane label="学生" name="student"></el-tab-pane>
+        <el-tab-pane label="教师" name="teacher"></el-tab-pane>
+      </el-tabs>
+
+      <!-- 登录输入框 -->
       <div id="login">
         <el-row class="input-line">
           <el-col :span="4"><span class="text">账号：</span></el-col>
@@ -24,6 +32,8 @@
           >
         </el-row>
       </div>
+
+      <!-- 其它 -->
       <div id="alert">
         当前为内部测试账号
         <p>用户名: cs / 密码:123456</p>
@@ -38,7 +48,7 @@
 </template>
 
 <script>
-import { login } from '@/services'
+import { teacherLogin, studentLogin } from '@/services'
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 import { setCache } from '@/utils/localstorage'
 import Vue from 'vue'
@@ -52,6 +62,7 @@ export default {
   name: 'Login',
   data() {
     return {
+      activeName: 'student', // 选择登录的类型 学生|教师
       username: '',
       password: '',
       time: '',
@@ -65,37 +76,52 @@ export default {
     })
   },
   methods: {
+    // 点击选择标签
+    handleTabClick() {
+      // console.log(this.activeName)
+    },
+
+    // 点击发起登录请求
     sendLogin() {
       if (this.username === '' || this.password === '') {
         alert('输入内容不能为空！')
       } else {
         let headerData = tHeaderData
 
-        if (this.username === 'xs' && this.password === '123456') {
-          headerData = sHeaderData
-          setCache('headerData', headerData)
-          this.$store.commit('changeHeaderData', headerData)
-          return this.$router.push({ path: '/student/mine' })
+        // 学生登录
+        if (this.activeName === 'student') {
+          studentLogin({
+            username: this.username,
+            password: encrypt(this.password)
+          }).then((res) => {
+            // 如果登录成功
+            if (res.code === 0) {
+              headerData = sHeaderData
+
+              // 将Header数据保存到localStore中
+              setCache('headerData', headerData)
+              this.$store.commit('changeHeaderData', headerData)
+              return this.$router.push({ path: '/student/mine' })
+            }
+          })
+        } else {
+          // 教师登录
+          teacherLogin({
+            username: this.username,
+            password: encrypt(this.password)
+          }).then((res) => {
+            console.log(res)
+            if (res.code == 0) {
+              this.$store.commit('changeHeaderData', headerData)
+              setCache('headerData', headerData)
+
+              this.$router.replace({ path: '/home' }) //账号密码正确则成功跳转
+              // console.log(encrypt(this.password));
+            }
+          })
         }
 
-        console.log(this.username, encrypt(this.password))
-
-        login({
-          username: this.username,
-          password: encrypt(this.password)
-        }).then((res) => {
-          console.log(res)
-          if (res.code == 0) {
-            this.$store.commit('changeHeaderData', headerData)
-            setCache('headerData', headerData)
-
-            this.$router.replace({ path: '/home' }) //账号密码正确则成功跳转
-            // console.log(encrypt(this.password));
-          } else {
-            this.username = ''
-            this.password = ''
-          }
-        })
+        // console.log(this.username, encrypt(this.password))
       }
     },
     upDateClock: function (e) {
@@ -128,6 +154,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 修改标签选择样式
+/deep/ .el-tabs__nav-scroll {
+  display: flex;
+  justify-content: center;
+}
+
 #copyright {
   position: absolute;
   bottom: 5%;
@@ -191,6 +223,7 @@ export default {
   left: 50%;
   top: 53%;
   transform: translate(-50%, -50%);
+  margin-top: 30px;
 
   .input-line {
     margin: 15px;
