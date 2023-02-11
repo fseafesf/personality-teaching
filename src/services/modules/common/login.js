@@ -1,6 +1,7 @@
 import ptRequest from '../../request'
 
-export function login(data) {
+// 教师登录
+export function teacherLogin(data) {
   return ptRequest.post({
     url: '/teacher/login',
     data
@@ -14,7 +15,7 @@ export function login(data) {
 //   })
 // }
 
-export function changePwd({old_pwd,new_pwd}){
+export function changePwd({ old_pwd, new_pwd }) {
   return ptRequest.put({
     url: '/pwd',
     params: {
@@ -24,3 +25,10 @@ export function changePwd({old_pwd,new_pwd}){
   })
 }
 
+// 学生登录
+export function studentLogin(data) {
+  return ptRequest.post({
+    url: '/student/login',
+    data
+  })
+}
