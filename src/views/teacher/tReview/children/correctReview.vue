@@ -27,7 +27,7 @@
               :index="index"
               :problem="item"
               :status="status"
-              :pageScore="pageScore"
+              
             >
             </ReviewCard>
           </template>
@@ -35,13 +35,16 @@
         <div class="content-right">
           <div class="title"><span> 题目列表 </span></div>
           <div class="record">
+           <template v-if="startRendering">
             <ReviewRecord
               v-for="(item, index) in problemList"
               :key="item.question_id"
               :index="index"
               :problem="item"
+              :status="status"
               @click.native="handlerClick(index)"
             ></ReviewRecord>
+           </template>
           </div>
         </div>
       </div>
@@ -67,7 +70,6 @@ import { mapActions, mapMutations, mapState, mapGetters } from 'vuex'
 import { group, breakGroup } from 'utils/groupByType'
 import ReviewCard from '@/components/teacher/review/reviewCard.vue'
 import ReviewRecord from '@/components/teacher/review/reviewRecord.vue'
-import { watch } from 'vue'
 import _ from 'lodash'
 export default {
   name: 'correctReview',
@@ -80,61 +82,80 @@ export default {
       problemList: [],
       distance: 0,
       disabled: false,
+
       exam_name: '',
       answers: '',
+      times: '',
+
       startRendering: false,
-      pageScore: Array
     }
   },
   created() {
     this.examId = this.$route.query.exam_id
     this.classId = this.$route.query.class_id
     this.studentId = this.$route.query.student_id
-    this.status = this.$route.query.status
-    this.getPageInfo()
+    this.status = +this.$route.query.status
     this.getInitStudents({
       exam_id: this.examId,
       class_id: this.classId
     })
-    // 清空分数map
 
     // 未批改 的 直接全部初始为0分
-    if (this.status === 1) {
-      console.log('1233432534253324')
-      this.initScore(this.problemList)
-    } else {
-      this.getStudentScore()
+    if (this.status == 1) {
+      this.init(false)
+    } else if (this.status !== 1) {
       console.log('批改过')
+      this.init(true)
     }
   },
   methods: {
-    ...mapMutations('tReview', ['initScore', 'initCorrectedScore']),
+    ...mapMutations('tReview', [
+      'initScore', // 初始未批改试卷的分数
+      'initStatus', // 初始未批改试卷的状态
+      'initCorrectedScore', // 初始批改过的试卷的分数
+      'initCorrectedStatus', // 初始批改过的试卷的状态
+      'clearTotalScore'
+    ]),
     ...mapActions('tReview', ['getInitStudents']),
     back() {
       this.$router.go(-1)
+      this.clearTotalScore()
     },
-    async getPageInfo() {
+    init(choose) {
+      this.getPageInfo({ corrected: choose }).then(() => {
+        this.getStudentScore({ corrected: choose }).then(() => {
+          this.startRendering = true
+        })
+      })
+    },
+    async getPageInfo(param) {
       await searchPage(this.$cookies.get('session_key'), this.examId).then(
         (res) => {
-          // console.log(res)
+          console.log(res)
           this.exam_name = res.data.exam_name
           this.problemList = breakGroup(JSON.parse(res.data.questions))
-          this.initScore(this.problemList)
+          if (!param.correctd) {
+            // 未批改过则进行题目初始
+            this.initScore(this.problemList)
+            this.initStatus(this.problemList)
+          }
         }
       )
     },
-    async getStudentScore() {
+    async getStudentScore(param) {
       await getStudentsAnswer({
         exam_id: this.examId,
         student_id: this.studentId
       }).then((res) => {
         console.log(res)
         this.answers = res.data.answers
-        this.initCorrectedScore(JSON.parse(res.data.score))
-        this.pageScore = _.cloneDeep(JSON.parse(res.data.score))
-        this.$nextTick(() => {
-          this.startRendering = true
-        })
+        this.times = res.data.times
+        if (param.corrected) {
+          // 批改过 则用保存到的数据进行初始化
+          console.log('corrected')
+          this.initCorrectedScore(JSON.parse(res.data.detailed_score))
+          this.initCorrectedStatus(JSON.parse(res.data.problem_status))
+        }
       })
     },
     handlerClick(index) {
@@ -146,20 +167,31 @@ export default {
     },
 
     complete() {
-      console.log([...this.currentPageScore.entries()])
+      let status = 0
+      for (let param of [...this.currentProblemStatus.entries()]) {
+        if (!param[1]) {
+          status = 2
+        }
+      }
+      console.log(status)
       let data = {
         exam_id: this.examId,
         student_id: this.studentId,
         answers: this.answers,
-        score: JSON.stringify([...this.currentPageScore.entries()]),
-        status: 0
+        detailed_score: JSON.stringify([...this.currentPageScore.entries()]),
+        total_score: this.totalScore + '',
+        status: status,
+        problem_status: JSON.stringify([
+          ...this.currentProblemStatus.entries()
+        ]),
+        times: this.times
       }
-      console.log(this.correctedProblems)
+      // console.log(data)
       updateReview(data).then((res) => {
-        if(res.code === 0){
+        if (res.code === 0) {
           this.$message({
-            type:'success',
-            message:'评阅成功'
+            type: 'success',
+            message: '评阅成功'
           })
         }
         console.log(res)
@@ -175,8 +207,8 @@ export default {
       if (index === this.reviewStudents.length - 1) {
         this.disabled = true
         this.$message({
-          type:'warning',
-          message:'当前已经是最后一份'
+          type: 'warning',
+          message: '当前已经是最后一份'
         })
         return
       }
@@ -186,7 +218,7 @@ export default {
           exam_id: this.examId,
           class_id: this.classId,
           student_id: this.reviewStudents[index + 1].student_id,
-          status: this.status
+          status: this.reviewStudents[index + 1].status
         }
       })
       console.log(index)
@@ -195,11 +227,12 @@ export default {
   },
   computed: {
     ...mapState('tReview', [
-      'currentPageScore',
+      'currentPageScore', // 当前试卷每道题分数
       'currentProblem',
-      'totalScore',
-      'totalObjectiveScore',
-      'reviewStudents'
+      'totalScore', // 总分
+      'totalObjectiveScore', // 客观题总分
+      'reviewStudents',
+      'currentProblemStatus'
     ]),
     ...mapGetters('tReview', ['TotalScore', 'TotalObjectiveScore'])
   },

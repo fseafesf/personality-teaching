@@ -5,48 +5,65 @@
 </template>
 
 <script>
-import { watch } from "vue";
-import { mapActions, mapMutations, mapState } from "vuex";
+import { watch } from 'vue'
+import { mapActions, mapMutations, mapState } from 'vuex'
 export default {
-  name: "reviewRecord",
+  name: 'reviewRecord',
   data() {
     return {
-      completeCorrect: false,
-    };
+      completeCorrect: false
+    }
   },
   created() {
-    if ([1, 2, 3].includes(this.problem.type)) {
-      this.completeCorrect = true;
+    if (this.status == 1) {
+      if ([1, 2, 3].includes(this.problem.type)) {
+        this.completeCorrect = true
+      }
+    } else if (this.status !== 1) {
+      this.completeCorrect = this.currentProblemStatus.get(
+        this.problem.question_id
+      )
     }
   },
   props: {
     problem: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     index: {
-      type: Number,
+      type: Number
     },
+    status: {
+      type: Number
+    }
   },
   methods: {
-    ...mapMutations("tReview", ["setScore"]),
+    ...mapMutations('tReview', ['setScore', 'setStatus'])
   },
   computed: {
-    ...mapState("tReview", ["currentPageScore", "currentProblem"]),
+    ...mapState('tReview', [
+      'currentPageScore',
+      'currentProblem',
+      'currentProblemStatus'
+    ])
   },
   watch: {
     currentProblem: {
       handler(newVal, oldVal) {
         console.log(newVal)
         if (newVal === this.problem.question_id) {
-          this.completeCorrect = true;
+          this.completeCorrect = true
+          this.setStatus({
+            question_id: this.problem.question_id,
+            value: true
+          })
         }
-      },
+      }
       //   deep: true,
-    //   immediate:true
-    },
-  },
-};
+      //   immediate:true
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

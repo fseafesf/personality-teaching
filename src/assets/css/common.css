@@ -1,11 +1,10 @@
 :root {
-  --primary-color: #4498EE;
-  ;
+  --primary-color: #4498ee;
 }
 
 body {
-  background-color: #F5F5F5;
-  font-family: "Helvetica Neue";
+  background-color: #f5f5f5;
+  font-family: 'Helvetica Neue';
 }
 
 .wrap-v1 {
@@ -44,7 +43,7 @@ body {
 }
 
 /* 全局修改Tree组件的选中背景颜色 */
-.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
   background-color: hsla(210, 94%, 50%, 0.2) !important;
 }
 

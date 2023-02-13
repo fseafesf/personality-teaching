@@ -40,18 +40,18 @@ export default {
   },
   beforeCreate() {},
   created() {
-    console.log('card-执行', this.status, this.param)
+    console.log('card-执行')
     this.currentView = this.typeComponent[this.problem.type - 1]
-    if (this.status !== '1') {
-      this.changeTotalScore(this.TotalScore())
-      this.changeTotalObjectiveScore(this.TotalObjectiveScore())
-      this.input = this.pageScore.filter((item) => {
-        return item[0] === this.problem.question_id
-      })[0][1]
-    }
-    if ([1, 2, 3].includes(this.problem.type)) {
-      this.scoreDisabled = true
-      /* 
+    if (this.status === 1) {
+      if ([1, 2, 3].includes(this.problem.type)) {
+        this.setStatus({
+          question_id: this.problem.question_id,
+          value: true
+        })
+        this.scoreDisabled = this.currentProblemStatus.get(
+          this.problem.question_id
+        )
+        /* 
       if(题目答案和学生答案一样){
         this.input === this.problem.score
          this.setScore({
@@ -67,21 +67,29 @@ export default {
       }
 
       */
-      this.setObjectiveScore({
-        question_id: this.problem.question_id,
-        value: this.currentPageScore.get(this.problem.question_id)
-      })
-    }
-
-    if (this.status === 1) {
+        this.setObjectiveScore({
+          question_id: this.problem.question_id,
+          value: this.currentPageScore.get(this.problem.question_id)
+        })
+      }
       this.input = this.param.get(this.problem.question_id)
+    } else if (this.status !== 1) {
+      if ([1, 2, 3].includes(this.problem.type)) {
+        this.scoreDisabled = this.currentProblemStatus.get(
+          this.problem.question_id
+        )
+      }
+      this.changeTotalScore(this.TotalScore())
+      this.changeTotalObjectiveScore(this.TotalObjectiveScore())
+      // this.input = this.pageScore.filter((item) => {
+      //   return item[0] === this.problem.question_id
+      // })[0][1]
+      this.input = this.currentPageScore.get(this.problem.question_id)
     }
 
     this.$watch('input', this.handler)
   },
-  mounted() {
-    console.log('mounted')
-  },
+  mounted() {},
   props: {
     problem: {
       type: Object,
@@ -91,19 +99,20 @@ export default {
       type: Number
     },
     status: {
-      type: String
+      type: Number
     },
-    pageScore: {
-      type: Array
-    }
+    // pageScore: {
+    //   type: Array
+    // }
   },
   methods: {
     ...mapMutations('tReview', [
-      'setScore',
-      'changeCurrentProblem',
-      'setObjectiveScore',
-      'changeTotalScore',
-      'changeTotalObjectiveScore'
+      'setScore', // 更改题目批改分数
+      'changeCurrentProblem', // 更改当前正在批阅的题目
+      'setObjectiveScore', // 更改客观题批改分数
+      'changeTotalScore', // 改变总分
+      'changeTotalObjectiveScore', // 改变客观题总分
+      'setStatus' // 更改题目批改状态
     ]),
     handler(newVal, oldVal) {
       if (newVal.trim() !== '') {
@@ -111,7 +120,10 @@ export default {
           question_id: this.problem.question_id,
           value: newVal
         })
-
+        this.setStatus({
+          question_id: this.problem.question_id,
+          value: true
+        })
         this.changeTotalScore(this.TotalScore())
         this.changeTotalObjectiveScore(this.TotalObjectiveScore())
         console.log(this.TotalScore())
@@ -127,7 +139,7 @@ export default {
     Answer: () => import('@/components/teacher/Test/tQuestion/tAnswer.vue')
   },
   computed: {
-    ...mapState('tReview', ['currentPageScore']),
+    ...mapState('tReview', ['currentPageScore', 'currentProblemStatus']),
     ...mapGetters('tReview', ['TotalScore', 'TotalObjectiveScore']),
     param() {
       return this.currentPageScore

@@ -31,8 +31,6 @@ const tReview = {
     // 当前批阅题目
     currentProblem: "",
 
-
-
     totalScore: 0,
     totalObjectiveScore: 0
 
@@ -56,20 +54,33 @@ const tReview = {
     // param 传入当前批改过试卷的批改信息
     initCorrectedScore(state, params) {
       for (const param of params) {
-        console.log(param)
+        // console.log(param)
         state.currentPageScore.set(param[0], param[1])
       }
 
     },
 
-    // 
+    // param 传入当前批阅试卷的题目数组
     initStatus(state, param) {
+      for(const problem of param){
+        state.currentProblemStatus.set(problem.question_id,false)
+      }
+    },
 
+    initCorrectedStatus(state, params) {
+      for (const param of params) {
+        console.log(param)
+        state.currentProblemStatus.set(param[0], param[1])
+      }
     },
 
     // param传入批阅分数时的题目id以及分数
     setScore(state, param) {
       state.currentPageScore.set(param.question_id, param.value)
+    },
+
+    setStatus(state, param) {
+      state.currentProblemStatus.set(param.question_id, param.value)
     },
 
     // 用来清空map

@@ -104,12 +104,13 @@ export default {
         class_id: this.classId
       }).then((res) => {
         console.log(res)
+        // console.log(typeof res.data[0].status)
         this.students = this.reviewStudents
         this.seStudents = JSON.parse(JSON.stringify(this.students))
       })
     },
     handleReview(index, row) {
-      console.log(row)
+      // console.log(typeof row.status)
       if (row.status === -1) {
         this.$message({
           type: 'warn',
