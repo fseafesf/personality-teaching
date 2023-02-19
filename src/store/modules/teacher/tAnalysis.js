@@ -1,6 +1,7 @@
 const tAnalysis = {
   state: () => ({
-    name: 'tAnalysis'
+    name: 'tAnalysis',
+    checkedPoints: []  // 存放已选中的节点数据
   }),
   mutations: {
 

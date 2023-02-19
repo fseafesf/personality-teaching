@@ -28,7 +28,9 @@ export default {
         { classId: "555555", points: "知识点5", score: 55 },
         { classId: "666666", points: "知识点6", score: 45 },
         { classId: "777777", points: "知识点7", score: 90 },
-        { classId: "888888", points: "知识点8", score: 87 },
+        { classId: "888888", points: "知识点8", score: 57 },
+        { classId: "999999", points: "知识点9", score: 81 },
+        { classId: "999799", points: "知识点10", score: 81 },
       ],
       source: [["掌握情况", "知识点"]],
     }

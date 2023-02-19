@@ -88,7 +88,12 @@ const routes = [
     ]
   },
 
+<<<<<<< Updated upstream
   // 班级
+=======
+
+  // 班级管理
+>>>>>>> Stashed changes
   {
     path: '/teacher/class',
     name: 'tClass',
@@ -188,6 +193,10 @@ const routes = [
       }
     ]
   },
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   // 学情分析
   {
     path: '/teacher/analysis',

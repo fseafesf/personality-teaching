@@ -20,6 +20,7 @@
         style="width: 100%">
         <el-table-column type="index" label="序号"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
+        <el-table-column prop="student_no" label="学号"></el-table-column>
         <el-table-column prop="college" label="学院"></el-table-column>
         <el-table-column prop="major" label="专业"></el-table-column>
         <el-table-column prop="phone_number" label="电话号码"></el-table-column>
@@ -33,7 +34,7 @@
           @size-change="stuHandleSizeChange"
           @current-change="stuHandleCurrentChange"
           :current-page="$store.state.tClass.stuListPage.page_num"
-          :page-sizes = "[5, 10, 30]"
+          :page-sizes = "[10, 20, 100]"
           :page-size="$store.state.tClass.stuListPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="+this.$store.state.tClass.studentTotal"
@@ -45,12 +46,12 @@
     <el-dialog title="未加入班级的学生" :visible.sync="dialogTableVisible" width="70%">
       <div>
         <el-input v-model="keyword" placeholder="请输入学生姓名" class="searchStu"></el-input>
-        <!-- <el-button type="primary" @click="searchFn">查询</el-button> -->
         <el-button type="primary" @click="resetFn">重置</el-button>
       </div>
-      <el-table :data="unJoinClass" style="width: 100%">
+      <el-table :data="$store.state.tClass.unJoinClassList" style="width: 100%">
         <el-table-column type="index" label="序号" width="80px"></el-table-column>
-        <el-table-column property="name" label="学生姓名"></el-table-column>
+        <el-table-column property="name" label="姓名"></el-table-column>
+        <el-table-column property="student_no" label="学号"></el-table-column>
         <el-table-column property="college" label="学院"></el-table-column>
         <el-table-column property="major" label="专业"></el-table-column>
         <el-table-column property="phone_number" label="电话号码"></el-table-column>
@@ -89,14 +90,11 @@ export default {
     this.$store.dispatch("getPointedClassIdActions", this.$route.params.id)
     this.getTeacherInfoActions()
     this.getStuListActions()
-    console.log(this.$store.state.tClass.studentList)
   },
-  computed: {
-    // 搜索功能
-    unJoinClass() {
-      return this.$store.state.tClass.unJoinClassList.filter(item => {
-        return item.name.indexOf(this.keyword) !== -1
-      })
+  watch: {
+    keyword(val) {
+      this.$store.state.tClass.content = val
+      this.getUnJoinClsStuActions()
     }
   },
   methods: {
@@ -134,6 +132,7 @@ export default {
         type: 'warning'
       }).then(async () => {
         const res = await deleteStuAPI({class_id:this.$store.state.tClass.classId, student_id:obj.student_id})
+        console.log(res)
         if (res.code === 0) {
           this.$message({
             type: 'success',
@@ -166,13 +165,6 @@ export default {
     resetFn() {
       this.keyword = ''
     },
-    // 查询学生
-    // searchFn() {
-    //   this.searchList = this.$store.state.tClass.unJoinClassList.filter(item => {
-    //     return item.name.indexOf(this.keyword) !== -1
-    //   })
-    //   this.stuNum = this.searchList.length
-    // }
   }
 }
 </script>
@@ -208,7 +200,7 @@ export default {
   // 学生信息
   .studentBox {
     width: 100%;
-    height: calc(100vh - 120px);
+    min-height: calc(100vh - 120px);
     padding: 20px;
     background-color: #fff;
     border-radius: 4px;

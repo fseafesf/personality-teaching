@@ -27,7 +27,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="$store.state.tClass.classPage.page_num"
-          :page-sizes = "[5, 10, 20]"
+          :page-sizes = "[10, 20, 50]"
           :page-size="$store.state.tClass.classPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="+this.$store.state.tClass.classNum">
@@ -63,28 +63,10 @@
 </template>
 
 <script >
-import { addClassAPI, deleteClassAPI, modifyClassAPI, addStudentAPI } from '@/services/modules/teacher/tClass.js'
+import { addClassAPI, deleteClassAPI, modifyClassAPI, checkUniqueClassAPI } from '@/services/modules/teacher/tClass.js'
 import { mapActions} from 'vuex';
 export default {
   data() {
-    const sameClsName = (rules, value, callback) => {  
-      try {
-        this.$store.state.tClass.classList.forEach(item => {
-          if (item.name == value) {
-            throw new Error("class-name-error")
-          }
-        })
-        callback()
-      } catch (e) {
-        if (e.message == "class-name-error") {
-          this.$message({
-            message: '该班级已存在，请重新输入',
-            type: "warning"
-          })
-          return false
-        }
-      }
-    }
     return {
       dialogVisible: false,
       // 添加班级的数据对象
@@ -99,7 +81,6 @@ export default {
       classInfoRules: {
         name: [
           { required: true, message: "请输入班级名", trigger: 'blur' },
-          { validator: sameClsName, trigger: "blur"}
         ],
         college: [
           {required: true, message: "请输入学院名", trigger: "blur"}
@@ -132,17 +113,24 @@ export default {
     confirmFn() {
       this.$refs.addClassRef.validate(async valid => {
         if (valid) {
-          if (!this.isEdit) {  /// 创建班级
-            const res = await addClassAPI(this.addClassForm)
-            if (res.code === 0) {
-              this.$message.success(res.msg)
+          const uniqueRes = await checkUniqueClassAPI(this.addClassForm.name)
+          if (uniqueRes.code == 1008) {
+            if (!this.isEdit) {  // 创建班级
+              const res = await addClassAPI(this.addClassForm)
+              if (res.code === 0) {
+                this.$message.success("成功创建班级")
+              }
+            } else {  // 修改班级信息
+              const res = await modifyClassAPI({ class_id: this.editClassId, ...this.addClassForm })
+              if (res.code === 0) {
+                this.$message.success("成功修改班级")
+              }      
             }
-          } else {  // 修改班级信息
-            const res = await modifyClassAPI({ class_id: this.editClassId, ...this.addClassForm })
-            if (res.code === 0) {
-              this.$message.success(res.msg)
-            }      
+          } else {
+            this.$message.error("该班级已存在，请重新输入！")
+            return false
           }
+          
           this.getClassInfoActions()
           this.dialogVisible = false
         } else {
@@ -165,10 +153,9 @@ export default {
       }).then(async () => {
         const res = await deleteClassAPI(obj.class_id)
         if (res.code === 0) {
-          // this.$message.success(res.msg)
           this.$message({
             type: 'success',
-            message: '删除成功！'
+            message: '成功删除' + obj.name +'！'
           })
         }
         if (this.$store.state.tClass.classList.length === 1) {
@@ -228,6 +215,10 @@ export default {
           return false
         }
       }
+    } */
+    /* async checkUniqueClass() {
+      const uniqueRes = await checkUniqueClassAPI(this.addClassForm.name)
+      console.log(res)
     } */
   }
 };

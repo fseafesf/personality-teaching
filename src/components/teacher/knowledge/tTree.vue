@@ -11,8 +11,10 @@
           :expand-on-click-node="false"
           :highlight-current="highlight"
           :current-node-key="currentNode"
+          :check-strictly = "checkStrictly"
           @check-change="checkedClickHandler"
           @node-click="nodeClickHandler"
+          @check = "checkHandler"
         >
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <div class="label">
@@ -84,12 +86,18 @@ export default {
       // 是否高亮当前节点
       type: Boolean,
       default: true
+    },
+    // 是否严格的遵循父子不互相关联的做法
+    checkStrictly: {
+      type: Boolean,
+      default: false
     }
   },
   emits: [
     // 暴露给父组件的两个事件
     'checkedClick', // 复选框点击
-    'nodeClick' // 点击知识点节点
+    'nodeClick', // 点击知识点节点
+    'checkEvent'
   ],
   data() {
     return {
@@ -156,6 +164,14 @@ export default {
     // 点击知识点
     nodeClickHandler(data) {
       this.$emit('nodeClick', data)
+    },
+    // 选择知识点
+    checkHandler(data, checkedData) {
+      this.$emit(
+        'checkEvent',
+        data,
+        checkedData
+      )
     }
   },
 

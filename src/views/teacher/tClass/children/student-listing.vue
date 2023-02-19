@@ -3,7 +3,7 @@
     <template v-if="!$route.meta.isChildren">
       <div class="header">
         <el-input v-model="keyword" placeholder="请输入学生姓名" class="search-bar"></el-input>
-        <el-button type="primary" size="small" @click="searchStuFn">查询</el-button>
+        <!-- <el-button type="primary" size="small" @click="searchStuFn">查询</el-button> -->
         <el-button type="primary" size="small" @click="resetFn">重置</el-button>
         <el-button type="primary" size="small" class="addStuBtn" @click="addStudentFn">新增学生</el-button>
       </div>
@@ -16,6 +16,7 @@
       >
         <el-table-column type="index" label="序号" width="80px"></el-table-column>
         <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+        <el-table-column prop="student_no" label="学号"></el-table-column>
         <el-table-column prop="college" label="学院"></el-table-column>
         <el-table-column prop="major" label="专业"></el-table-column>
         <el-table-column prop="phone_number" label="联系电话"></el-table-column>
@@ -33,7 +34,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="$store.state.tClass.unJoinStuPage.page_num"
-          :page-sizes = "[20, 30, 40]"
+          :page-sizes = "[10, 20, 30]"
           :page-size="$store.state.tClass.unJoinStuPage.page_size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="+this.$store.state.tClass.unJoinStuTotal">
@@ -46,6 +47,9 @@
       <el-form :model="addStuForm" ref="addStuRef" label-width="90px" :rules="addStuRules">
         <el-form-item label="姓名:" prop="name">
           <el-input v-model="addStuForm.name" minlength="1"></el-input>
+        </el-form-item>
+        <el-form-item label="学号:" prop="student_no">
+          <el-input v-model="addStuForm.student_no" minlength="1"></el-input>
         </el-form-item>
         <el-form-item label="学院:" prop="college">
           <el-input v-model="addStuForm.college" minlength="1"></el-input>
@@ -78,6 +82,7 @@ export default {
       dialogVisible: false,  // 新增学生对话框是否显示
       addStuForm: {  // 未加入班级学生的信息
         name: "",
+        student_no: "",
         college: "",
         major: "",
         phone_number: ""
@@ -87,16 +92,19 @@ export default {
         name: [
           {required: true, message: "请输入学生姓名", trigger: "blur"}
         ],
+        student_no: [
+          {required: true, message: "请输入学生学号", trigger: "blur"}
+        ],
         college: [
           {required: true, message: "请输入学院名", trigger: "blur"}
         ],
         major: [
           {required: true, message: "请输入专业名", trigger: "blur"}
         ],
-        phone_number: [
+        /* phone_number: [
           {required: false, message: "请输入学生电话号码", trigger: "blur"},
           {pattern: /^1([3456789])\d{9}$/, message: "电话号码必须是11位且以1开头,第二位数字是3456789中的一位", trigger: "blur"}
-        ]
+        ] */
       },
       isEdit: false, // true为编辑状态，false为新增状态
     }
@@ -106,9 +114,8 @@ export default {
   },
   watch: {
     keyword(val) {
-      if (val == '') {
-        this.getUnJoinClsStuActions()
-      }
+      this.$store.state.tClass.content = val
+      this.getUnJoinClsStuActions()
     }
   },
   methods: {
@@ -125,11 +132,7 @@ export default {
     handleSizeChange(sizes) {
       this.$store.state.tClass.unJoinStuPage.page_size = sizes
       this.$store.state.tClass.unJoinStuPage.page_num = 1
-      if (this.keyword !== "") {
-        this.searchStuFn()
-      } else {
-        this.getUnJoinClsStuActions()
-      }
+      this.getUnJoinClsStuActions()
     },
     // 当前页码改变时触发
     handleCurrentChange(nowPage) {
@@ -151,6 +154,7 @@ export default {
         if (valid) {
           if (!this.isEdit) {  // 新增学生
             const res = await addStudentAPI(this.addStuForm)
+            console.log(res)
             if (res.code === 0) {
               this.$message.success(res.msg)
             }   
@@ -184,15 +188,15 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(async () => {
-        console.log("删除学生")
-        // const res = await deleteUnJoinStuAPI(obj.student_id)
-        // console.log(res.code)
-        // if (res.code === 0) {
-        //   this.$message({
-        //     type: 'success',
-        //     message: '删除成功！'
-        //   })
-        // }
+        // console.log("删除学生")
+        const res = await deleteUnJoinStuAPI(obj.student_id)
+        console.log(res)
+        if (res.code === 0) {
+          this.$message({
+            type: 'success',
+            message: '删除成功！'
+          })
+        }
 
         if (this.$store.state.tClass.unJoinClassList.length === 1) {
           if (this.$store.state.tClass.unJoinStuPage.page_num > 1) {
@@ -208,14 +212,14 @@ export default {
       })
     },
     // 搜索学生
-    searchStuFn() {
+    /* searchStuFn() {
       this.$store.state.tClass.unJoinClassList = this.$store.state.tClass.unJoinClassList.filter(stu => {
         return stu.name.indexOf(this.keyword) !== -1
       })
       this.$store.state.tClass.unJoinStuTotal = this.$store.state.tClass.unJoinClassList.length
       this.$store.state.tClass.unJoinStuPage.page_num = 1
       this.$store.state.tClass.unJoinStuPage.page_size = 20
-    }
+    } */
   }
 };
 </script>
