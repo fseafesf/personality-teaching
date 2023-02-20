@@ -27,7 +27,6 @@
               :index="index"
               :problem="item"
               :status="status"
-              
             >
             </ReviewCard>
           </template>
@@ -35,16 +34,16 @@
         <div class="content-right">
           <div class="title"><span> 题目列表 </span></div>
           <div class="record">
-           <template v-if="startRendering">
-            <ReviewRecord
-              v-for="(item, index) in problemList"
-              :key="item.question_id"
-              :index="index"
-              :problem="item"
-              :status="status"
-              @click.native="handlerClick(index)"
-            ></ReviewRecord>
-           </template>
+            <template v-if="startRendering">
+              <ReviewRecord
+                v-for="(item, index) in problemList"
+                :key="item.question_id"
+                :index="index"
+                :problem="item"
+                :status="status"
+                @click.native="handlerClick(index)"
+              ></ReviewRecord>
+            </template>
           </div>
         </div>
       </div>
@@ -65,7 +64,12 @@
 </template>
 
 <script>
-import { searchPage, getStudentsAnswer, updateReview } from '@/services'
+import {
+  searchPage,
+  getStudentsAnswer,
+  updateReview,
+  searchStudentAPI
+} from '@/services'
 import { mapActions, mapMutations, mapState, mapGetters } from 'vuex'
 import { group, breakGroup } from 'utils/groupByType'
 import ReviewCard from '@/components/teacher/review/reviewCard.vue'
@@ -87,7 +91,7 @@ export default {
       answers: '',
       times: '',
 
-      startRendering: false,
+      startRendering: false
     }
   },
   created() {
@@ -99,7 +103,9 @@ export default {
       exam_id: this.examId,
       class_id: this.classId
     })
-
+    searchStudentAPI(this.studentId).then((res) => {
+      console.log(res)
+    })
     // 未批改 的 直接全部初始为0分
     if (this.status == 1) {
       this.init(false)
@@ -168,12 +174,13 @@ export default {
 
     complete() {
       let status = 0
+      let count = 0
       for (let param of [...this.currentProblemStatus.entries()]) {
         if (!param[1]) {
           status = 2
+          count++
         }
       }
-      console.log(status)
       let data = {
         exam_id: this.examId,
         student_id: this.studentId,
@@ -186,7 +193,22 @@ export default {
         ]),
         times: this.times
       }
-      // console.log(data)
+      if (count !== 0) {
+        this.$confirm(`当前还有${count}道题目没有批阅`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.confirmComplete(data)
+          })
+          .catch(() => {})
+      }else{
+        this.confirmComplete(data)
+      }
+    },
+
+    confirmComplete(data) {
       updateReview(data).then((res) => {
         if (res.code === 0) {
           this.$message({
@@ -197,7 +219,6 @@ export default {
         console.log(res)
       })
     },
-
     nextPage() {
       let index = this.reviewStudents.findIndex((item) => {
         console.log(this.studentId, item.student_id)
@@ -221,8 +242,6 @@ export default {
           status: this.reviewStudents[index + 1].status
         }
       })
-      console.log(index)
-      console.log(this.reviewStudents[index + 1])
     }
   },
   computed: {

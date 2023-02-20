@@ -185,6 +185,7 @@ export default {
             type:'warning',
             message:'没有与该知识点相关的题目'
           })
+          this.renderList = []
         }
       })
     },
