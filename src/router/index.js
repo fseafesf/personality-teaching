@@ -87,8 +87,7 @@ const routes = [
       }
     ]
   },
-
-  // 班级
+  // 班级管理
   {
     path: '/teacher/class',
     name: 'tClass',

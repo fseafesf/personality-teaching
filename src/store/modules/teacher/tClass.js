@@ -4,7 +4,7 @@ const tClass = {
     name: 'tClass',
     classPage: {
       page_num: 1, // 分页页号
-      page_size: 10, // 分页大小
+      page_size: 50, // 分页大小
     },
     classList: [],  // 存放班级列表
     classNum: 0,    // 存放班级总数
@@ -13,16 +13,17 @@ const tClass = {
     classId: '',  // 查看的班级编号
     stuListPage: {  //存放学生列表的分页数
       page_num: 1,
-      page_size: 10
+      page_size: 100
     },
     studentList: [],  // 存放班级学生信息
     studentTotal: 0,  //存放学生总数
     unJoinStuPage: {  // 未加入班级学生页码
       page_num: 1,
-      page_size: 20
+      page_size: 10
     },
     unJoinClassList: [],  // 未加入班级学生列表
-    unJoinStuTotal: 0  // 未加入班级学生总数
+    unJoinStuTotal: 0,  // 未加入班级学生总数
+    content: ""  // 未加入班级查询关键字
   }),
   mutations: {
     getClassList(state, val) {
@@ -80,7 +81,7 @@ const tClass = {
     },
     // 查询未加入班级学生列表
     async getUnJoinClsStuActions(store) {
-      let res = await getUnjoinStuAPI(store.state.unJoinStuPage)
+      let res = await getUnjoinStuAPI(store.state.unJoinStuPage, store.state.content)
       if (res.code === 0) {
         store.commit('getUnJoinClsStu', res)
       }

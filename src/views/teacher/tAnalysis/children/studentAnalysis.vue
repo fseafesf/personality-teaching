@@ -18,9 +18,10 @@
         :header-cell-style="{borderColor: 'lightGray'}"
         class="elTable">
         <el-table-column prop="name" label="姓名" width="140px"></el-table-column>
-        <el-table-column prop="studentId" label="学号"></el-table-column>
+        <el-table-column prop="student_no" label="学号"></el-table-column>
         <el-table-column prop="college" label="学院"></el-table-column>
         <el-table-column prop="major" label="专业"></el-table-column>
+        <el-table-column prop="phone_number" label="联系电话"></el-table-column>
       </el-table>
       <PointTree></PointTree>
     </div>         
@@ -28,6 +29,7 @@
 </template>
 
 <script>
+import { searchStudentAPI } from '@/services/modules/teacher/tAnalysis.js'
 import PointTree from "@/components/teacher/tAnalysis/pointsTree.vue"
 
 export default {
@@ -37,17 +39,19 @@ export default {
     return {
       keyword: "",  // 搜索关键字
       studentInfo: [{
-        name: "张三",
-        studentId: "20230208",
-        college: "计算机科学学院",
-        major: "计算机科学与技术"
+        name: "",
+        student_no: "",
+        college: "",
+        major: "",
+        phone_number: ""
       }]
     }
   },
   methods: {
     // 搜索按钮
-    searchFn() {
-      console.log("--------点击搜索")
+    async searchFn() {
+      const res = await searchStudentAPI(this.keyword)
+      this.studentInfo = res.data
     },
     // 重置按钮
     resetFn() {

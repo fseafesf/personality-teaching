@@ -100,14 +100,15 @@ export const getStuListAPI = (class_id, { page_num, page_size }) => {
 /**
  * 新增学生
  * @param {*} cookie 
- * @param {*} param1 { name：姓名, college：学院, major：专业, phone_number：电话号码 }
+ * @param {*} param1 { name：姓名, student_no: 学号, college：学院, major：专业, phone_number：电话号码 }
  * @returns 
  */
-export const addStudentAPI = ({ name, college, major, phone_number }) => {
+export const addStudentAPI = ({ name, student_no, college, major, phone_number }) => {
   return ptRequest.post({
     url: '/teacher/student',
     data: {
       name,
+      student_no,
       college,
       major,
       phone_number
@@ -118,15 +119,16 @@ export const addStudentAPI = ({ name, college, major, phone_number }) => {
 /**
  * 查询未加入班级学生
  * @param {*} cookie 
- * @param {*} param1 { page_num：分页号, page_size：分页大小}
+ * @param {*} param1 { page_num：分页号, page_size：分页大小} content关键字
  * @returns 
  */
-export const getUnjoinStuAPI = ({ page_num, page_size }) => {
+export const getUnjoinStuAPI = ({ page_num, page_size }, content) => {
   return ptRequest.get({
     url: '/teacher/student/list',
     params: {
       page_num,
-      page_size
+      page_size,
+      content
     }
   })
 }
@@ -186,6 +188,16 @@ export const deleteUnJoinStuAPI = (student_id) => {
     url: "/teacher/student",
     params: {
       student_id
+    }
+  })
+}
+
+// 查询班级名是否存在 
+export const checkUniqueClassAPI = (name) => {
+  return ptRequest.get({
+    url: "/teacher/class/check",
+    params: {
+      name
     }
   })
 }
