@@ -1,55 +1,61 @@
 <template>
-  <div class="home">
-    <h2>home</h2>
-    <div class="edit_container">
-      <quill-editor
-        v-model="content"
-        ref="myQuillEditor"
-        :options="editorOption"
-        @blur="onEditorBlur($event)"
-        @focus="onEditorFocus($event)"
-        @change="onEditorChange($event)"
-      >
-      </quill-editor>
-    </div>
+  <div style="border: 1px solid #ccc">
+    <Toolbar
+      style="border-bottom: 1px solid #ccc"
+      :editor="editor"
+      :defaultConfig="toolbarConfig"
+      :mode="mode"
+    />
+    <Editor
+      style="height: 500px; overflow-y: hidden"
+      v-model="html"
+      :defaultConfig="editorConfig"
+      :mode="mode"
+      @onCreated="onCreated"
+      @onChange="onChange"
+    />
+    {{ editor?.getHtml() }}
+    <br />
   </div>
 </template>
 
 <script>
-import cookies from 'vue-cookies'
-import { quillEditor } from 'vue-quill-editor' //调用编辑器
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+import Vue from 'vue'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
-export default {
-  name: 'Home',
-  components: {
-    quillEditor
-  },
+export default Vue.extend({
+  components: { Editor, Toolbar },
   data() {
     return {
-      content: `123`,
-      editorOption: {}
+      editor: null,
+      html: '<p>hello</p>',
+      toolbarConfig: {},
+      editorConfig: { placeholder: '请输入内容...' },
+      mode: 'default', // or 'simple'
+      editorConfig: {
+        MENU_CONF: {
+          uploadImage: {
+            server: 'http://localhost:3000/api/upload'
+          }
+        }
+      }
     }
   },
   methods: {
-    onEditorReady(editor) {
-      // 准备编辑器
+    onCreated(editor) {
+      this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
     },
-    onEditorBlur() {}, // 失去焦点事件
-    onEditorFocus() {}, // 获得焦点事件
-    onEditorChange() {} // 内容改变事件
-  },
-  computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill
+    onChange(editor) {
+      console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
     }
   },
-  beforeCreate() {
-    if (!cookies.get('session_key')) {
-      this.$router.replace({ path: '/login' })
-    }
+  mounted() {},
+  beforeDestroy() {
+    const editor = this.editor
+    if (editor == null) return
+    editor.destroy() // 组件销毁时，及时销毁编辑器
   }
-}
+})
 </script>
+
+<style src="@wangeditor/editor/dist/css/style.css"></style>
