@@ -9,6 +9,8 @@ import tTest from './modules/teacher/tTest'
 import tTopic from './modules/teacher/tTopic'
 
 import tHome from './modules/teacher/tHome'
+
+import sTask from './modules/student/sTask'
 import { getCache } from '@/utils/localstorage'
 
 Vue.use(Vuex)
@@ -73,6 +75,7 @@ export default new Vuex.Store({
     tKnowledge,
     tReview,
     tTest,
-    tTopic
+    tTopic,
+    sTask
   }
 })

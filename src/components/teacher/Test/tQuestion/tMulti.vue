@@ -6,16 +6,18 @@
         <span></span>
         <span>{{ typeProblem.context }}</span>
       </div>
-      <div class="multi-option">
-        <div
-          class="option"
-          v-for="(item, index) in typeProblem.question_option_list"
-          :key="index"
-        >
-          <span> {{ toSelect(index) }}、</span>
-          <span> {{ item.Context }}</span>
+      <slot name="Multi">
+        <div class="multi-option">
+          <div
+            class="option"
+            v-for="(item, index) in typeProblem.question_option_list"
+            :key="index"
+          >
+            <span> {{ toSelect(index) }}、</span>
+            <span> {{ item.Context }}</span>
+          </div>
         </div>
-      </div>
+      </slot>
     </div>
     <div
       class="multi-operate"
@@ -44,44 +46,43 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
-import { toSelect } from "@/utils/transfrom";
+import { mapMutations, mapState } from 'vuex'
+import { toSelect } from '@/utils/transfrom'
 export default {
-  name: "multi",
+  name: 'multi',
   data() {
-    return {};
+    return {}
   },
   props: {
     index: {
-      type: Number,
+      type: Number
     },
     typeProblem: {
       type: Object,
-      default: () => ({}),
-    },
+      default: () => ({})
+    }
   },
-  created(){
+  created() {
     // console.log(this.typeProblem)
   },
   methods: {
-    ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
+    ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
     toSelect,
     handleDelete() {
-      console.log(this.typeProblem.question_id);
-      console.log(this.page.selectProblem);
+      console.log(this.typeProblem.question_id)
+      console.log(this.page.selectProblem)
       let index = this.page.selectProblem.findIndex((item) => {
-        console.log(item.question_id === this.typeProblem.question_id);
-        return item.question_id === this.typeProblem.question_id;
-      });
-      console.log(index);
-      this.deleteProblem(index);
-    },
-   
+        console.log(item.question_id === this.typeProblem.question_id)
+        return item.question_id === this.typeProblem.question_id
+      })
+      console.log(index)
+      this.deleteProblem(index)
+    }
   },
   computed: {
-    ...mapState("tTest", ["page"]),
-  },
-};
+    ...mapState('tTest', ['page'])
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -101,7 +102,7 @@ export default {
       display: flex;
       padding-right: 40px;
       flex-wrap: wrap;
-      .option{
+      .option {
         width: 600px;
         height: 30px;
         line-height: 30px;
@@ -109,8 +110,8 @@ export default {
     }
   }
   .special {
-      display: none !important;
-    }
+    display: none !important;
+  }
   .multi-operate {
     position: absolute;
     top: -31px;
