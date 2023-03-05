@@ -7,3 +7,4 @@ export * from './modules/teacher/tTopic'
 export * from './modules/teacher/tHome'
 
 export * from './modules/common/login'
+export * from './modules/common/upload'
