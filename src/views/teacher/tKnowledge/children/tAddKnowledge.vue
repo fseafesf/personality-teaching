@@ -18,7 +18,6 @@
       </el-form-item>
 
       <el-form-item label="知识点内容:" prop="context">
-        <!-- <el-input type="textarea" :rows="24" v-model="form.context" /> -->
         <!-- 富文本编辑器 -->
         <PtEditor v-model="form.context" />
       </el-form-item>
@@ -67,7 +66,7 @@ export default {
                 ...this.form
               })
               .then((res) => {
-                if (res) {
+                if (res?.code == 0) {
                   this.$message({
                     type: 'success',
                     message: '添加成功!'
@@ -84,7 +83,7 @@ export default {
               })
               .then((res) => {
                 console.log(res, 'res')
-                if (res) {
+                if (res?.code == 0) {
                   this.$message({
                     type: 'success',
                     message: '添加成功!'

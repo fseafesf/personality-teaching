@@ -6,7 +6,7 @@
       :defaultConfig="toolbarConfig"
       :mode="mode"
     />
-    <!-- v-model="html" -->
+
     <Editor
       :style="`height: ${height}px; overflow-y: hidden`"
       v-bind:value="editorValue"
@@ -21,7 +21,7 @@
 <script>
 import Vue from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import axios from 'axios'
+import { uploadImageApi } from '@/services/modules/common/upload'
 
 export default Vue.extend({
   components: { Editor, Toolbar },
@@ -67,33 +67,13 @@ export default Vue.extend({
             // server:
             //   'http://teach.komorebi-nxj.cn/api/teacher/point/uploadImage',
             fieldName: 'file',
-            // 自定义增加 http  header
-            // headers: {
-            //   Cookie: document.cookie
-            // },
 
             // 自定义上传
-            customUpload(file, insertFn) {
+            async customUpload(file, insertFn) {
               const form = new FormData()
               form.append('file', file, file.name)
-              // console.log(form, 'form')
-              // axios.defaults.withCredentials = true
-              // document.cookie = document.cookie
-
-              axios({
-                url: 'http://teach.komorebi-nxj.cn/api/teacher/point/uploadImage',
-                data: form,
-                method: 'post'
-                // headers: {
-                //   Cookie: document.cookie
-                // }
-              }).then((res) => {
-                console.log(file, 'file')
-                // console.log(res)
-                // 这里的参数分别是image标签的src alt herf
-                console.log(res, 'res')
-                insertFn(res.data.data.url, '', res.data.data.url)
-              })
+              const res = await uploadImageApi(form)
+              insertFn(res.data.url, '', '')
             }
           }
         }
@@ -112,9 +92,7 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    // console.log(document.cookie, ' document.cook')
-  },
+  mounted() {},
 
   beforeDestroy() {
     const editor = this.editor

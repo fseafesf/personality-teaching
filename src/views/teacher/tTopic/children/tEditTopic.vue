@@ -334,8 +334,10 @@ export default {
         // 如果为多选题、填空题 需要对答案answer进行分离转成数组
         // 添加填空题的时候 多个answer用+进行拼接 可以过+分割获取答案数组
         if (data.type === 2) {
+          // 多选
           dx_answer = data.answer.split('+')
         } else if (data.type === 4) {
+          // 填空
           tk_answer = data.answer.split('+')
         }
       }

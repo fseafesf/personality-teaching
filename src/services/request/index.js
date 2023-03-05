@@ -34,16 +34,21 @@ class PtRequest {
       (res) => {
         store.commit('changeIsLoading', false)
         nprogress.done()
-        if (res.data.code !== 0 && res.data.code !== 1008 && res.data.code !== 1010) {
-          Message({
+        if (
+          res.data.code &&
+          res.data.code !== 0 &&
+          res.data.code !== 1008 &&
+          res.data.code !== 1010
+        ) {
+          return Message({
             showClose: true,
             type: 'error',
             message: res.data.msg
           })
-        }    
+        }
         if (res.data.code == 1001) {
           //检查登录态，若登录态不合法则跳转至登录
-          router.replace({ path: '/login' })
+          return router.replace({ path: '/login' })
         }
         return res
       },
