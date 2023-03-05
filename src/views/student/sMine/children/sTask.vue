@@ -1,5 +1,8 @@
 <template>
   <div class="task">
+    <el-backtop :bottom="100">
+      <div>UP</div>
+    </el-backtop>
     <div class="task-wrapper">
       <div class="back" @click="back">
         <i class="el-icon-back"></i>
@@ -10,15 +13,21 @@
           v-for="(item, index) in 10"
           :key="item"
           :index="index"
+          ref="modal"
         ></sTaskCard>
       </div>
 
       <div class="right wrap-v7" ref="rightRef">
         <div class="title">选择题</div>
         <div class="option-index">
-          <div class="index" v-for="(item, index) in 10" :key="item">
-            {{ index + 1 }}
-          </div>
+          <sTaskRecord
+            class="index"
+            v-for="(item, index) in 10"
+            :key="item"
+            @click.native="handlerClick(index)"
+          >
+            {{ index + 1 }}</sTaskRecord
+          >
         </div>
       </div>
     </div>
@@ -28,23 +37,25 @@
 <script>
 import TopBar from '@/components/common/TopBar.vue'
 import { getQuestionList } from '@/services'
+import { searchPage } from '@/services'
 import { toSelect } from '@/utils/transfrom'
 import sTaskCard from '@/components/student/sMine/sTaskCard.vue'
-
+import sTaskRecord from '@/components/student/sMine/sTaskRecord.vue'
+import { time } from 'echarts'
 export default {
   name: 'sTask',
   components: { TopBar },
   data() {
     return {
+      examID: '1595616208487460864',
       toSelect,
-      radio: 'A'
+      radio: 'A',
+      distance: 0,
+      timer: null
     }
   },
-  mounted() {
-    // window.addEventListener('scroll', this.handleScroll, true)
-    // getQuestionList(1, 10).then(res => {
-    //   console.log(res)
-    // })
+  created() {
+    this.getPageInfo()
   },
   methods: {
     goback() {
@@ -52,22 +63,39 @@ export default {
     },
     back() {
       this.$router.go(-1)
+    },
+    async getPageInfo() {},
+
+    handlerClick(index) {
+      if (!!this.timer) {
+        clearInterval(this.timer)
+      }
+      for (let i = 0; i < index; i++) {
+        this.distance += this.$refs.modal[i].$el.offsetHeight + 35
+      }
+      this.distance += 150
+      this.move(this.distance, document.documentElement, 'scrollTop', 10)
+    },
+
+    move(target, element, attribute, time) {
+      let temp = 0
+      this.timer = setInterval(() => {
+        let speed = (target - element[attribute]) / 5
+        speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed)
+        temp += speed
+        element[attribute] += speed
+        let finished = temp >= target
+        if (speed === 0 || finished) {
+          clearInterval(this.timer)
+          this.distance = 0
+        }
+      }, time)
     }
-    //   handleScroll() {
-    //     let clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-    //     let scrollTop = document.documentElement.scrollTop
-    //     console.log('scrollTop', scrollTop)
-    //     // this.$refs.rightRef.scrollTop = scrollTop
-    //     console.log(this.$refs)
-    //     console.log(this.$refs.rightRef.offsetTop)
-    //     this.$refs.rightRef.style.top = scrollTop + 50 + 'px'
-    //   }
   },
-  // destroyed() {
-  //   window.removeEventListener('scroll', this.handleScroll)
-  // },
+
   components: {
-    sTaskCard
+    sTaskCard,
+    sTaskRecord
   }
 }
 </script>

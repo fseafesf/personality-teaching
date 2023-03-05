@@ -32,16 +32,23 @@
             </div>
           </el-radio-group>
         </div>
-        <div class="option" v-if="problem.type === 5">
-          <quillEditor
-            v-model="content"
-            ref="myQuillEditor"
-            :options="editorOption"
-            @blur="onEditorBlur($event)"
-            @focus="onEditorFocus($event)"
-            @change="onEditorChange($event)"
-          >
-          </quillEditor>
+        <div class="option option-answer" v-if="problem.type === 5">
+          <Toolbar
+            style="border-bottom: 1px solid #ccc"
+            :editor="editor"
+            :defaultConfig="toolbarConfig"
+            :mode="mode"
+          />
+          <Editor
+            style="height: 300px; overflow-y: hidden"
+            v-model="html"
+            :defaultConfig="editorConfig"
+            :mode="mode"
+            @onCreated="onCreated"
+            @onChange="onChange"
+          />
+          <!-- {{ editor?.getHtml() }} -->
+          <br />
         </div>
       </template>
     </div>
@@ -50,14 +57,19 @@
 
 <script>
 import { toSelect } from '@/utils/transfrom'
-import { quillEditor } from 'vue-quill-editor'
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import '@wangeditor/editor/dist/css/style.css'
+
 export default {
   name: 'taskCard',
   data() {
     return {
+      editor: null,
+      html: '<p>hello</p>',
+      toolbarConfig: {},
+      editorConfig: { placeholder: '请输入内容...' },
+      mode: 'default',
+
       currentView: '',
       typeArr: ['单选', '多选', '判断', '填空', '简答'],
       typeComponent: ['Radio', 'Multi', 'Judge', 'Fill', 'Answer'],
@@ -71,8 +83,6 @@ export default {
       // 判断默认项
       judge: 'A',
 
-      content: ``,
-      editorOption: {},
       toSelect
     }
   },
@@ -100,19 +110,16 @@ export default {
     handleJudge(value) {
       console.log(value)
     },
-    onEditorReady(editor) {
-      // 准备编辑器
+
+
+    onCreated(editor) {
+      this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
     },
-    onEditorBlur() {}, // 失去焦点事件
-    onEditorFocus() {}, // 获得焦点事件
-    onEditorChange() {
-      console.log(this.content)
-    } // 内容改变事件
+    onChange(editor) {
+      console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
+    }
   },
   computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill
-    }
   },
   components: {
     Radio: () => import('@/components/teacher/Test/tQuestion/tRadio.vue'),
@@ -120,7 +127,13 @@ export default {
     Judge: () => import('@/components/teacher/Test/tQuestion/tJudge.vue'),
     Fill: () => import('@/components/teacher/Test/tQuestion/tFill.vue'),
     Answer: () => import('@/components/teacher/Test/tQuestion/tAnswer.vue'),
-    quillEditor
+    Editor,
+    Toolbar
+  },
+  beforeDestroy() {
+    const editor = this.editor
+    if (editor == null) return
+    editor.destroy() // 组件销毁时，及时销毁编辑器
   }
 }
 </script>
@@ -128,8 +141,11 @@ export default {
 <style scoped lang="less">
 .task-card {
   min-height: 150px;
+  border-bottom: 0.5px dashed gray ;
+  margin: 35px 0;
   .option {
     margin: 20px;
+    
     .el-radio-group,
     .el-checkbox-group {
       display: flex;
@@ -145,6 +161,10 @@ export default {
         margin-left: 10px;
       }
     }
+  }
+
+  .option-answer{
+    min-height: 300px;
   }
 }
 </style>
