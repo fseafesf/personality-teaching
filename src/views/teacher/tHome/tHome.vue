@@ -1,61 +1,55 @@
 <template>
-  <div style="border: 1px solid #ccc">
-    <Toolbar
-      style="border-bottom: 1px solid #ccc"
-      :editor="editor"
-      :defaultConfig="toolbarConfig"
-      :mode="mode"
-    />
-    <Editor
-      style="height: 500px; overflow-y: hidden"
-      v-model="html"
-      :defaultConfig="editorConfig"
-      :mode="mode"
-      @onCreated="onCreated"
-      @onChange="onChange"
-    />
-    {{ editor?.getHtml() }}
+  <div>
+    <PtEditor :height="300" v-model="content" />
+    <el-button @click="handleAdd">添加</el-button>
+
     <br />
+
+    <!-- 展示获取发请求的富文本内容 -->
+    <div v-html="showContent"></div>
+    {{ content }}
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import PtEditor from '@/components/common/PtEditor.vue'
+import axios from 'axios'
 
 export default Vue.extend({
-  components: { Editor, Toolbar },
+  components: { PtEditor }, // 导入富文本编辑器组件
   data() {
     return {
-      editor: null,
-      html: '<p>hello</p>',
-      toolbarConfig: {},
-      editorConfig: { placeholder: '请输入内容...' },
-      mode: 'default', // or 'simple'
-      editorConfig: {
-        MENU_CONF: {
-          uploadImage: {
-            server: 'http://localhost:3000/api/upload'
-          }
-        }
-      }
+      content: '', // 用来双向绑定富文本内容
+      showContent: ''
     }
   },
   methods: {
-    onCreated(editor) {
-      this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
-    },
-    onChange(editor) {
-      console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
+    handleAdd() {
+      axios({
+        url: 'http://localhost:3000/api/article',
+        data: {
+          title: '测试',
+          content: this.content,
+          categoryId: 1
+        },
+        method: 'post'
+      }).then((res) => {
+        console.log(res.data)
+        const articleId = res.data.data.id
+        axios
+          .get('http://localhost:3000/api/article/' + articleId)
+          .then((res) => {
+            console.log(res.data)
+            this.showContent = res.data.data.content
+          })
+      })
     }
   },
-  mounted() {},
-  beforeDestroy() {
-    const editor = this.editor
-    if (editor == null) return
-    editor.destroy() // 组件销毁时，及时销毁编辑器
+  mounted() {
+    // axios.get('http://localhost:3000/api/category').then((res) => {
+    //   console.log(res.data)
+    // })
   }
 })
 </script>
-
-<style src="@wangeditor/editor/dist/css/style.css"></style>

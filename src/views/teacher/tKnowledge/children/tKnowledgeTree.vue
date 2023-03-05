@@ -15,8 +15,11 @@
       <div class="title">
         {{ pointDetail ? pointDetail.name : '请点击知识点查看内容' }}
       </div>
+
+      <!-- 展示内容 -->
       <div class="content">
-        {{ pointDetail?.context }}
+        <!-- {{ pointDetail?.context }} -->
+        <div v-html="pointDetail?.context"></div>
       </div>
     </div>
   </div>

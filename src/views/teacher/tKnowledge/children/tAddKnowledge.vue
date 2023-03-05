@@ -18,7 +18,9 @@
       </el-form-item>
 
       <el-form-item label="知识点内容:" prop="context">
-        <el-input type="textarea" :rows="24" v-model="form.context" />
+        <!-- <el-input type="textarea" :rows="24" v-model="form.context" /> -->
+        <!-- 富文本编辑器 -->
+        <PtEditor v-model="form.context" />
       </el-form-item>
 
       <el-form-item>
@@ -30,7 +32,10 @@
 </template>
 
 <script>
+import PtEditor from '@/components/common/PtEditor.vue'
+
 export default {
+  components: { PtEditor },
   data() {
     return {
       levelOptions: this.$store.state.levelOptions,
@@ -39,6 +44,7 @@ export default {
         level: '',
         context: ''
       },
+      // 验证规则
       rules: {
         name: [
           { required: true, max: 30, message: '请输入30字以内的知识点名称' }
@@ -61,11 +67,13 @@ export default {
                 ...this.form
               })
               .then((res) => {
-                this.$message({
-                  type: 'success',
-                  message: '添加成功!'
-                })
-                this.$router.push({ path: '/teacher/knowledge/tree' })
+                if (res) {
+                  this.$message({
+                    type: 'success',
+                    message: '添加成功!'
+                  })
+                  this.$router.push({ path: '/teacher/knowledge/tree' })
+                }
               })
           } else {
             // 子知识点 需要parent_knp_id
@@ -75,11 +83,14 @@ export default {
                 parent_knp_id: this.$route.params.id
               })
               .then((res) => {
-                this.$message({
-                  type: 'success',
-                  message: '添加成功!'
-                })
-                this.$router.push({ path: '/teacher/knowledge/tree' })
+                console.log(res, 'res')
+                if (res) {
+                  this.$message({
+                    type: 'success',
+                    message: '添加成功!'
+                  })
+                  this.$router.push({ path: '/teacher/knowledge/tree' })
+                }
               })
           }
         } else {
