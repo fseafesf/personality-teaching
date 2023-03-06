@@ -23,14 +23,14 @@
           </div>
         </el-form-item>
 
-        <!-- 题目名称 -->
-        <el-form-item label="题目名称:" prop="question_name">
+        <!-- 题目名称 不要了 -->
+        <!-- <el-form-item label="题目名称:" prop="question_name">
           <el-input v-model="form.question_name"></el-input>
-        </el-form-item>
+        </el-form-item> -->
 
         <!-- 题干 -->
         <el-form-item label="题干:" prop="context">
-          <el-input type="textarea" :rows="4" v-model="form.context"></el-input>
+          <PtEditor :height="300" v-model="form.context" />
         </el-form-item>
 
         <!-- 选项 -->
@@ -137,11 +137,8 @@
 
         <!-- 解析 可选非必须 -->
         <el-form-item label="解析:">
-          <el-input
-            type="textarea"
-            :rows="4"
-            v-model="form.answer_context"
-          ></el-input>
+          <!-- <el-input type="textarea" :rows="4"></el-input> -->
+          <PtEditor :height="300" v-model="form.answer_context" />
         </el-form-item>
 
         <!-- 知识点 -->
@@ -179,11 +176,12 @@
 
 <script>
 import tTree from '@/components/teacher/knowledge/tTree.vue'
+import PtEditor from '@/components/common/PtEditor.vue'
 import mapABCDEF from '@/utils/mapABCDEF'
 import { arr2string } from '@/utils/topic'
 
 export default {
-  components: { tTree },
+  components: { tTree, PtEditor },
   data() {
     return {
       typeOptions: this.$store.state.typeOptions, // 题型映射
@@ -253,15 +251,23 @@ export default {
 
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          console.log(this.form)
+          // console.log(this.form)
 
           // 发请求提交
           this.$store.dispatch('QuestionAddActive', this.form).then((res) => {
-            this.$message({
-              type: 'success',
-              message: '创建成功!'
-            })
-            this.$router.push({ path: '/teacher/topic' })
+            console.log('添加题目', res)
+            if (res.code == 0) {
+              this.$message({
+                type: 'success',
+                message: '创建成功!'
+              })
+              this.$router.push({ path: '/teacher/topic' })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '创建失败!'
+              })
+            }
           })
         } else {
           console.log('error submit!!')
