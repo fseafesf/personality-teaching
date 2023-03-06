@@ -38,7 +38,7 @@ export default Vue.extend({
       default: 500
     },
     editorValue: {
-      // 编辑器的默认内容
+      // 编辑器的默认内容 这个不需要传 直接通过v-model绑定即可
       type: String,
       default: ''
     },
