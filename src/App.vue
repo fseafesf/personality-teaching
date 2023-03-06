@@ -6,7 +6,7 @@
     </template>
     <template v-else>
       <!-- <Layout> -->
-      <Header />
+      <Header></Header>
       <router-view class="wrap-v1" />
       <!-- </Layout> -->
     </template>
