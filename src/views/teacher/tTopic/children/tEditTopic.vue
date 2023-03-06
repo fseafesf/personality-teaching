@@ -7,7 +7,7 @@
           {{ questionType(form?.type) }}
         </el-form-item>
 
-        <!-- 题目名称 -->
+        <!-- 题目名称 不要了 -->
         <!-- <el-form-item label="题目名称:" prop="name">
           <el-input type="textarea" v-model="form.name" />
         </el-form-item> -->

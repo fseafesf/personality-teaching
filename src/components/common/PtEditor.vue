@@ -23,6 +23,7 @@ import Vue from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { uploadImageApi } from '@/services/modules/common/upload'
 
+// 可以直接v-model双向绑定使用
 export default Vue.extend({
   components: { Editor, Toolbar },
   // 实现双向绑定
