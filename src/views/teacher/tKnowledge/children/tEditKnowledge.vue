@@ -28,7 +28,6 @@
       </el-form-item>
 
       <el-form-item label="知识点内容:" prop="context">
-        <!-- <el-input type="textarea" :rows="24" v-model="pointDetail.context" /> -->
         <!-- 富文本编辑器 -->
         <PtEditor v-model="pointDetail.context" />
       </el-form-item>
