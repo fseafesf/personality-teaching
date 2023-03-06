@@ -7,7 +7,7 @@
       <div id="contentouter" v-if="show">
         <div id="content">
           <div class="identity">
-            <p><i class="el-icon-circle-check"></i>已登录：xx教师</p>
+            <p><i class="el-icon-circle-check"></i>已登录：{{userinfo}}</p>
           </div>
           <div class="acounthandler">
             <div class="acountbtn" id="changepwd" @click="changepwd">
@@ -31,11 +31,13 @@
 import router from "@/router";
 import { clearCache } from "@/utils/localstorage";
 import cookies from "vue-cookies";
+import store from '@/store';
 let timeID = null;
 export default {
   data() {
     return {
       show: false,
+      userinfo: ''
     };
   },
   methods: {
@@ -66,8 +68,11 @@ export default {
     },
     changepwd() {
       router.replace({ path: "/changpwd" });
-    },
+    }
   },
+  mounted() {
+    this.userinfo = this.$store.state.userinfo.userinfo
+  }
 };
 </script>
 

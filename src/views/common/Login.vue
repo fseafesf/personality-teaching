@@ -76,9 +76,8 @@ export default {
     })
   },
   methods: {
-    // 点击选择标签
-    handleTabClick() {
-      // console.log(this.activeName)
+    storeuserinfo () {
+      this.$store.commit('updateuserinfo',this.username)
     },
 
     // 点击发起登录请求
@@ -97,10 +96,10 @@ export default {
             // 如果登录成功
             if (res.code === 0) {
               headerData = sHeaderData
-
               // 将Header数据保存到localStore中
               setCache('headerData', headerData)
               this.$store.commit('changeHeaderData', headerData)
+              this.storeuserinfo()
               return this.$router.push({ path: '/student/mine' })
             }
           })
@@ -114,14 +113,12 @@ export default {
             if (res.code == 0) {
               this.$store.commit('changeHeaderData', headerData)
               setCache('headerData', headerData)
-
+              this.storeuserinfo()
               this.$router.replace({ path: '/home' }) //账号密码正确则成功跳转
-              // console.log(encrypt(this.password));
+              // console.log('pwd',encrypt(this.password));
             }
           })
         }
-
-        // console.log(this.username, encrypt(this.password))
       }
     },
     upDateClock: function (e) {
