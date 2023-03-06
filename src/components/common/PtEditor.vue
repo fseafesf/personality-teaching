@@ -48,6 +48,7 @@ export default Vue.extend({
     }
   },
   data() {
+    // self用来实现在data中调用method的方法
     let self = this
     return {
       editor: null,
