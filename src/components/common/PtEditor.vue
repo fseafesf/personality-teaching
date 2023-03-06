@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-editor">
+  <div class="pt-editor" style="border: 1px solid #ccc; border-radius: 5px">
     <Toolbar
       style="border-bottom: 1px solid #ccc"
       :editor="editor"

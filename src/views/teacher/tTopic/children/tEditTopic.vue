@@ -8,13 +8,13 @@
         </el-form-item>
 
         <!-- 题目名称 -->
-        <el-form-item label="题目名称:" prop="name">
+        <!-- <el-form-item label="题目名称:" prop="name">
           <el-input type="textarea" v-model="form.name" />
-        </el-form-item>
+        </el-form-item> -->
 
         <!-- 题干 -->
         <el-form-item label="题干:" prop="context">
-          <el-input type="textarea" :rows="4" v-model="form.context" />
+          <PtEditor :height="300" v-model="form.context" />
         </el-form-item>
 
         <!-- 选项 -->
@@ -109,11 +109,12 @@
 
         <!-- 解析 -->
         <el-form-item label="解析:">
-          <el-input
+          <!-- <el-input
             type="textarea"
             :rows="4"
             v-model="editForm.answer_context"
-          />
+          /> -->
+          <PtEditor :height="300" v-model="editForm.answer_context" />
         </el-form-item>
 
         <!-- 知识点联系 -->
@@ -154,15 +155,15 @@
 </template>
 
 <script>
+import tTree from '@/components/teacher/knowledge/tTree.vue'
+import PtEditor from '@/components/common/PtEditor.vue'
 import { questionType } from '@/utils/questionType'
 import { questionLevel } from '@/utils/questLevel'
-import tTree from '@/components/teacher/knowledge/tTree.vue'
-
 import mapABCDEF from '@/utils/mapABCDEF'
 import { arr2string } from '@/utils/topic'
 
 export default {
-  components: { tTree },
+  components: { tTree, PtEditor },
   data() {
     return {
       levelOptions: this.$store.state.levelOptions, // 映射难度
