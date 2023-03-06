@@ -100,10 +100,7 @@ export default {
     },
     status: {
       type: Number
-    },
-    // pageScore: {
-    //   type: Array
-    // }
+    }
   },
   methods: {
     ...mapMutations('tReview', [

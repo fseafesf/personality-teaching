@@ -6,10 +6,12 @@
         <span></span>
         <span>{{ typeProblem.context }}</span>
       </div>
-      <div class="judge-option">
-        <span>A、正确</span>
-        <span>B、错误</span>
-      </div>
+      <slot name="Judge">
+        <div class="judge-option">
+          <span>A、正确</span>
+          <span>B、错误</span>
+        </div>
+      </slot>
     </div>
     <div
       class="judge-operate"
@@ -38,40 +40,40 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
-import { toSelect } from "@/utils/transfrom";
+import { mapMutations, mapState } from 'vuex'
+import { toSelect } from '@/utils/transfrom'
 export default {
-  name: "judge",
+  name: 'judge',
   data() {
-    return {};
+    return {}
   },
   props: {
     index: {
-      type: Number,
+      type: Number
     },
     typeProblem: {
       type: Object,
-      default: () => ({}),
-    },
+      default: () => ({})
+    }
   },
   methods: {
-    ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
+    ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
     toSelect,
     handleDelete() {
-      console.log(this.typeProblem.question_id);
-      console.log(this.page.selectProblem);
+      console.log(this.typeProblem.question_id)
+      console.log(this.page.selectProblem)
       let index = this.page.selectProblem.findIndex((item) => {
-        console.log(item.question_id === this.typeProblem.question_id);
-        return item.question_id === this.typeProblem.question_id;
-      });
-      console.log(index);
-      this.deleteProblem(index);
-    },
+        console.log(item.question_id === this.typeProblem.question_id)
+        return item.question_id === this.typeProblem.question_id
+      })
+      console.log(index)
+      this.deleteProblem(index)
+    }
   },
   computed: {
-    ...mapState("tTest", ["page"]),
-  },
-};
+    ...mapState('tTest', ['page'])
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -86,12 +88,12 @@ export default {
         margin-right: 5px;
       }
     }
-    .judge-option{
+    .judge-option {
       display: flex;
       flex-wrap: wrap;
-      span{
+      span {
         width: 80%;
-        margin: 5px 0 5px 0; 
+        margin: 5px 0 5px 0;
       }
     }
   }

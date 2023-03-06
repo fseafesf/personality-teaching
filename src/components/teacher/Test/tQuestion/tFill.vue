@@ -6,7 +6,9 @@
         <span></span>
         <span>{{ typeProblem.context }}</span>
       </div>
-      <div class="fill-option"></div>
+      <slot name="Fill">
+        <div class="fill-option"></div>
+      </slot>
     </div>
     <div
       class="fill-operate"
@@ -35,38 +37,38 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState } from 'vuex'
 export default {
-  name: "fill",
+  name: 'fill',
   data() {
-    return {};
+    return {}
   },
   props: {
     index: {
-      type: Number,
+      type: Number
     },
     typeProblem: {
       type: Object,
-      default: () => ({}),
-    },
+      default: () => ({})
+    }
   },
   methods: {
-    ...mapMutations("tTest", ["addProblem", "deleteProblem"]),
+    ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
     handleDelete() {
-      console.log(this.typeProblem.question_id);
-      console.log(this.page.selectProblem);
+      console.log(this.typeProblem.question_id)
+      console.log(this.page.selectProblem)
       let index = this.page.selectProblem.findIndex((item) => {
-        console.log(item.question_id === this.typeProblem.question_id);
-        return item.question_id === this.typeProblem.question_id;
-      });
-      console.log(index);
-      this.deleteProblem(index);
-    },
+        console.log(item.question_id === this.typeProblem.question_id)
+        return item.question_id === this.typeProblem.question_id
+      })
+      console.log(index)
+      this.deleteProblem(index)
+    }
   },
   computed: {
-    ...mapState("tTest", ["page"]),
-  },
-};
+    ...mapState('tTest', ['page'])
+  }
+}
 </script>
 
 <style lang="less" scoped>

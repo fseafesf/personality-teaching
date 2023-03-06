@@ -11,7 +11,7 @@ export function encrypt(txt) {
   const encryptor = new JSEncrypt()
   encryptor.setPublicKey(publicKey) // 设置公钥
   return encryptor.encrypt(txt) // 对需要加密的数据进行加密
- 
+
 }
 
 // 解密

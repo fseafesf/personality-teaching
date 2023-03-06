@@ -1,32 +1,33 @@
 <template>
   <div class="task">
-    <TopBar @left-click="goback"> 作业 </TopBar>
+    <el-backtop :bottom="100">
+      <div>UP</div>
+    </el-backtop>
     <div class="task-wrapper">
+      <div class="back" @click="back">
+        <i class="el-icon-back"></i>
+        <span class="back-content">返回学生列表</span>
+      </div>
       <div class="left wrap-v6" ref="leftRef">
-        <template v-for="(item, index) in 10">
-          <div>
-            <span>{{ index + 1 }}、</span>
-            <span>题目内容</span>
-          </div>
-          <div class="option">
-            <el-radio-group v-model="radio" size="small">
-              <!-- size为small -->
-              <div class="option-label" v-for="(item, index) in 4">
-                <el-radio-button
-                  style="border-radius: 50% !important"
-                  :label="toSelect(index)"
-                />
-                <div class="option-content">{{ item }}</div>
-              </div>
-            </el-radio-group>
-          </div>
-        </template>
+        <sTaskCard
+          v-for="(item, index) in 10"
+          :key="item"
+          :index="index"
+          ref="modal"
+        ></sTaskCard>
       </div>
 
       <div class="right wrap-v7" ref="rightRef">
         <div class="title">选择题</div>
         <div class="option-index">
-          <div class="index" v-for="(item, index) in 10">{{ index + 1 }}</div>
+          <sTaskRecord
+            class="index"
+            v-for="(item, index) in 10"
+            :key="item"
+            @click.native="handlerClick(index)"
+          >
+            {{ index + 1 }}</sTaskRecord
+          >
         </div>
       </div>
     </div>
@@ -36,41 +37,66 @@
 <script>
 import TopBar from '@/components/common/TopBar.vue'
 import { getQuestionList } from '@/services'
+import { searchPage } from '@/services'
 import { toSelect } from '@/utils/transfrom'
-
+import sTaskCard from '@/components/student/sMine/sTaskCard.vue'
+import sTaskRecord from '@/components/student/sMine/sTaskRecord.vue'
+import { time } from 'echarts'
 export default {
   name: 'sTask',
   components: { TopBar },
   data() {
     return {
+      examID: '1595616208487460864',
       toSelect,
-      radio: 'A'
+      radio: 'A',
+      distance: 0,
+      timer: null
     }
   },
-  mounted() {
-    // window.addEventListener('scroll', this.handleScroll, true)
-    // getQuestionList(1, 10).then(res => {
-    //   console.log(res)
-    // })
+  created() {
+    this.getPageInfo()
   },
   methods: {
     goback() {
       this.$router.push('/student/mine')
-    }
+    },
+    back() {
+      this.$router.go(-1)
+    },
+    async getPageInfo() {},
 
-    //   handleScroll() {
-    //     let clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-    //     let scrollTop = document.documentElement.scrollTop
-    //     console.log('scrollTop', scrollTop)
-    //     // this.$refs.rightRef.scrollTop = scrollTop
-    //     console.log(this.$refs)
-    //     console.log(this.$refs.rightRef.offsetTop)
-    //     this.$refs.rightRef.style.top = scrollTop + 50 + 'px'
-    //   }
+    handlerClick(index) {
+      if (!!this.timer) {
+        clearInterval(this.timer)
+      }
+      for (let i = 0; i < index; i++) {
+        this.distance += this.$refs.modal[i].$el.offsetHeight + 35
+      }
+      this.distance += 150
+      this.move(this.distance, document.documentElement, 'scrollTop', 10)
+    },
+
+    move(target, element, attribute, time) {
+      let temp = 0
+      this.timer = setInterval(() => {
+        let speed = (target - element[attribute]) / 5
+        speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed)
+        temp += speed
+        element[attribute] += speed
+        let finished = temp >= target
+        if (speed === 0 || finished) {
+          clearInterval(this.timer)
+          this.distance = 0
+        }
+      }, time)
+    }
+  },
+
+  components: {
+    sTaskCard,
+    sTaskRecord
   }
-  // destroyed() {
-  //   window.removeEventListener('scroll', this.handleScroll)
-  // }
 }
 </script>
 
@@ -90,9 +116,19 @@ export default {
 
 .task {
   display: flex;
+  .back {
+    display: flex;
+    align-items: center;
+    width: 20%;
+    height: 50px;
+    cursor: pointer;
+    .back-content {
+      margin-left: 10px;
+    }
+  }
 
   .task-wrapper {
-    margin-top: 50px;
+    margin-top: 0px;
     position: relative;
 
     .left {
@@ -127,6 +163,7 @@ export default {
       border-radius: 5px;
       top: 50px;
       margin-left: 920px;
+      margin-top: 50px;
 
       .title {
         margin-bottom: 10px;

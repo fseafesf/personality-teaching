@@ -5,24 +5,24 @@
     </TopBar>
     <div class="answer-wrapper">
       <div class="left wrap-v6" ref="leftRef">
-        <template v-for="(item, index) in 10">
+        <div v-for="(item, index) in 10" :key="item">
           <div>
             <span>{{ index + 1 }}、</span>
             <span>题目内容</span>
           </div>
           <div class="option">
-            <div class="option-item" v-for="(item, index) in 4">
+            <div class="option-item" v-for="(item, index) in 4" :key="item">
               <span class="option-label">{{ toSelect(index) }}</span>
               <span>{{ item }}</span>
             </div>
           </div>
-        </template>
+        </div>
       </div>
 
       <div class="right wrap-v7" ref="rightRef">
         <div class="title">选择题</div>
         <div class="option-index">
-          <div class="index" v-for="(item, index) in 10">{{ index + 1 }}</div>
+          <div class="index" v-for="(item, index) in 10" :key="item">{{ index + 1 }}</div>
         </div>
       </div>
     </div>

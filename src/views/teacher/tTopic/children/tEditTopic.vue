@@ -4,7 +4,7 @@
       <el-form ref="form" :model="editForm" :rules="rules" label-width="100px">
         <!-- 题型 -->
         <el-form-item label="题型:">
-          {{ questionType(form.type) }}
+          {{ questionType(form?.type) }}
         </el-form-item>
 
         <!-- 题目名称 -->
@@ -19,7 +19,7 @@
 
         <!-- 选项 -->
         <template
-          v-if="(form.type == 1 || form.type == 2) && form.question_option"
+          v-if="(form?.type == 1 || form?.type == 2) && form.question_option"
         >
           <el-form-item label="选项:"> </el-form-item>
           <el-form-item
@@ -45,7 +45,7 @@
         <!-- 答案 -->
         <template>
           <!-- 单择题 -->
-          <template v-if="form.type == 1">
+          <template v-if="form?.type == 1">
             <el-form-item label="答案:" prop="answer">
               <el-radio-group v-model="form.answer">
                 <el-radio
@@ -57,7 +57,7 @@
           </template>
 
           <!-- 多选题 -->
-          <template v-if="form.type == 2">
+          <template v-if="form?.type == 2">
             <el-form-item label="答案:" prop="answer">
               <el-checkbox-group v-model="form.dx_answer">
                 <el-checkbox
@@ -70,7 +70,7 @@
           </template>
 
           <!-- 判断题 -->
-          <template v-else-if="form.type == 3">
+          <template v-else-if="form?.type == 3">
             <el-form-item label="答案:" prop="answer">
               <el-radio-group v-model="form.answer">
                 <el-radio label="对"></el-radio>
@@ -80,7 +80,7 @@
           </template>
 
           <!-- 填空题 -->
-          <template v-else-if="form.type == 4">
+          <template v-else-if="form?.type == 4">
             <el-form-item
               v-for="(item, index) in form.tk_answer"
               label="答案:"
@@ -212,11 +212,43 @@ export default {
 
     // 删除选项
     handleDeleteOption() {
-      this.form.question_option.pop()
+      // 获取最后一个选项的值
+      let optLen = this.form.question_option.length
 
-      // 判断删除的最后一个选项是否被勾选为答案
-      // 如果被勾选 删除的时候取消勾选
-      // this.form.dx_answer.pop()
+      // 判断该选项在答案里是否存在 存在返回下标 不存在返回-1
+      let index = this.form.dx_answer.indexOf(mapABCDEF(optLen - 1))
+      if (index !== -1) {
+        // 最后一项为答案
+        return this.$confirm('该选项已被选中，您确定要删除吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            // 发请求删除答案 需要将答案从多选框数组去掉 再重新组成答案answer进行修改
+            // 删除输入框 放在前面 不然有bug
+            this.form.question_option.pop()
+            // 删除答案
+            this.form.dx_answer.splice(index, 1)
+            this.form.answer = ''
+            this.form.answer = this.arr2string(this.form.dx_answer)
+            this.$store
+              .dispatch('QuestionUpdataActive', this.form)
+              .then((res) => {
+                // 删除答案成功后
+
+                // 重新请求更新页面
+                this.$store.dispatch(
+                  'QuestionByIdActive',
+                  this.$route.params.id
+                )
+              })
+          })
+          .catch(() => {})
+      } else {
+        // 如果最后一项没勾选为答案 直接删除
+        this.form.question_option.pop()
+      }
     },
 
     // 添加填空题答案输入框
@@ -298,12 +330,14 @@ export default {
           }
         }
 
-        // 多选题与填空题答案需要的上一个数组展示
+        // 多选题与填空题答案需要的是一个数组展示
         // 如果为多选题、填空题 需要对答案answer进行分离转成数组
         // 添加填空题的时候 多个answer用+进行拼接 可以过+分割获取答案数组
         if (data.type === 2) {
+          // 多选
           dx_answer = data.answer.split('+')
         } else if (data.type === 4) {
+          // 填空
           tk_answer = data.answer.split('+')
         }
       }
@@ -314,7 +348,7 @@ export default {
         tk_answer,
         dx_answer
       }
-      console.log(this.form, 'form')
+      // console.log(this.form, 'form')
       return this.form
     }
   }

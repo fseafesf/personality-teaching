@@ -168,7 +168,7 @@ const tReview = {
   getters: {
     // getters 作为属性去用的话 会缓存结果 要每次调用 得用方法
     TotalScore: (state) => () => {
-      console.log(state.currentPageScore)
+      // console.log(state.currentPageScore)
       return [...state.currentPageScore.values()].reduce((pre, cur) => {
         return pre + (+cur)
       }, 0)

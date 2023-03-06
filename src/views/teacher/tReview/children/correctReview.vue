@@ -91,7 +91,9 @@ export default {
       answers: '',
       times: '',
 
-      startRendering: false
+      startRendering: false,
+
+      timer: null
     }
   },
   created() {
@@ -165,13 +167,29 @@ export default {
       })
     },
     handlerClick(index) {
+      if (!!this.timer) {
+        clearInterval(this.timer)
+      }
       for (let i = 0; i < index; i++) {
         this.distance += this.$refs.modal[i].$el.offsetHeight
       }
-      document.documentElement.scrollTop = this.distance + 310
-      this.distance = 0
+      this.distance += 310
+      this.move(this.distance, document.documentElement, 'scrollTop', 10)
     },
-
+    move(target, element, attribute, time) {
+      let temp = 0
+      this.timer = setInterval(() => {
+        let speed = (target - element[attribute]) / 5
+        speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed)
+        temp += speed
+        element[attribute] += speed
+        let finished = temp >= target
+        if (speed === 0 || finished) {
+          clearInterval(this.timer)
+          this.distance = 0
+        }
+      }, time)
+    },
     complete() {
       let status = 0
       let count = 0
@@ -203,7 +221,7 @@ export default {
             this.confirmComplete(data)
           })
           .catch(() => {})
-      }else{
+      } else {
         this.confirmComplete(data)
       }
     },
