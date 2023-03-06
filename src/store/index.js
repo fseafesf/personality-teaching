@@ -7,6 +7,7 @@ import tKnowledge from './modules/teacher/tKnowledge'
 import tReview from './modules/teacher/tReview'
 import tTest from './modules/teacher/tTest'
 import tTopic from './modules/teacher/tTopic'
+import userinfo from './modules/common/userinfo'
 
 import tHome from './modules/teacher/tHome'
 import { getCache } from '@/utils/localstorage'
@@ -17,6 +18,7 @@ export default new Vuex.Store({
   state: {
     isLoading: false, // 控制loading组件
     headerData: getCache('headerData') || [], // header数据
+    userinfo: '',
     typeOptions: [
       // 添加、编辑、搜索题目的题型映射
       {
@@ -73,6 +75,7 @@ export default new Vuex.Store({
     tKnowledge,
     tReview,
     tTest,
-    tTopic
+    tTopic,
+    userinfo
   }
 })
