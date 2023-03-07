@@ -43,6 +43,7 @@
 <script>
 import { questionLevel } from '@/utils/questLevel'
 import { updatePoint } from '@/services'
+import { HTMLDecode } from '@/utils/htmlUtil'
 import PtEditor from '@/components/common/PtEditor.vue'
 
 export default {
@@ -50,6 +51,7 @@ export default {
   data() {
     return {
       questionLevel,
+      HTMLDecode, // 将结果加密的HTML标签内容解密展示的方法
       levelOptions: this.$store.state.levelOptions,
       form: undefined,
       rules: {
@@ -100,7 +102,13 @@ export default {
   },
   computed: {
     pointDetail: function () {
-      const form = { ...this.$store.state.tKnowledge.pointDetail.info }
+      // context是经过HTMLEncode加密过的 需要通过HTMLDecode解密
+      const form = {
+        ...this.$store.state.tKnowledge.pointDetail.info,
+        context: HTMLDecode(
+          this.$store.state.tKnowledge.pointDetail.info.context
+        )
+      }
       this.form = form
 
       return form

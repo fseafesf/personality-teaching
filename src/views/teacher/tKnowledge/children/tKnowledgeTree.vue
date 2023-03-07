@@ -17,9 +17,8 @@
       </div>
 
       <!-- 展示内容 -->
-      <div class="content">
-        <!-- {{ pointDetail?.context }} -->
-        <div v-html="pointDetail?.context"></div>
+      <div class="content" v-if="pointDetail?.context">
+        <div v-html="HTMLDecode(pointDetail?.context)"></div>
       </div>
     </div>
   </div>
@@ -27,12 +26,14 @@
 
 <script>
 import tTree from 'components/teacher/knowledge/tTree.vue'
+import { HTMLDecode } from '@/utils/htmlUtil'
 
 export default {
   components: { tTree },
   data() {
     return {
-      currentId: ''
+      currentId: '',
+      HTMLDecode // 将结果加密的HTML标签内容解密展示的方法
     }
   },
   methods: {

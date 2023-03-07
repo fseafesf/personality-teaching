@@ -1,3 +1,4 @@
+import { HTMLEncode } from '@/utils/htmlUtil'
 import ptRequest from '../../request'
 
 // 知识点列表
@@ -15,8 +16,7 @@ export function getPointList(info, page_size = 100, page_no = 1) {
 // 知识点一级列表
 export function getPointOne() {
   return ptRequest.get({
-    url: '/teacher/point/list/one_stage',
-
+    url: '/teacher/point/list/one_stage'
   })
 }
 
@@ -38,14 +38,21 @@ export function addPoint(parent_knp_id, level, name, context, create_user) {
       parent_knp_id,
       level,
       name,
-      context,
+      context: HTMLEncode(context), // 对html标签内容进行html加密
       create_user
     }
   })
 }
 
 // 修改知识点
-export function updatePoint(knp_id, parent_knp_id, level, name, context, create_user) {
+export function updatePoint(
+  knp_id,
+  parent_knp_id,
+  level,
+  name,
+  context,
+  create_user
+) {
   return ptRequest.put({
     url: '/teacher/point',
     data: {
@@ -53,7 +60,7 @@ export function updatePoint(knp_id, parent_knp_id, level, name, context, create_
       parent_knp_id,
       level,
       name,
-      context,
+      context: HTMLEncode(context), // 对html标签内容进行html加密
       create_user
     }
   })

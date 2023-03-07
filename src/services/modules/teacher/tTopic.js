@@ -1,3 +1,4 @@
+import { HTMLEncode } from '@/utils/htmlUtil'
 import ptRequest from '../../request'
 
 // 题目列表
@@ -65,8 +66,8 @@ export function addQuestion(form) {
       create_user: 'cs',
       question_option_list,
       answer,
-      answer_context,
-      context,
+      answer_context: HTMLEncode(answer_context),
+      context: HTMLEncode(context),
       knp_id
     }
   })
@@ -89,7 +90,6 @@ export function updataQuestion(form) {
     knp_ids,
     knp_idStr,
     level,
-    name, // 题目名称
     question_id,
     question_option,
     type
@@ -125,12 +125,11 @@ export function updataQuestion(form) {
     url: '/teacher/question',
     data: {
       answer,
-      answer_context,
-      context,
+      answer_context: HTMLEncode(answer_context),
+      context: HTMLEncode(context),
       create_user,
       knp_id,
       level,
-      name,
       question_id,
       question_option_list: question_option,
       type
