@@ -109,12 +109,7 @@
 
         <!-- 解析 -->
         <el-form-item label="解析:">
-          <!-- <el-input
-            type="textarea"
-            :rows="4"
-            v-model="editForm.answer_context"
-          /> -->
-          <PtEditor :height="300" v-model="editForm.answer_context" />
+          <PtEditor :height="300" v-model="form.answer_context" />
         </el-form-item>
 
         <!-- 知识点联系 -->
@@ -161,6 +156,7 @@ import { questionType } from '@/utils/questionType'
 import { questionLevel } from '@/utils/questLevel'
 import mapABCDEF from '@/utils/mapABCDEF'
 import { arr2string } from '@/utils/topic'
+import { HTMLDecode } from '@/utils/htmlUtil'
 
 export default {
   components: { tTree, PtEditor },
@@ -287,11 +283,13 @@ export default {
           this.$store
             .dispatch('QuestionUpdataActive', this.form)
             .then((res) => {
-              this.$message({
-                type: 'success',
-                message: '修改成功!'
-              })
-              this.$router.push({ path: '/teacher/topic' })
+              if (res.code == 0) {
+                this.$message({
+                  type: 'success',
+                  message: '修改成功!'
+                })
+                this.$router.push({ path: '/teacher/topic' })
+              }
             })
         } else {
           console.log('校验失败!')
@@ -345,10 +343,21 @@ export default {
 
       this.form = {
         ...this.$store.state.tTopic.currentTopicEditData,
+        context: HTMLDecode(
+          this.$store.state.tTopic.currentTopicEditData.context
+        ),
+        answer_context: HTMLDecode(
+          this.$store.state.tTopic.currentTopicEditData.answer_context
+        ),
         knp_ids,
         tk_answer,
         dx_answer
       }
+
+      // 对加密的HTML标签进行解密
+      // this.form.context = HTMLDecode(this.form.context)
+      // this.form.answer_context = HTMLDecode(this.form.answer_context)
+
       // console.log(this.form, 'form')
       return this.form
     }
