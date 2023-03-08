@@ -35,7 +35,7 @@ export function getQuestionById(question_id) {
 
 // 添加题目
 export function addQuestion(form) {
-  const {
+  let {
     question_name,
     type,
     level,
@@ -46,17 +46,12 @@ export function addQuestion(form) {
     context,
     knp_id
   } = form
-  // console.log(
-  //   question_name,
-  //   type,
-  //   level,
-  //   create_user,
-  //   question_option_list,
-  //   answer,
-  //   answer_context,
-  //   context,
-  //   knp_id
-  // )
+
+  // 如果 type==4 为填空题 type=5为简答题 需要富文本提交 对内容进行HTMLEncode加密
+  if (type == 4 || type == 5) {
+    answer = HTMLEncode(answer)
+  }
+
   return ptRequest.post({
     url: '/teacher/question',
     data: {
@@ -94,19 +89,6 @@ export function updataQuestion(form) {
     question_option,
     type
   } = form
-  // console.log(
-  //   answer,
-  //   answer_context,
-  //   context,
-  //   create_user,
-  //   knp_ids,
-  //   knp_idStr,
-  //   level,
-  //   name,
-  //   question_id,
-  //   question_option,
-  //   type
-  // )
 
   // 参数knp_id需要的字符串
   let knp_id = ''
@@ -118,6 +100,11 @@ export function updataQuestion(form) {
     // 没勾选知识点 通过默认知识点的数组获取knp_id
     knp_ids.length ? (knp_id = knp_ids.join(',')) : (knp_ids = '')
     // console.log(knp_id, '2')
+  }
+
+  // 如果 type==4 为填空题 type=5为简答题 需要富文本提交 对内容进行HTMLEncode加密
+  if (type == 4 || type == 5) {
+    answer = HTMLEncode(answer)
   }
 
   // 接口的question_option_list字段与form解构出的字段不一样

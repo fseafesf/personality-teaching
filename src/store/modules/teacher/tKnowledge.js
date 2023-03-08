@@ -1,5 +1,4 @@
 import { addPoint, getPointById, getPointList, getPointOne } from '@/services'
-import { HTMLDecode } from '@/utils/htmlUtil'
 import { mapTree } from '@/utils/mapTree'
 
 const tKnowledge = {
@@ -33,8 +32,6 @@ const tKnowledge = {
     PointByIdActive(context, id) {
       // context.commit('changeCurrentNode', id)
       getPointById(id).then((res) => {
-        console.log(res.data.info)
-        // res.data.info.context = HTMLDecode(res.data.info.context)
         res ? context.commit('changePointDetail', res.data) : ''
       })
     },

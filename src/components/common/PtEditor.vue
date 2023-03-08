@@ -58,7 +58,17 @@ export default Vue.extend({
       html: this.editorValue.startsWith('<p>')
         ? this.editorValue
         : `<p>${this.editorValue}</p>`,
-      toolbarConfig: {},
+      toolbarConfig: {
+        excludeKeys: [
+          'blockquote', // 取消引用
+          'bgColor', // 取消背景色
+          'todo', // 取消待办
+          'emotion', // 取消表情
+          'group-video', // 取消视频
+          'fullScreen', // 取消全屏
+          'insertTable' // 取消表格
+        ]
+      },
       editorConfig: { placeholder: '请输入内容...' },
       // mode: 'default', // or 'simple'
       showContent: '',

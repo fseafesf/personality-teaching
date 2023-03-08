@@ -15,7 +15,7 @@
         <el-select
           placeholder="难度"
           v-model="pointDetail.level"
-          :value="questionLevel(pointDetail.level)"
+          :value="questionLevel(pointDetail?.level)"
         >
           <el-option
             v-for="item in levelOptions"
@@ -27,7 +27,11 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="知识点内容:" prop="context">
+      <el-form-item
+        label="知识点内容:"
+        prop="context"
+        v-if="pointDetail?.context"
+      >
         <!-- 富文本编辑器 -->
         <PtEditor v-model="pointDetail.context" />
       </el-form-item>
@@ -106,7 +110,7 @@ export default {
       const form = {
         ...this.$store.state.tKnowledge.pointDetail.info,
         context: HTMLDecode(
-          this.$store.state.tKnowledge.pointDetail.info.context
+          this.$store.state.tKnowledge.pointDetail.info?.context
         )
       }
       this.form = form
