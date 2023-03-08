@@ -6,8 +6,6 @@
 </template>
 
 <script>
-
-
 export default {
   methods: {
     loadingClick() {
@@ -29,11 +27,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, .2);
+  background-color: rgba(0, 0, 0, 0.9);
 
   .el-icon-loading,
   .title {
-    color: #409EFF;
+    color: #409eff;
   }
 }
 </style>

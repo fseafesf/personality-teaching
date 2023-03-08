@@ -4,7 +4,7 @@
       <h1>个性化教学系统</h1>
 
       <!-- 选择标签 -->
-      <el-tabs v-model="activeName" @tab-click="handleTabClick">
+      <el-tabs v-model="activeName">
         <el-tab-pane label="学生" name="student"></el-tab-pane>
         <el-tab-pane label="教师" name="teacher"></el-tab-pane>
       </el-tabs>
@@ -76,8 +76,8 @@ export default {
     })
   },
   methods: {
-    storeuserinfo () {
-      this.$store.commit('updateuserinfo',this.username)
+    storeuserinfo() {
+      this.$store.commit('updateuserinfo', this.username)
     },
 
     // 点击发起登录请求
@@ -109,7 +109,6 @@ export default {
             username: this.username,
             password: encrypt(this.password)
           }).then((res) => {
-            console.log(res)
             if (res.code == 0) {
               this.$store.commit('changeHeaderData', headerData)
               setCache('headerData', headerData)

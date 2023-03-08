@@ -103,12 +103,13 @@
               :prop="getAnswerProps(index)"
               :rules="[{ required: true, message: '选项不能为空' }]"
             >
-              <el-input
+              <!-- <el-input
                 class="tk-input"
                 type="textarea"
                 :rows="2"
                 v-model="form.tk_answer[index]"
-              ></el-input>
+              ></el-input> -->
+              <PtEditor :height="300" v-model="form.tk_answer[index]" />
             </el-form-item>
 
             <!-- 添加/删除答案 -->
@@ -125,12 +126,13 @@
           <!-- 简答题 -->
           <template v-else-if="form.type == 5">
             <el-form-item label="答案:" prop="answer">
-              <el-input
+              <!-- <el-input
                 class="tk-input"
                 type="textarea"
                 :rows="5"
                 v-model="form.answer"
-              ></el-input>
+              ></el-input> -->
+              <PtEditor :height="300" v-model="form.answer" />
             </el-form-item>
           </template>
         </template>

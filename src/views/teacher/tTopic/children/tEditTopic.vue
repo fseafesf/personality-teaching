@@ -87,12 +87,13 @@
               :prop="getAnswerProps(index)"
               :rules="[{ required: true, message: '选项不能为空' }]"
             >
-              <el-input
+              <!-- <el-input
                 class="tk-input"
                 type="textarea"
                 :rows="2"
                 v-model="form.tk_answer[index]"
-              ></el-input>
+              ></el-input> -->
+              <PtEditor :height="300" v-model="form.tk_answer[index]" />
             </el-form-item>
 
             <!-- 添加/删除答案 -->
@@ -103,6 +104,13 @@
               <el-button type="danger" plain @click="handleDeleteAnswer"
                 >删除答案</el-button
               >
+            </el-form-item>
+          </template>
+
+          <!-- 简答题 -->
+          <template v-else-if="form?.type == 5">
+            <el-form-item label="答案:" prop="answer">
+              <PtEditor :height="300" v-model="form.answer" />
             </el-form-item>
           </template>
         </template>
@@ -273,6 +281,7 @@ export default {
         this.form.answer = ''
         this.form.answer = this.arr2string(this.form.dx_answer)
       } else if (this.form.type === 4) {
+        // 填空
         this.form.answer = ''
         this.form.answer = this.arr2string(this.form.tk_answer)
       }
@@ -312,6 +321,8 @@ export default {
   computed: {
     // 因为porps不推荐修改 我们可以拷贝一个form来使用
     editForm() {
+      const data = this.$store.state.tTopic.currentTopicEditData
+
       // 获取知识点联系的id
       let knp_ids = []
 
@@ -319,9 +330,7 @@ export default {
       let tk_answer = []
       let dx_answer = []
 
-      if (this.$store.state.tTopic.currentTopicEditData) {
-        const data = this.$store.state.tTopic.currentTopicEditData
-
+      if (data) {
         // 知识点id
         if (data.knowledge_point_list) {
           for (const item of data.knowledge_point_list) {
@@ -336,19 +345,18 @@ export default {
           // 多选
           dx_answer = data.answer.split('+')
         } else if (data.type === 4) {
-          // 填空
-          tk_answer = data.answer.split('+')
+          // 填空 需要先进行HTMLDecode解密
+          tk_answer = HTMLDecode(data.answer).split('+')
+        } else if (data.type == 5) {
+          // 简答题 答案经过HTMLEncode加密 需要通过HTMLDecode解密
+          data.answer = HTMLDecode(data.answer)
         }
       }
 
       this.form = {
-        ...this.$store.state.tTopic.currentTopicEditData,
-        context: HTMLDecode(
-          this.$store.state.tTopic.currentTopicEditData.context
-        ),
-        answer_context: HTMLDecode(
-          this.$store.state.tTopic.currentTopicEditData.answer_context
-        ),
+        ...data,
+        context: HTMLDecode(data?.context),
+        answer_context: HTMLDecode(data?.answer_context),
         knp_ids,
         tk_answer,
         dx_answer
