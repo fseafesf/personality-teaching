@@ -27,7 +27,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(14, 13, 13, 0.479);
 
   .el-icon-loading,
   .title {

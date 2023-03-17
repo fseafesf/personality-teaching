@@ -31,7 +31,6 @@
 import router from "@/router";
 import { clearCache } from "@/utils/localstorage";
 import cookies from "vue-cookies";
-import store from '@/store';
 let timeID = null;
 export default {
   data() {
@@ -70,8 +69,8 @@ export default {
       router.replace({ path: "/changpwd" });
     }
   },
-  mounted() {
-    this.userinfo = this.$store.state.userinfo.userinfo
+  updated() {
+    this.userinfo = sessionStorage.getItem('username')
   }
 };
 </script>
@@ -102,10 +101,17 @@ export default {
     background-color: #fff;
   }
 }
+#contentouter::after{
+  height: 10px;
+  width: 45px;
+  display: block;
+  position: absolute;
+  top: -10px;
+  left: 65px;
+  content: '';
+}
 
 .identity {
-
-  // height: 50px;
   p {
     margin: 0;
     text-align: center;

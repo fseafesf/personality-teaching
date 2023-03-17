@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     storeuserinfo() {
-      this.$store.commit('updateuserinfo', this.username)
+      sessionStorage.setItem('username',this.username)
     },
 
     // 点击发起登录请求

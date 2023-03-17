@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="personal">
+    <!-- <div class="personal">
       <div class="info">
         <div>姓名：xxx</div>
         <div>学号：xxx</div>
@@ -11,7 +11,7 @@
           src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
         ></el-avatar>
       </div>
-    </div>
+    </div> -->
     <div class="task">
       <div class="title">作业</div>
       <div class="filter">
