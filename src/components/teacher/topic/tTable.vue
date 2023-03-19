@@ -1,10 +1,6 @@
 <template>
   <div class="table">
-    <el-table
-      :data="$store.state.tTopic.topicTableData"
-      border
-      style="width: 100%"
-    >
+    <el-table :data="tableData" border style="width: 100%">
       <el-table-column label="序号" width="60" type="index"> </el-table-column>
       <el-table-column
         class="text-nowrap"
@@ -12,6 +8,9 @@
         width="400"
         prop="context"
       >
+        <!-- <template slot-scope="scope">
+          <div v-html="scope.row.context"></div>
+        </template> -->
       </el-table-column>
       <el-table-column label="题型" width="100" prop="type"> </el-table-column>
       <el-table-column label="难易度" width="100" prop="level">
@@ -34,6 +33,8 @@
 </template>
 
 <script>
+import { HTMLDecode } from '@/utils/htmlUtil'
+
 export default {
   emits: [
     // 暴露给父组件的两个事件
@@ -95,6 +96,22 @@ export default {
     // 删除
     handleDelete(index, row) {
       this.$emit('deleteTopic', row)
+    }
+  },
+  computed: {
+    tableData() {
+      if (this.$store?.state.tTopic.topicTableData) {
+        let tableData = this.$store?.state.tTopic.topicTableData
+
+        // 对内容进行HTMLDecode解密
+        tableData.forEach((item) => {
+          item.context = HTMLDecode(item.context)
+            .replace(/<img(?:(?!\/>).|\n)*?\/>/gm, '[图片]')
+            .replace(/<[^>]+>/g, '')
+        })
+
+        return tableData
+      }
     }
   }
 }
