@@ -269,16 +269,16 @@ const router = new VueRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.name != 'Login') {
-//     if (cookies.get("session_key")) {
-//       next()
-//     } else {
-//       router.replace({ path: '/login' })
-//     }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.name != 'Login') {
+    if (cookies.get("session_key")) {
+      next()
+    } else {
+      router.replace({ path: '/login' })
+    }
+  } else {
+    next()
+  }
+})
 
 export default router

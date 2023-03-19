@@ -45,6 +45,7 @@ class PtRequest {
             type: 'error',
             message: res.data.msg
           })
+          
         }
         if (res.data.code == 1001) {
           //检查登录态，若登录态不合法则跳转至登录
