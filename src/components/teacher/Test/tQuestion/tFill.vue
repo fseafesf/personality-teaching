@@ -4,7 +4,7 @@
       <div class="fill-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span>{{ typeProblem.context }}</span>
+        <span v-html="this.HTMLDecode(typeProblem.context)"></span>
       </div>
       <slot name="Fill">
         <div class="fill-option"></div>
@@ -38,6 +38,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
+import { HTMLDecode } from '@/utils/htmlUtil'
 export default {
   name: 'fill',
   data() {
@@ -54,6 +55,7 @@ export default {
   },
   methods: {
     ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
+    HTMLDecode,
     handleDelete() {
       console.log(this.typeProblem.question_id)
       console.log(this.page.selectProblem)
@@ -76,6 +78,14 @@ export default {
   margin: 5px 25px 0 25px;
   min-height: 50px;
   position: relative;
+  .fill-content {
+    .fill-title {
+      display: flex;
+      align-items: baseline;
+
+      
+    }
+  }
 
   .special {
     display: none !important;

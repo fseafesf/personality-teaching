@@ -4,7 +4,7 @@
       <div class="radio-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span>{{ typeProblem.context }}</span>
+        <span v-html="this.HTMLDecode( typeProblem.context)"></span>
       </div>
       <slot name="Radio">
         <div class="radio-option">
@@ -48,6 +48,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex'
 import { toSelect } from '@/utils/transfrom'
+import { HTMLDecode } from '@/utils/htmlUtil'
 export default {
   name: 'radio',
   data() {
@@ -66,6 +67,7 @@ export default {
   methods: {
     ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
     toSelect,
+    HTMLDecode,
     handleDelete() {
       console.log(this.typeProblem.question_id)
       console.log(this.page.selectProblem)
@@ -89,8 +91,11 @@ export default {
   min-height: 100px;
   position: relative;
   .radio-content {
+    min-height: 200px;
     .radio-title {
-      height: 46px;
+      min-height: 46px;
+      display: flex;
+      align-items: baseline;
       span {
         margin-right: 5px;
       }

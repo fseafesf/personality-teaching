@@ -89,7 +89,7 @@ const tTest = {
           payload?.page_size,
           payload?.page_no)
           .then(res => {
-            console.log(res)
+            // console.log(res)
             reslove(res)
             context.commit('initProblems', res.data.list)
           }).catch(err => reject(err))

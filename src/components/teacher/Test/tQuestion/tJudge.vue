@@ -4,7 +4,7 @@
       <div class="judge-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span>{{ typeProblem.context }}</span>
+        <span v-html="this.HTMLDecode( typeProblem.context)"></span>
       </div>
       <slot name="Judge">
         <div class="judge-option">
@@ -42,6 +42,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex'
 import { toSelect } from '@/utils/transfrom'
+import { HTMLDecode } from '@/utils/htmlUtil'
 export default {
   name: 'judge',
   data() {
@@ -59,6 +60,7 @@ export default {
   methods: {
     ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
     toSelect,
+    HTMLDecode,
     handleDelete() {
       console.log(this.typeProblem.question_id)
       console.log(this.page.selectProblem)

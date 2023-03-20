@@ -61,3 +61,7 @@ body {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+img{
+  max-width: 850px;
+}

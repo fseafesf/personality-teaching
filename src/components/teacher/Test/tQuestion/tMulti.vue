@@ -3,8 +3,8 @@
     <div class="multi-content">
       <div class="multi-title">
         <span> {{ index + 1 }}、</span>
-        <span></span>
-        <span>{{ typeProblem.context }}</span>
+        
+        <span v-html="this.HTMLDecode( typeProblem.context)"></span>
       </div>
       <slot name="Multi">
         <div class="multi-option">
@@ -48,6 +48,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex'
 import { toSelect } from '@/utils/transfrom'
+import { HTMLDecode } from '@/utils/htmlUtil'
 export default {
   name: 'multi',
   data() {
@@ -63,11 +64,13 @@ export default {
     }
   },
   created() {
-    // console.log(this.typeProblem)
+    console.log(this.typeProblem)
+    console.log(this.HTMLDecode(this.typeProblem.answer_context))
   },
   methods: {
     ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
     toSelect,
+    HTMLDecode,
     handleDelete() {
       console.log(this.typeProblem.question_id)
       console.log(this.page.selectProblem)
@@ -91,8 +94,11 @@ export default {
   min-height: 100px;
   position: relative;
   .multi-content {
+    min-height: 200px;
     .multi-title {
-      height: 46px;
+      min-height: 46px;
+      display: flex;
+      align-items: baseline;
       span {
         margin-right: 5px;
       }

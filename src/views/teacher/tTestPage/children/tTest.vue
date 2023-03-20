@@ -82,7 +82,9 @@
               :typeProblem="item"
               :index="Number(index)"
               class="content-problem"
-            ></div>
+            >
+          
+          </div>
 
             <ToolMenu :typeProblem="item"></ToolMenu>
           </div>
