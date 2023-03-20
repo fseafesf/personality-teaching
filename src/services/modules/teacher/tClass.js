@@ -1,5 +1,6 @@
 import ptRequest from '../../request'
 
+
 /**
  * 获取班级列表
  * @param {*}  {page_num：分页页号 , page_size：分页大小} 
@@ -198,6 +199,21 @@ export const checkUniqueClassAPI = (name) => {
     url: "/teacher/class/check",
     params: {
       name
+    }
+  })
+}
+
+export const modifyStudentAPI = ({ name, student_no, college, major, phone_number, student_id }) => {
+  return ptRequest.put({
+    url: '/teacher/student',
+    params: {
+      name,
+      student_no,
+      college,
+      major,
+      phone_number,
+      student_id
+
     }
   })
 }
