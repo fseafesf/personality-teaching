@@ -5,7 +5,7 @@
         <strong>{{ this.toIndex(index) }}、</strong>
         <span>{{ this.toType(typeProblem.type) }}题</span>
       </h4>
-      <span @click="this.delete">删除</span>
+      <span class="del" @click="this.delete">删除</span>
     </div>
     <div class="score-list">
       <vuedraggable class="wrapper" v-model="typeProblem.data">
@@ -57,8 +57,19 @@ export default {
       return this.typeIndex[key];
     },
     delete() {
-      console.log(this.typeProblem.type);
-      this.deleteTypeProblem(this.typeProblem.type);
+      this.$confirm(`此操作将删除全部${this.typeArr[this.typeProblem.type - 1]}题, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => {
+        this.deleteTypeProblem(this.typeProblem.type)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+          })
+      })
+      .catch(() => {})
     },
     end() {
       console.log(this.page.selectProblem);
@@ -85,6 +96,9 @@ export default {
     justify-content: space-between;
     span {
       cursor: pointer;
+    }
+    .del:hover{
+      color: #4498ee;
     }
   }
   &:hover {
