@@ -34,10 +34,7 @@
       </div>
 
       <!-- 其它 -->
-      <div id="alert">
-        当前为内部测试账号
-        <p>用户名: cs / 密码:123456</p>
-      </div>
+
     </div>
     <div id="clock">
       <div id="time">{{ time }}</div>
@@ -235,19 +232,6 @@ export default {
   }
 }
 
-#alert {
-  text-align: center;
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 13px;
-  color: #909399;
-
-  p {
-    margin: 0;
-  }
-}
 
 #clock {
   position: absolute;
