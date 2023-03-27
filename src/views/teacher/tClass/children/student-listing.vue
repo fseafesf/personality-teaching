@@ -141,16 +141,29 @@ export default {
   },
   watch: {
     keyword(val) {
-      this.$store.state.tClass.content = val
-      this.getUnJoinClsStuActions()
+      this.$store.state.tClass.content = val;
+      this.$store.state.tClass.unJoinStuPage.page_num = 1;
+      this.getUnJoinClsStuActions({
+        content: val,
+        page_num: this.$store.state.tClass.unJoinStuPage.page_num,
+        page_size: this.$store.state.tClass.unJoinStuPage.page_size,
+      })
     }
+
   },
   methods: {
     // 查询未加入班级学生列表
     ...mapActions(['getUnJoinClsStuActions']),
+    // resetFn() {
+    //   this.keyword = ""
+    // },
+
     resetFn() {
-      this.keyword = ""
+      this.$store.state.tClass.content = "";
+      this.$store.state.tClass.unJoinStuPage.page_num = 1;
+      this.getUnJoinClsStuActions()
     },
+
     // 取消对话框
     cancelFn() {
       this.dialogVisible = false
@@ -209,7 +222,6 @@ export default {
             phone_number: this.modifyStuForm.phone_number,
             student_id: this.editStudentId,
           }
-          console.log('@' + this.modifyStuForm);
           const res = await modifyStudentAPI(params);
           if (res.code === 0) {
             this.$message.success("修改成功")
