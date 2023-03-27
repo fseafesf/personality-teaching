@@ -17,7 +17,6 @@
             :index="index"
             v-show="typeProblem.data.length !== 0"
             :typeProblem="item"
-            
           ></div>
         </transition-group>
       </vuedraggable>

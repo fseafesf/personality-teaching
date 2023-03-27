@@ -57,14 +57,26 @@ export default {
     ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
     HTMLDecode,
     handleDelete() {
-      console.log(this.typeProblem.question_id)
-      console.log(this.page.selectProblem)
-      let index = this.page.selectProblem.findIndex((item) => {
-        console.log(item.question_id === this.typeProblem.question_id)
+      this.$confirm(`此操作将删除本题目, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => {
+        // console.log(this.typeProblem.question_id)
+        // console.log(this.page.selectProblem)
+        let index = this.page.selectProblem.findIndex((item) => {
+        // console.log(item.question_id === this.typeProblem.question_id)
         return item.question_id === this.typeProblem.question_id
       })
-      console.log(index)
+      // console.log(index)
       this.deleteProblem(index)
+      this.$message({
+        type: 'success',
+        message: '删除成功!'
+        })
+      })
+      .catch(() => {})
     }
   },
   computed: {
