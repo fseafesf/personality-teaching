@@ -6,6 +6,7 @@
           :data="treeData"
           ref="tree"
           node-key="id"
+          default-expand-all
         >
         <span class="custom-tree-node" slot-scope="{ node, data }">
             <div class="label">
@@ -27,9 +28,7 @@ export default {
     }
   },
   mounted() {
-    // 第一次进入tTree和tTree编辑更新发请求 如果一个页面又两颗树 会请求两次 但无所谓了 这项目又没有几百万的请求量
     this.$store.dispatch('PointListActive')
-    // console.log(this.$store.state.tKnowledge.points)
   },
 
   computed: {
