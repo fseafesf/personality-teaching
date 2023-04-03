@@ -52,7 +52,10 @@ import { HTMLDecode } from '@/utils/htmlUtil'
 export default {
   name: 'multi',
   data() {
-    return {}
+     return {
+      typeArr: ["单选", "多选", "判断","填空" , "简答"],
+      typeIndex: ["一", "二", "三", "四", "五"],
+    }
   },
   props: {
     index: {
@@ -72,7 +75,8 @@ export default {
     toSelect,
     HTMLDecode,
     handleDelete() {
-      this.$confirm(`此操作将删除本题目, 是否继续?`, '提示', {
+      this.$confirm(`此操作将删除${this.typeArr[this.typeProblem.type - 1]}题第${this.index + 1}题
+      "${this.typeProblem.context.slice(0,10)}", 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
