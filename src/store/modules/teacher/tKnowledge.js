@@ -1,5 +1,5 @@
 import { addPoint, getPointById, getPointList, getPointOne } from '@/services'
-import { mapTree } from '@/utils/mapTree'
+import { mapTree, mapTree2 } from '@/utils/mapTree'
 
 const tKnowledge = {
   state: () => ({

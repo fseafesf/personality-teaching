@@ -40,7 +40,7 @@ export const mapTree = (data) => {
   return level1
 }
 
-// 映射3-6级知识点
+// 映射3-n级知识点
 function mapChildren(other, level2) {
   const level3 = []
   // 循环其它非一级知识点的数组
@@ -60,4 +60,40 @@ function mapChildren(other, level2) {
   } else {
     mapChildren(other, level3)
   }
+}
+
+export function mapTree2(list) {
+  const map = {}
+  const roots = []
+
+  // list.forEach((item) => {
+  //   // 获取一级知识点 （父id=自己）
+  //   if (item.knp_id === item.parent_knp_id) {
+  //     item.level = 1
+  //   }
+  // })
+
+  list.forEach(item => {
+    map[item.knp_id] = { ...item, id: item.knp_id, label: item.name, children: [] }
+
+    if (item.parent_knp_id === item.knp_id) {
+      map[item.knp_id].level = 1
+    }
+  })
+
+  list.forEach(item => {
+    const parent = map[item.parent_knp_id]
+    if (parent && item.parent_knp_id != item.knp_id) {
+      map[item.knp_id].level = parent.level + 1
+      parent.children.push(map[item.knp_id])
+    }
+
+    if (map[item.knp_id].parent_knp_id == map[item.knp_id].knp_id) {
+      roots.push(map[item.knp_id])
+    }
+  })
+
+  console.log(roots)
+
+  return roots
 }

@@ -15,7 +15,8 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://47.102.42.113:8880',
-        target: 'http://teach.komorebi-nxj.cn/api',
+        // target: 'http://teach.komorebi-nxj.cn/api',
+        target: 'http://129.204.196.92:8880',
         changeOrigin: true,
         pathRewrite: {
           '/api': ''
