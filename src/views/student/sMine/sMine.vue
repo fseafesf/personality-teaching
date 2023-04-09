@@ -21,10 +21,8 @@
         <el-radio v-model="radio" label="3">未完成</el-radio>
       </div>
 
-      <div class="task-item">
-        <template v-for="(item, index) in 3">
-          <STaskItem @click.native="taskItemClick" />
-        </template>
+      <div class="task-item" v-for="(value, key) in this.examList" :key="key">
+        <STaskItem :eaxm-info="value" @click.native="taskItemClick(key)" />
       </div>
     </div>
   </div>
@@ -32,20 +30,37 @@
 
 <script>
 import STaskItem from '@/components/student/sMine/sTaskItem.vue'
-
+import { mapActions, mapMutations, mapState, mapGetters } from 'vuex'
+import { getCache } from '@/utils/localstorage'
 export default {
   name: 'sMine',
   components: { STaskItem },
   data() {
     return {
-      radio: '1'
+      radio: '1',
+      studentID: '1595050686196756480'
     }
   },
-  mounted() {},
+  created() {
+    // this.studentID = getCache('studentId')
+    this.getInitExamList(this.studentID).then((res) =>
+      console.log(this.examList)
+    )
+  },
   methods: {
-    taskItemClick() {
-      this.$router.push('/student/task')
+    // ...mapMutations('sTask'),
+    ...mapActions('sTask', ['getInitExamList']),
+    taskItemClick(key) {
+      this.$router.push({
+        path: '/student/task',
+        query: {
+          exam_id: key
+        }
+      })
     }
+  },
+  computed: {
+    ...mapState('sTask', ['examList','studentAnswers'])
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div class="task">
     <div class="left">作业</div>
     <div class="right">
-      <div class="task-name">第一次作业</div>
+      <div class="task-name">{{ this.eaxmInfo.exam_name || "无标题" }}</div>
       <div class="task-info">未交</div>
     </div>
   </div>
@@ -11,10 +11,14 @@
 <script>
 export default {
   data() {
-    return {
-
-    };
+    return {}
   },
+  props: {
+    eaxmInfo: {
+      type: Object,
+      default: () => ({})
+    }
+  }
 }
 </script>
 
@@ -43,7 +47,7 @@ export default {
 
   &:hover {
     cursor: pointer;
-    background-color: #F7FAFC;
+    background-color: #f7fafc;
     border-radius: 5px;
   }
 }

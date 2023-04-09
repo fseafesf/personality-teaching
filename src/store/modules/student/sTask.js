@@ -1,12 +1,13 @@
 import _ from 'lodash'
+import { getExamList } from '@/services'
 const sTask = {
     namespaced: true,
     state: () => ({
+        examList: [],
         problems: [],
         studentAnswers: new Map(),
         answersFinished: new Map(),
-        currentProblem: '',
-
+        currentProblem: ''
     }),
     mutations: {
         /**
@@ -39,14 +40,23 @@ const sTask = {
         // 改变当前做的题目
         changeCurrentProblem(state, value) {
             state.currentProblem = value
-        },
+        }
     },
     actions: {
-
+        getInitExamList({ commit }, payload) {
+            return new Promise((reslove, reject) => {
+                getExamList(payload).then((res) => {
+                    console.log(res)
+                    commit('init', {
+                        key: 'examList',
+                        value: res.data
+                    })
+                    reslove('success')
+                }).catch(err => reject(err))
+            })
+        }
     },
-    getters: {
-
-    }
+    getters: {}
 }
 
 export default sTask
