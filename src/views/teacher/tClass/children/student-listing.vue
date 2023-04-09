@@ -79,7 +79,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button @click="modifydialogVisible = false">取消</el-button>
           <el-button type="primary" @click="handleInputChange">保存</el-button>
         </div>
       </el-dialog>
@@ -117,10 +117,14 @@ export default {
       // 新增学生表单验证规则
       addStuRules: {
         name: [
-          { required: true, message: "请输入学生姓名", trigger: "blur" }
+          { required: true, message: "请输入学生姓名", trigger: "blur" },
+          { pattern: /^[\u4E00-\u9FA5]+$/, message: "学生姓名必须为中文字符", trigger: "blur" },
+          { min: 2, message: "学生姓名至少需要两个字", trigger: "blur" }
         ],
+
         student_no: [
-          { required: true, message: "请输入学生学号", trigger: "blur" }
+          { required: true, message: "请输入学生学号", trigger: "blur" },
+          { pattern: /^\d{12}$/, message: "学号必须是12位数字", trigger: "blur" }
         ],
         college: [
           { required: true, message: "请输入学院名", trigger: "blur" }
@@ -128,10 +132,12 @@ export default {
         major: [
           { required: true, message: "请输入专业名", trigger: "blur" }
         ],
-        /* phone_number: [
-          {required: false, message: "请输入学生电话号码", trigger: "blur"},
-          {pattern: /^1([3456789])\d{9}$/, message: "电话号码必须是11位且以1开头,第二位数字是3456789中的一位", trigger: "blur"}
-        ] */
+
+        phone_number: [
+          { required: true, message: "请输入学生电话号码", trigger: "blur" },
+          { pattern: /^1([3456789])\d{9}$/, message: "电话号码格式不正确", trigger: "blur" }
+        ]
+
       },
       isEdit: false, // true为编辑状态，false为新增状态
     }

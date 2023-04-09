@@ -30,7 +30,7 @@
 
         <!-- 题干 -->
         <el-form-item label="题干:" prop="context">
-          <PtEditor :height="300" v-model="form.context" />
+          <PtEditor :height="300" v-model="form.context" @change="onChange" />
         </el-form-item>
 
         <!-- 选项 -->
@@ -276,6 +276,10 @@ export default {
           return false
         }
       })
+    },
+
+    onChange(data){
+      console.log(data)
     },
 
     // 取消

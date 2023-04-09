@@ -6,29 +6,32 @@
     <div class="task-wrapper">
       <div class="back" @click="back">
         <i class="el-icon-back"></i>
-        <span class="back-content">返回学生列表</span>
+        <span class="back-content">返回主页</span>
       </div>
       <div class="left wrap-v6" ref="leftRef">
         <sTaskCard
-          v-for="(item, index) in 10"
-          :key="item"
+          v-for="(item, index) in this.questions"
+          :problem="item"
+          :key="item.question_id"
           :index="index"
           ref="modal"
         ></sTaskCard>
       </div>
 
       <div class="right wrap-v7" ref="rightRef">
-        <div class="title">选择题</div>
+        <div class="title">题目列表</div>
         <div class="option-index">
           <sTaskRecord
             class="index"
-            v-for="(item, index) in 10"
-            :key="item"
+            v-for="(item, index) in this.questions"
+            :problem="item"
+            :key="item.question_id"
             @click.native="handlerClick(index)"
           >
             {{ index + 1 }}</sTaskRecord
           >
         </div>
+        <div class="operate" @click="submit">提交</div>
       </div>
     </div>
   </div>
@@ -36,35 +39,47 @@
 
 <script>
 import TopBar from '@/components/common/TopBar.vue'
-import { getQuestionList } from '@/services'
-import { searchPage } from '@/services'
-import { toSelect } from '@/utils/transfrom'
 import sTaskCard from '@/components/student/sMine/sTaskCard.vue'
 import sTaskRecord from '@/components/student/sMine/sTaskRecord.vue'
-import { time } from 'echarts'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import { uploadAnswer } from '@/services'
+import { breakGroup } from '@/utils/groupByType'
+import { toSelect } from '@/utils/transfrom'
 export default {
   name: 'sTask',
   components: { TopBar },
   data() {
     return {
-      examID: '1595616208487460864',
+      studentID: '1595050686196756480',
+      examID: String,
+      questions: [],
       toSelect,
       radio: 'A',
       distance: 0,
+
+      // 定时器
       timer: null
     }
   },
   created() {
-    this.getPageInfo()
+    this.examID = this.$route.query.exam_id
+    this.getPageInfo().then(() => {
+      this.questions = breakGroup(
+        JSON.parse(this.examList[this.examID].questions)
+      )
+    })
   },
   methods: {
+    ...mapActions('sTask', ['getInitExamList']),
     goback() {
       this.$router.push('/student/mine')
     },
     back() {
       this.$router.go(-1)
     },
-    async getPageInfo() {},
+    async getPageInfo() {
+      await this.getInitExamList(this.studentID)
+    },
 
     handlerClick(index) {
       if (!!this.timer) {
@@ -75,6 +90,38 @@ export default {
       }
       this.distance += 150
       this.move(this.distance, document.documentElement, 'scrollTop', 10)
+    },
+
+    submit() {
+      let count = 0
+      for (let param of [...this.answersFinished.entries()]) {
+        if (!param[1]) {
+          count++
+        }
+      }
+      let data = {
+        exam_id: this.examID,
+        student_id: this.studentID,
+        answers: JSON.stringify([...this.studentAnswers.entries()])
+      }
+
+      if (count !== 0) {
+        this.$message({
+          type: 'warning',
+          message: '作业未全部完成'
+        })
+      } else {
+        uploadAnswer(data).then((res) => {
+          if (res.msg == 'success') {
+            this.$message({
+              type: '提交成功',
+              message: `${res.msg}`
+            })
+          }
+          console.log(res)
+        })
+      }
+      console.log(this.studentAnswers)
     },
 
     move(target, element, attribute, time) {
@@ -96,6 +143,9 @@ export default {
   components: {
     sTaskCard,
     sTaskRecord
+  },
+  computed: {
+    ...mapState('sTask', ['examList', 'studentAnswers', 'answersFinished'])
   }
 }
 </script>
@@ -189,6 +239,10 @@ export default {
             cursor: pointer;
           }
         }
+      }
+      .operate {
+        height: 50px;
+        margin-top: 30px;
       }
     }
   }

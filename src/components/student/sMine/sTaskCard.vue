@@ -4,12 +4,16 @@
       <template #[currentView]>
         <div class="option" v-if="problem.type === 1">
           <el-radio-group v-model="radio" size="small" @change="handleRadio">
-            <div class="option-label" v-for="(item, index) in 4" :key="item">
+            <div
+              class="option-label"
+              v-for="(item, index) in problem.question_option_list"
+              :key="index"
+            >
               <el-radio-button
                 style="border-radius: 50% !important"
                 :label="toSelect(index)"
               />
-              <div class="option-content">{{ item }}</div>
+              <div class="option-content">{{ item.Context }}</div>
             </div>
           </el-radio-group>
         </div>
@@ -33,20 +37,7 @@
           </el-radio-group>
         </div>
         <div class="option option-answer" v-if="problem.type === 5">
-          <Toolbar
-            style="border-bottom: 1px solid #ccc"
-            :editor="editor"
-            :defaultConfig="toolbarConfig"
-            :mode="mode"
-          />
-          <Editor
-            style="height: 300px; overflow-y: hidden"
-            v-model="html"
-            :defaultConfig="editorConfig"
-            :mode="mode"
-            @onCreated="onCreated"
-            @onChange="onChange"
-          />
+          <PtEditor :height="300" v-model="content" @change="onChange" />
           <!-- {{ editor?.getHtml() }} -->
           <br />
         </div>
@@ -57,31 +48,29 @@
 
 <script>
 import { toSelect } from '@/utils/transfrom'
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import PtEditor from '@/components/common/PtEditor.vue'
 import '@wangeditor/editor/dist/css/style.css'
+import _ from 'lodash'
+import { mapActions, mapMutations, mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'taskCard',
   data() {
     return {
-      editor: null,
-      html: '<p>hello</p>',
-      toolbarConfig: {},
-      editorConfig: { placeholder: '请输入内容...' },
-      mode: 'default',
+      content: '', // 用来双向绑定富文本内容
 
       currentView: '',
       typeArr: ['单选', '多选', '判断', '填空', '简答'],
       typeComponent: ['Radio', 'Multi', 'Judge', 'Fill', 'Answer'],
 
       // 单选默认选项
-      radio: 'A',
+      radio: '',
 
       // 多选默认项
       checkList: [],
 
       // 判断默认项
-      judge: 'A',
+      judge: '',
 
       toSelect
     }
@@ -92,48 +81,58 @@ export default {
   props: {
     problem: {
       type: Object,
-      default: () => ({
-        type: 5
-      })
+      default: () => ({})
     },
     index: {
       type: Number
     }
   },
   methods: {
+    ...mapMutations('sTask', [
+      'setStudentAnswer',
+      'setAnswersFinished',
+      'changeCurrentProblem'
+    ]),
     handleRadio(value) {
-      console.log(value)
+      this.outSet(value)
+      this.outChange()
+      console.log(this.problem.question_id, value)
     },
     handleMulti(value) {
+      this.outSet(value)
+      this.outChange()
       console.log(value)
     },
     handleJudge(value) {
+      this.outSet(value)
+      this.outChange()
       console.log(value)
     },
 
-
-    onCreated(editor) {
-      this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
+    onChange(data) {
+      this.outSet(data)
+      this.outChange()
+      // console.log('onChange', data) // onChange 时获取编辑器最新内容
+      // 做题的时候内容保存
     },
-    onChange(editor) {
-      console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
+    outSet(value) {
+      this.setStudentAnswer({
+        question_id: this.problem.question_id,
+        value
+      })
+    },
+    outChange() {
+      this.changeCurrentProblem(this.problem.question_id)
     }
   },
-  computed: {
-  },
+  computed: {},
   components: {
     Radio: () => import('@/components/teacher/Test/tQuestion/tRadio.vue'),
     Multi: () => import('@/components/teacher/Test/tQuestion/tMulti.vue'),
     Judge: () => import('@/components/teacher/Test/tQuestion/tJudge.vue'),
     Fill: () => import('@/components/teacher/Test/tQuestion/tFill.vue'),
     Answer: () => import('@/components/teacher/Test/tQuestion/tAnswer.vue'),
-    Editor,
-    Toolbar
-  },
-  beforeDestroy() {
-    const editor = this.editor
-    if (editor == null) return
-    editor.destroy() // 组件销毁时，及时销毁编辑器
+    PtEditor
   }
 }
 </script>
@@ -141,15 +140,17 @@ export default {
 <style scoped lang="less">
 .task-card {
   min-height: 150px;
-  border-bottom: 0.5px dashed gray ;
+  border-bottom: 0.5px dashed gray;
   margin: 35px 0;
+
   .option {
     margin: 20px;
-    
+
     .el-radio-group,
     .el-checkbox-group {
       display: flex;
     }
+
     .option-label {
       margin-left: 50px;
       margin-bottom: 10px;
@@ -163,7 +164,7 @@ export default {
     }
   }
 
-  .option-answer{
+  .option-answer {
     min-height: 300px;
   }
 }

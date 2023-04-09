@@ -90,6 +90,8 @@ export default {
             username: this.username,
             password: encrypt(this.password)
           }).then((res) => {
+            console.log(res)
+            setCache('studentId',res.data)
             // 如果登录成功
             if (res.code === 0) {
               headerData = sHeaderData

@@ -4,7 +4,7 @@
       <div class="answer-title">
         <span> {{ index + 1 }}、</span>
         <span></span>
-        <span v-html="this.HTMLDecode( typeProblem.context)"></span>
+        <span v-html="this.HTMLDecode(typeProblem.context)"></span>
       </div>
       <slot name="Answer">
         <div class="answer-option"></div>

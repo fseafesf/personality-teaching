@@ -25,7 +25,7 @@ const tKnowledge = {
   actions: {
     PointListActive(context) {
       getPointList().then((res) => {
-        res ? context.commit('changePoints', mapTree(res.data.list)) : ''
+        res ? context.commit('changePoints', mapTree2(res.data.list)) : ''
       })
     },
 

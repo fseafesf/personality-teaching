@@ -1,5 +1,4 @@
 export const mapTree = (data) => {
-  // console.log('res', data)
   const level1 = []
   const other = []
   data.forEach((item) => {
@@ -36,7 +35,6 @@ export const mapTree = (data) => {
 
   mapChildren(other, level2)
 
-  // console.log('level1', level1)
   return level1
 }
 
@@ -62,20 +60,20 @@ function mapChildren(other, level2) {
   }
 }
 
+
+
+
+
+
 export function mapTree2(list) {
   const map = {}
   const roots = []
 
-  // list.forEach((item) => {
-  //   // 获取一级知识点 （父id=自己）
-  //   if (item.knp_id === item.parent_knp_id) {
-  //     item.level = 1
-  //   }
-  // })
-
   list.forEach(item => {
+    // 给每个知识点映射id与label elementui的树需要
     map[item.knp_id] = { ...item, id: item.knp_id, label: item.name, children: [] }
 
+    // 给第一层添加对应的层级level
     if (item.parent_knp_id === item.knp_id) {
       map[item.knp_id].level = 1
     }
@@ -84,6 +82,7 @@ export function mapTree2(list) {
   list.forEach(item => {
     const parent = map[item.parent_knp_id]
     if (parent && item.parent_knp_id != item.knp_id) {
+      // 给子树添加对应的层级level
       map[item.knp_id].level = parent.level + 1
       parent.children.push(map[item.knp_id])
     }
@@ -92,8 +91,6 @@ export function mapTree2(list) {
       roots.push(map[item.knp_id])
     }
   })
-
-  console.log(roots)
 
   return roots
 }
