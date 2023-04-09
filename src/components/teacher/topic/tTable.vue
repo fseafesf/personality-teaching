@@ -106,8 +106,8 @@ export default {
         // 对内容进行HTMLDecode解密
         tableData.forEach((item) => {
           item.context = HTMLDecode(item.context)
-            .replace(/<img(?:(?!\/>).|\n)*?\/>/gm, '[图片]')
-            .replace(/<[^>]+>/g, '')
+            .replace(/<img(?:(?!\/>).|\n)*?\/>/gm, '[图片]') // 匹配img
+            .replace(/<[^>]+>/g, '') // 把HTML转为文本
         })
 
         return tableData

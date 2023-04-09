@@ -1,5 +1,5 @@
 import { addPoint, getPointById, getPointList, getPointOne } from '@/services'
-import { mapTree } from '@/utils/mapTree'
+import { mapTree, mapTree2 } from '@/utils/mapTree'
 
 const tKnowledge = {
   state: () => ({
@@ -25,7 +25,7 @@ const tKnowledge = {
   actions: {
     PointListActive(context) {
       getPointList().then((res) => {
-        res ? context.commit('changePoints', mapTree(res.data.list)) : ''
+        res ? context.commit('changePoints', mapTree2(res.data.list)) : ''
       })
     },
 

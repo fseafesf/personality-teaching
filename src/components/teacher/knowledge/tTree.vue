@@ -11,10 +11,10 @@
           :expand-on-click-node="false"
           :highlight-current="highlight"
           :current-node-key="currentNode"
-          :check-strictly = "checkStrictly"
+          :check-strictly="checkStrictly"
           @check-change="checkedClickHandler"
           @node-click="nodeClickHandler"
-          @check = "checkHandler"
+          @check="checkHandler"
         >
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <div class="label">
@@ -167,11 +167,7 @@ export default {
     },
     // 选择知识点
     checkHandler(data, checkedData) {
-      this.$emit(
-        'checkEvent',
-        data,
-        checkedData
-      )
+      this.$emit('checkEvent', data, checkedData)
     }
   },
 
