@@ -144,7 +144,7 @@ export default {
     // 如果选择知识点的条数大于10时的操作
     judgeCheckedPointsNum() { 
       let _this = this
-      if (this.tAnalysis.checkedPoints.length >= 3) {
+      if (this.tAnalysis.checkedPoints.length >= 10) {
         this.$message({
           type: 'warning',
           message: '最多只能选择10个知识点哦'

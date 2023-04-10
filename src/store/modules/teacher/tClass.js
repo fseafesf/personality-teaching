@@ -61,6 +61,7 @@ const tClass = {
     // 获取教师信息
     async getTeacherInfoActions(store) {
       let res = await getTeacherInfoAPI()
+      console.log('---------', res.data)
       if (res.code === 0) {
         store.commit('getTeacherInfo', res.data)
       }
