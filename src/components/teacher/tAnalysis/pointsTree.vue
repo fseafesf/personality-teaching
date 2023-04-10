@@ -12,7 +12,10 @@
             <div class="label">
               <span>{{ node.label }}</span>
             </div>
-            <el-progress class="progressbar" :text-inside="true" :stroke-width="20" :percentage="percentage"></el-progress>
+            <el-progress class="progressbar" v-if="percentage >= 90" :text-inside="true" :stroke-width="20" :percentage="percentage" status="success"></el-progress>
+          <el-progress class="progressbar" v-else-if="percentage >= 70" :text-inside="true" :stroke-width="20" :percentage="percentage"></el-progress>
+          <el-progress class="progressbar" v-else-if="percentage >= 60" :text-inside="true" :stroke-width="20" :percentage="percentage" status="warning"></el-progress>
+          <el-progress class="progressbar" v-else-if ="percentage < 60" :text-inside="true" :stroke-width="20" :percentage="percentage" status="exception"></el-progress>
           </span>
         </el-tree>
       </div>
@@ -21,10 +24,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      percentage: 70
+      percentage: 90
     }
   },
   mounted() {
@@ -32,8 +36,11 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      tKnowledge: (state) => state.tKnowledge
+    }),
     treeData() {
-      return this.$store.state.tKnowledge.points
+      return this.tKnowledge.points
     }
   },
 }

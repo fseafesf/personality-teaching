@@ -58,7 +58,15 @@ export default {
       const res = await searchStudentAPI(this.keyword)
       this.searchStudentList = res.data
       // 调用 callback 返回建议列表的数据
-      cb(this.searchStudentList)
+      if (this.searchStudentList) {
+        cb(this.searchStudentList) 
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '该学生不存在'
+        })
+        cb([]) 
+      }
     },
     // 重置按钮
     resetFn() {

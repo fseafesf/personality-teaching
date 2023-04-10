@@ -36,6 +36,15 @@ export default {
       keyword: '',
       source: [],
       searchResult: [],   
+      stuAnaList: [
+        {pointName: '数据结构', stuName: '魏羡', score: 85},
+        {pointName: '数据结构', stuName: '蓝战', score: 95},
+        {pointName: '数据结构', stuName: '左柚', score: 83},
+        {pointName: '数据结构', stuName: '顾薇', score: 77},
+        {pointName: '数据结构', stuName: '肖太阳', score: 100},
+        {pointName: '数据结构', stuName: '王月亮', score: 95},
+        {pointName: '数据结构', stuName: '张璐妮', score: 73},
+      ]
     }
   },
   mounted() {
@@ -88,9 +97,11 @@ export default {
     // 添加数据到班级统计表中
     getClassChartData() {
       let classChartData = [['掌握情况', '知识点']]
+      let score = 0
       this.pointsData.forEach((point) => {
         let classData = []
-        classData.push(95, point.label)
+        score = Math.floor(Math.random() * 50 + 50)
+        classData.push(score, point.label)
         classChartData.push(classData)
         this.source = classChartData
       })
@@ -170,7 +181,10 @@ export default {
         '知识点7',
         '知识点8'
       ]
-      const student = ['唐三', '李四', '王五', '赵六', '张七', '肖八', '冯九']
+      let student = []
+      this.stuAnaList.forEach(stu => {
+        student.push(stu.stuName)
+      })
       const data = [
         [0, 0, 70],
         [0, 1, 80],
