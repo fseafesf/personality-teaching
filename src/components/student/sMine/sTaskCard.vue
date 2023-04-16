@@ -36,6 +36,20 @@
             </div>
           </el-radio-group>
         </div>
+        <div class="option" v-if="problem.type === 4">
+          <div
+            class="fill-item"
+            v-for="(item, index) in spaceNumbers"
+            :key="index"
+          >
+            <span>第{{ index + 1 }}空:</span>
+            <el-input
+              v-model="fillAnswers[index]"
+              placeholder="请输入内容"
+              @change="fillChange(index)"
+            ></el-input>
+          </div>
+        </div>
         <div class="option option-answer" v-if="problem.type === 5">
           <PtEditor :height="300" v-model="content" @change="onChange" />
           <!-- {{ editor?.getHtml() }} -->
@@ -47,7 +61,7 @@
 </template>
 
 <script>
-import { toSelect } from '@/utils/transfrom'
+import { toSelect, toType } from '@/utils/transfrom'
 import PtEditor from '@/components/common/PtEditor.vue'
 import '@wangeditor/editor/dist/css/style.css'
 import _ from 'lodash'
@@ -72,11 +86,18 @@ export default {
       // 判断默认项
       judge: '',
 
-      toSelect
+      // 空格数量
+      spaceNumbers: 0,
+      fillAnswers: [],
+      toSelect,
+      toType
     }
   },
   created() {
     this.currentView = this.typeComponent[this.problem.type - 1]
+    if (this.problem.type == 4) {
+      this.initFill()
+    }
   },
   props: {
     problem: {
@@ -93,27 +114,35 @@ export default {
       'setAnswersFinished',
       'changeCurrentProblem'
     ]),
+    initFill() {
+      let reg = /(\(\))|(\_+)|(\（\）)/g
+      let length = this.problem.context.match(reg).length
+      this.spaceNumbers = length
+      this.fillAnswers = new Array(length).fill('')
+    },
     handleRadio(value) {
       this.outSet(value)
-      this.outChange()
+      this.outChange(this.problem.question_id)
       console.log(this.problem.question_id, value)
     },
     handleMulti(value) {
       this.outSet(value)
-      this.outChange()
+      this.outChange(this.problem.question_id)
       console.log(value)
     },
     handleJudge(value) {
       this.outSet(value)
-      this.outChange()
+      this.outChange(this.problem.question_id)
       console.log(value)
     },
-
+    fillChange(index) {
+      this.outSet(this.fillAnswers)
+      this.outChange(index + this.problem.question_id)
+      console.log(this.fillAnswers, index + this.problem.question_id)
+    },
     onChange(data) {
       this.outSet(data)
-      this.outChange()
-      // console.log('onChange', data) // onChange 时获取编辑器最新内容
-      // 做题的时候内容保存
+      this.outChange(this.problem.question_id)
     },
     outSet(value) {
       this.setStudentAnswer({
@@ -121,8 +150,8 @@ export default {
         value
       })
     },
-    outChange() {
-      this.changeCurrentProblem(this.problem.question_id)
+    outChange(param) {
+      this.changeCurrentProblem(param)
     }
   },
   computed: {},
@@ -144,15 +173,17 @@ export default {
   margin: 35px 0;
 
   .option {
-    margin: 20px;
+    margin: 5px;
 
     .el-radio-group,
     .el-checkbox-group {
       display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .option-label {
-      margin-left: 50px;
+      margin-left: 30px;
       margin-bottom: 10px;
       display: flex;
       align-items: center;
@@ -160,6 +191,18 @@ export default {
 
       .option-content {
         margin-left: 10px;
+      }
+    }
+    .fill-item {
+      width: 50%;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      span {
+        width: 55px;
+      }
+      .el-input {
+        flex: 1;
       }
     }
   }

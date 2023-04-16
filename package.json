@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "start": "set NODE_OPTIONS=\"--openssl-legacy-provider\" & npm run serve\n"
   },
   "dependencies": {
     "@wangeditor/editor": "^5.1.23",

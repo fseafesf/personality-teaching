@@ -16,20 +16,43 @@ export default {
   props: {
     problem: {
       type: Object,
-      default: () => ({
-      })
+      default: () => ({})
     }
   },
   methods: {
     ...mapMutations('sTask', ['setAnswersFinished'])
   },
   computed: {
-    ...mapState('sTask', ['currentProblem'])
+    ...mapState('sTask', ['currentProblem', 'studentAnswers']),
+    currentQuestion() {
+      return () => this.currentProblem
+    }
   },
 
   watch: {
     currentProblem: {
       handler(newVal, oldVal) {
+        // console.log(newVal, newVal.length)
+        if (newVal.slice(1) == this.problem.question_id) {
+          if (this.problem.type == 4) {
+            let answer = this.studentAnswers.get(newVal.slice(1))
+            console.log(answer)
+            let flag = true
+            answer.forEach((element) => {
+              if (element == '') {
+                flag = false
+              }
+            })
+            // console.log(flag)
+            if (flag) {
+              this.finished = true
+              this.setAnswersFinished({
+                question_id: this.problem.question_id,
+                value: true
+              })
+            }
+          }
+        }
         if (newVal === this.problem.question_id) {
           this.finished = true
           this.setAnswersFinished({
@@ -39,6 +62,11 @@ export default {
         }
       }
     }
+    // currentQuestion: {
+    //   handler(newVal, oldVal) {
+    //     console.log(newVal)
+    //   }
+    // }
   }
 }
 </script>

@@ -38,14 +38,12 @@ export default {
   data() {
     return {
       radio: '1',
-      studentID: '1595050686196756480'
+      studentID: ''
     }
   },
   created() {
-    // this.studentID = getCache('studentId')
-    this.getInitExamList(this.studentID).then((res) =>
-      console.log(this.examList)
-    )
+    this.studentID = getCache('studentId')
+    this.getInitExamList(this.studentID)
   },
   methods: {
     // ...mapMutations('sTask'),

@@ -45,12 +45,13 @@ import { mapActions, mapMutations, mapState } from 'vuex'
 import { uploadAnswer } from '@/services'
 import { breakGroup } from '@/utils/groupByType'
 import { toSelect } from '@/utils/transfrom'
+import { getCache } from '@/utils/localstorage'
 export default {
   name: 'sTask',
   components: { TopBar },
   data() {
     return {
-      studentID: '1595050686196756480',
+      studentID: '',
       examID: String,
       questions: [],
       toSelect,
@@ -62,6 +63,7 @@ export default {
     }
   },
   created() {
+    this.studentID = getCache('studentId')
     this.examID = this.$route.query.exam_id
     this.getPageInfo().then(() => {
       this.questions = breakGroup(
@@ -116,6 +118,9 @@ export default {
             this.$message({
               type: '提交成功',
               message: `${res.msg}`
+            })
+            this.$router.replace({
+              path: '/student/mine'
             })
           }
           console.log(res)
