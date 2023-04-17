@@ -1,6 +1,6 @@
 <template>
   <div class="pageList">
-    <el-table :data="pages" border style="width: 100%">
+    <el-table :data="pages" border style="width: 100%" stripe>
       <el-table-column label="序号" width="150" align="center" type="index">
       </el-table-column>
       <el-table-column
@@ -32,40 +32,40 @@
 </template>
 
 <script >
-import { getPageList } from "@/services";
-import { mapActions, mapMutations, mapState } from "vuex";
-import { formDate } from "@/utils/Date/formatDate";
+import { getPageList } from '@/services'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import { formDate } from '@/utils/Date/formatDate'
 export default {
   data() {
     return {
-      pages: [],
-    };
+      pages: []
+    }
   },
   created() {
-    this.getPages();
+    this.getPages()
   },
   methods: {
-    ...mapActions("tReview", ["getInitReviewPages"]),
+    ...mapActions('tReview', ['getInitReviewPages']),
     formDate,
     getPages() {
       this.getInitReviewPages().then((res) => {
-        this.pages = this.reviewPages;
-        console.log(this.pages);
-      });
+        this.pages = this.reviewPages
+        console.log(this.pages)
+      })
     },
     handleReview(index, row) {
       this.$router.push({
-        path: "/teacher/reviewHome/correctClass",
+        path: '/teacher/reviewHome/correctClass',
         query: {
-          exam_id: row.exam_id,
-        },
-      });
-    },
+          exam_id: row.exam_id
+        }
+      })
+    }
   },
   computed: {
-    ...mapState("tReview", ["reviewPages"]),
-  },
-};
+    ...mapState('tReview', ['reviewPages'])
+  }
+}
 </script>
 
 <style lang="less" scoped>

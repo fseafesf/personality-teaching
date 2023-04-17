@@ -9,7 +9,7 @@
     </div>
     <div class="review-page">
       <div class="review-title">
-        <span>{{ exam_name || '' }}</span>
+        <span>{{ exam_name || '暂无数据' }}</span>
       </div>
       <div class="review-info">
         <span>姓名</span>

@@ -99,12 +99,13 @@ export default {
       height: 200px;
       background-color: #fff;
       display: flex;
+      border: 2px solid white;
       flex-direction: column;
       transition: 0.5s;
 
       &:hover {
-        background: #409eff;
-        color: white;
+        // background: #409eff;
+        border: 2px solid #409eff;
         cursor: pointer;
       }
       .class-title {

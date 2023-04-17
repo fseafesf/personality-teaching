@@ -17,7 +17,7 @@
           > -->
         </div>
         <div class="list">
-          <el-table :data="seStudents" border style="width: 100%">
+          <el-table :data="seStudents" border stripe style="width: 100%">
             <el-table-column
               label="序号"
               width="150"
@@ -107,6 +107,9 @@ export default {
         // console.log(typeof res.data[0].status)
         this.students = this.reviewStudents
         this.seStudents = JSON.parse(JSON.stringify(this.students))
+        // console.log('this.students',this.students);
+        console.log('this.seStudents',this.seStudents);
+        
       })
     },
     handleReview(index, row) {
@@ -150,9 +153,10 @@ export default {
   }
   .studentList {
     min-height: 600px;
+    margin-bottom: 60px;
     .stuHead {
       height: 50px;
-      border-bottom: 1px solid rgb(60, 30, 40, 0.8);
+      // border-bottom: 1px solid rgb(60, 30, 40, 0.8);
       background-color: #fff;
       line-height: 50px;
       padding: 0 20px;
@@ -160,7 +164,7 @@ export default {
     .stuBody {
       min-height: 600px;
       background-color: #fff;
-      margin-top: 50px;
+      margin-top: 30px;
       padding: 20px;
 
       .search {

@@ -62,6 +62,7 @@
             :data="seTableData"
             tooltip-effect="dark"
             style="width: 80%"
+            stripe
             max-height="300"
             @selection-change="handleSelectionChange"
           >
@@ -307,7 +308,12 @@ export default {
               comment: this.comment,
             };
             releasePageStudent(data).then((res) => {
+              // this.multipleSelection = [];              
+              // this.$set(this.multipleSelection,'length',0)
+              this.$refs.multipleTable.clearSelection()
+              this.comment = "";              
               console.log(res);
+              console.log(this.multipleSelection)
             });
           }
         }
@@ -335,6 +341,7 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 400px;
+  margin-bottom: 50px;
 
   .back {
     display: flex;

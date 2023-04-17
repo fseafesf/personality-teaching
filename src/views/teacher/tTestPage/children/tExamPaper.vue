@@ -238,7 +238,7 @@ export default {
   display: flex;
   flex-direction: column;
   .examHead {
-    width: 50%;
+    // width: 50%;
     padding: 10px;
     background: #ffffff;
     margin: 10px 0 10px 0;

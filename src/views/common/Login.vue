@@ -113,7 +113,7 @@ export default {
               setCache('headerData', headerData)
               this.storeuserinfo()
               this.$router.replace({ path: '/home' }) //账号密码正确则成功跳转
-              // console.log('pwd',encrypt(this.password));
+              console.log('pwd',encrypt(this.password));
             }
           })
         }

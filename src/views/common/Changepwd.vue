@@ -78,9 +78,9 @@ export default {
   methods: {
     sendChange() {
       if (this.old_pwd === '' || this.new_pwd === '' || this.check_pwd === '') {
-        alert('输入内容不能为空!')
+        this.$message.error('输入内容不能为空')
       } else if (this.new_pwd != this.check_pwd) {
-        alert('请确认输入的新密码一致!')
+        this.$message.error('请确认输入的新密码一致!')
         this.new_pwd = ''
         this.check_pwd = ''
       } else {
@@ -90,7 +90,10 @@ export default {
         }).then((res) => {
           console.log(res)
           if (res.code == 0) {
-            alert('修改成功!')
+            this.$message({
+              message: '修改成功！',
+              type: 'success'
+            })
             this.$router.replace({ path: '/home' }) //修改成功则跳转至首页
           } else {
             alert(res.msg)
