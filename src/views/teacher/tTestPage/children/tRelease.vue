@@ -115,21 +115,21 @@
 </template>
 
 <script>
-import { releasePageClass, releasePageStudent } from "@/services";
-import { transfromClass, transfromStudent } from "@/utils/transfrom";
-import { formDate, getToday } from "@/utils/Date/formatDate";
-import { mapState, mapActions } from "vuex";
+import { releasePageClass, releasePageStudent } from '@/services'
+import { transfromClass, transfromStudent } from '@/utils/transfrom'
+import { formDate, getToday } from '@/utils/Date/formatDate'
+import { mapState, mapActions } from 'vuex'
 export default {
-  name: "release",
+  name: 'release',
   data() {
     return {
       pageId: String,
-      radio: "班级",
+      radio: '班级',
 
       // 班级列表请求参数
       classQueryInfo: {
         page_num: 1, // 分页页号
-        page_size: 10, // 分页大小
+        page_size: 10 // 分页大小
       },
 
       // 班级全选
@@ -137,6 +137,7 @@ export default {
 
       // 选择的班级
       checkedClasses: [],
+      checkedClassesName: [],
 
       //班级列表
       classList: [],
@@ -144,15 +145,15 @@ export default {
       //学生
       studentQueryInfo: {
         page_num: 1,
-        page_size: 40,
+        page_size: 40
       },
 
       // 班级筛选
       options: [],
 
       // 选择的班级
-      value: "",
-      input: "",
+      value: '',
+      input: '',
 
       // 复制的一份表格数据
       seTableData: [],
@@ -160,6 +161,7 @@ export default {
       // 学生表格数据
       tableData: [],
       multipleSelection: [],
+      selectedStudents: [],
 
       // 日期时间选择器
       clear: false,
@@ -167,173 +169,192 @@ export default {
       // 只能选择当前时间以后的时间
       timeOption: {
         disabledDate(date) {
-          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000;
-        },
+          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
+        }
       },
-      comment: "",
-    };
+      comment: ''
+    }
   },
   created() {
-    this.pageId = this.$route.query.id;
-    this.getClass();
-    this.value1 = getToday();
+    this.pageId = this.$route.query.id
+    this.getClass()
+    this.value1 = getToday()
   },
   methods: {
-    ...mapActions("tTest", ["getClasses", "getStudents"]),
+    ...mapActions('tTest', ['getClasses', 'getStudents']),
     formDate,
     getClass() {
-      console.log(this.classQueryInfo);
+      // console.log(this.classQueryInfo)
       this.getClasses(this.classQueryInfo).then((res) => {
-        this.classList = this.classes;
-        this.options = this.classList;
-        this.value = this.options[0].class_id;
-        this.getStu();
-      });
+        this.classList = this.classes
+        this.options = this.classList
+        this.value = this.options[0].class_id
+        this.getStu()
+      })
     },
     getStu() {
       this.getStudents({
-        cookie: this.$cookies.get("session_key"),
+        cookie: this.$cookies.get('session_key'),
         class_id: this.value,
         page_num: this.studentQueryInfo.page_num,
-        page_size: this.studentQueryInfo.page_size,
+        page_size: this.studentQueryInfo.page_size
       }).then((res) => {
-        console.log(res);
-        this.tableData = res.data;
-        this.seTableData = JSON.parse(JSON.stringify(this.tableData));
-      });
+        // console.log(res)
+        this.tableData = res.data
+        this.seTableData = JSON.parse(JSON.stringify(this.tableData))
+      })
     },
     back() {
       this.$router.push({
-        path: "/teacher/examHome",
-      });
+        path: '/teacher/examHome'
+      })
     },
 
     // 班级 个人选择切换
     change(label) {
-      console.log(label);
+      console.log(label)
     },
 
     // 班级全选
     handleCheckAllChange(val) {
-      this.checkedClasses = val ? this.classList : [];
-      console.log(this.checkedClasses);
+      this.checkedClasses = val ? this.classList : []
+      this.checkedClassesName = this.checkedClasses.map((item) => {
+        return item.name
+      })
     },
     // 班级单选
     handleCheckedCitiesChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.classList.length;
-      console.log(this.checkedClasses);
+      let checkedCount = value.length
+      this.checkAll = checkedCount === this.classList.length
+      this.checkedClassesName = this.checkedClasses.map((item) => {
+        return item.name
+      })
     },
 
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
       } else {
-        this.$refs.multipleTable.clearSelection();
+        this.$refs.multipleTable.clearSelection()
       }
     },
     // 下拉菜单
     selectChange() {
-      console.log(this.value);
-      if (this.value.trim() !== "") {
-        this.getStu();
+      console.log(this.value)
+      if (this.value.trim() !== '') {
+        this.getStu()
       }
-      this.seTableData = [];
+      this.seTableData = []
     },
     searchStu() {
-      if (this.input.trim !== "") {
+      if (this.input.trim !== '') {
         this.seTableData = this.seTableData.filter((item) => {
-          return item.name.includes(this.input);
-        });
+          return item.name.includes(this.input)
+        })
       }
     },
     // 学生多选
     handleSelectionChange(val) {
-      this.multipleSelection = val;
-      console.log(this.multipleSelection);
+      this.multipleSelection = val
+      this.selectedStudents = this.multipleSelection.map((item) => {
+        return item.name
+      })
+      // console.log(this.selectedStudents)
     },
 
     // 时间改变
     dateChange() {
-      console.log(formDate(this.value1[0]), formDate(this.value1[1]));
+      console.log(formDate(this.value1[0]), formDate(this.value1[1]))
     },
 
     // 发布
     release() {
-      if (this.comment.trim() === "") {
-        console.log("请输入备注");
+      if (this.comment.trim() === '') {
+        console.log('请输入备注')
         this.$message({
-          type: "info",
-          message: "请输入备注",
-          duration: 1000,
-        });
+          type: 'info',
+          message: '请输入备注',
+          duration: 1000
+        })
       } else {
-        if (this.radio === "班级") {
+        if (this.radio === '班级') {
           if (this.checkedClasses.length === 0) {
             this.$message({
-              type: "info",
-              message: "请选择发放对象",
-              duration: 1000,
-            });
+              type: 'info',
+              message: '请选择发放对象',
+              duration: 1000
+            })
           } else {
             let data = {
               class_list: transfromClass(this.checkedClasses),
               exam_id: this.pageId,
               start_time: formDate(this.value1[0]),
               end_time: formDate(this.value1[1]),
-              comment: this.comment,
-            };
+              comment: this.comment
+            }
             releasePageClass(data).then((res) => {
-              console.log(res);
-              this.checkedClasses = [];
-              this.comment = "";
-            });
+              console.log(res)
+              this.checkedClasses = []
+              this.comment = ''
+              this.$message({
+                offset:50,
+                type: 'success',
+                showClose: true,
+                message: `'已成功发布试卷给${this.checkedClassesName}！'`,
+                duration: 45000
+              })
+            })
           }
-        } else if (this.radio === "个人") {
+        } else if (this.radio === '个人') {
           if (this.multipleSelection.length === 0) {
             this.$message({
-              type: "info",
-              message: "请选择发放对象",
-              duration: 1000,
-            });
+              type: 'info',
+              message: '请选择发放对象',
+              duration: 1000
+            })
           } else {
-            console.log("个人发布");
+            // console.log('个人发布')
             let data = {
               student_list: transfromStudent(this.multipleSelection),
               exam_id: this.pageId,
               start_time: formDate(this.value1[0]),
               end_time: formDate(this.value1[1]),
-              comment: this.comment,
-            };
+              comment: this.comment
+            }
             releasePageStudent(data).then((res) => {
-              // this.multipleSelection = [];              
-              // this.$set(this.multipleSelection,'length',0)
+              this.comment = ''
+              console.log(res)
+              console.log(this.selectedStudents)
+              this.$message({
+                offset:50,
+                type: 'success',
+                showClose: true,
+                message: `'已成功发布试卷给${this.selectedStudents}！'`,
+                duration: 45000
+              })
               this.$refs.multipleTable.clearSelection()
-              this.comment = "";              
-              console.log(res);
-              console.log(this.multipleSelection)
-            });
+            })
           }
         }
       }
-    },
+    }
   },
   watch: {
     input: {
       handler(newVal, oldVal) {
-        console.log(newVal);
-        if (newVal.trim() == "") {
-          this.seTableData = JSON.parse(JSON.stringify(this.tableData));
+        console.log(newVal)
+        if (newVal.trim() == '') {
+          this.seTableData = JSON.parse(JSON.stringify(this.tableData))
         }
-      },
-    },
+      }
+    }
   },
   computed: {
-    ...mapState("tTest", ["classes"]),
-  },
-};
+    ...mapState('tTest', ['classes'])
+  }
+}
 </script>
 
 <style lang="less" scoped>
