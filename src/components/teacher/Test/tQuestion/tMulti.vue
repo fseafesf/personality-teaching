@@ -67,8 +67,8 @@ export default {
     }
   },
   created() {
-    console.log(this.typeProblem)
-    console.log(this.HTMLDecode(this.typeProblem.answer_context))
+    // console.log(this.typeProblem)
+    // console.log(this.HTMLDecode(this.typeProblem.answer_context))
   },
   methods: {
     ...mapMutations('tTest', ['addProblem', 'deleteProblem']),

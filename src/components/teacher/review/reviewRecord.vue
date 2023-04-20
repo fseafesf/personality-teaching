@@ -1,4 +1,5 @@
 <template>
+  <!-- 题目列表 -->
   <div class="review-record" :class="[{ complete: completeCorrect }]">
     <span>{{ this.index + 1 }}</span>
   </div>
@@ -68,6 +69,7 @@ export default {
 
 <style lang="less" scoped>
 .review-record {
+  cursor: pointer;
   width: 45px;
   height: 40px;
   border: 2px solid #ddd;
@@ -76,6 +78,10 @@ export default {
   justify-content: center;
   margin: 10px 5px;
   border-radius: 5px;
+  transition: all .3s;
+  &:hover{
+    border: 2px solid #4498ee;
+  }
 }
 .complete {
   color: #fff !important;

@@ -1,23 +1,25 @@
 <template>
+  <!-- 选择学生评阅的页面 -->
   <div class="correctStudent">
     <div class="back" @click="back">
       <i class="el-icon-back"></i>
       <span class="back-content">返回班级列表</span>
     </div>
+
     <div class="studentList">
       <div class="stuHead">
-        <span>试卷名字</span>
+        <span><i class="el-icon-s-order"></i>试卷名：{{exam_name || '加载中...'}}</span>
       </div>
       <div class="stuBody">
-        <div class="search">
-          <!-- <el-input placeholder="请输入内容" v-model="input" clearable>
+        <!-- <div class="search">
+          <el-input placeholder="请输入内容" v-model="input" clearable>
           </el-input>
           <el-button @click="searchStudent" type="primary" size="small"
             >主要按钮</el-button
-          > -->
-        </div>
+          >
+        </div> -->
         <div class="list">
-          <el-table :data="seStudents" border stripe style="width: 100%">
+          <el-table :data="uniqueseStudents" border stripe style="width: 100%">
             <el-table-column
               label="序号"
               width="150"
@@ -72,6 +74,7 @@
 </template>
 
 <script>
+import {searchPage} from '@/services'
 import { transfromStatus } from '@/utils/transfrom'
 import { mapActions, mapState } from 'vuex'
 import { formDate } from '@/utils/Date/formatDate'
@@ -81,15 +84,18 @@ export default {
     return {
       examId: String,
       classId: String,
+      exam_name: '',
       input: '',
       students: [],
-      seStudents: []
+      seStudents: [],
+      uniqueseStudents: []
     }
   },
   created() {
     this.examId = this.$route.query.exam_id
     this.classId = this.$route.query.class_id
     this.getStudents()
+    this.getExamName()
   },
   methods: {
     ...mapActions('tReview', ['getInitStudents']),
@@ -104,16 +110,26 @@ export default {
         class_id: this.classId
       }).then((res) => {
         console.log(res)
-        // console.log(typeof res.data[0].status)
         this.students = this.reviewStudents
         this.seStudents = JSON.parse(JSON.stringify(this.students))
-        // console.log('this.students',this.students);
-        console.log('this.seStudents',this.seStudents);
-        
+
+        // 以student_id为唯一标识，过滤最新的update_time只保留一个
+        this.uniqueseStudents = Object.values(
+          this.seStudents.reduce((acc, cur) => {
+            if (
+              !acc[cur.student_id] ||
+              cur.update_time > acc[cur.student_id].update_time
+            ) {
+              acc[cur.student_id] = cur
+            }
+            return acc
+          }, {})
+        )
       })
+      console.log(this.uniqueseStudents)
     },
+
     handleReview(index, row) {
-      // console.log(typeof row.status)
       if (row.status === -1) {
         this.$message({
           type: 'warn',
@@ -130,6 +146,14 @@ export default {
           status: row.status
         }
       })
+    },
+    async getExamName(param) {
+      await searchPage(this.examId).then(
+        (res) => {
+          console.log(res)
+          this.exam_name = res.data.exam_name
+        }
+      )
     }
   },
   computed: {
@@ -160,6 +184,9 @@ export default {
       background-color: #fff;
       line-height: 50px;
       padding: 0 20px;
+      span{
+        margin-left: 10px;
+      }
     }
     .stuBody {
       min-height: 600px;

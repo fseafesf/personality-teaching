@@ -302,7 +302,7 @@ export default {
                 offset:50,
                 type: 'success',
                 showClose: true,
-                message: `'已成功发布试卷给${this.checkedClassesName}！'`,
+                message: `已成功发布试卷给${this.checkedClassesName}！`,
                 duration: 45000
               })
             })
@@ -331,7 +331,7 @@ export default {
                 offset:50,
                 type: 'success',
                 showClose: true,
-                message: `'已成功发布试卷给${this.selectedStudents}！'`,
+                message: `已成功发布试卷给${this.selectedStudents}！`,
                 duration: 45000
               })
               this.$refs.multipleTable.clearSelection()

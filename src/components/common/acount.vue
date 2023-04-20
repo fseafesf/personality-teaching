@@ -46,7 +46,7 @@ export default {
       }
       timeID = setTimeout(() => {
         this.show = true;
-        console.log(this.show);
+        // console.log(this.show);
         timeID = null;
       }, 50);
     },
@@ -56,7 +56,7 @@ export default {
       }
       timeID = setTimeout(() => {
         this.show = false;
-        console.log(this.show);
+        // console.log(this.show);
         timeID = null;
       }, 100);
     },

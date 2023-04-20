@@ -37,7 +37,8 @@ export function search(cookie, data) {
     })
 }
 
-export function searchPage(cookie, data) {
+// 查询试卷
+export function searchPage(data) {
     return sxRequest.get({
         url: '/teacher/exam',
         params: {

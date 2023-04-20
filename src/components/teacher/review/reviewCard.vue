@@ -17,7 +17,7 @@
           <el-input
             :disabled="scoreDisabled"
             v-model="input"
-            placeholder="评分"
+            placeholder="0"
           ></el-input>
         </div>
       </div>
@@ -40,7 +40,7 @@ export default {
   },
   beforeCreate() {},
   created() {
-    console.log('card-执行')
+    // console.log('card-执行')
     this.currentView = this.typeComponent[this.problem.type - 1]
     if (this.status === 1) {
       if ([1, 2, 3].includes(this.problem.type)) {
@@ -89,7 +89,6 @@ export default {
 
     this.$watch('input', this.handler)
   },
-  mounted() {},
   props: {
     problem: {
       type: Object,
@@ -98,8 +97,8 @@ export default {
     index: {
       type: Number
     },
-    status: {
-      type: Number
+    status: {    
+      type: Number   
     }
   },
   methods: {
