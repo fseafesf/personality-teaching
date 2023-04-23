@@ -56,7 +56,7 @@ export default {
       return this.$store.state.tKnowledge.pointDetail.info
     },
 
-    // 获取选中的当前知识点id
+    // 获取选中的当前知识点id 用于高亮
     currentNode() {
       return this.$store.state.tKnowledge.currentNode
     }
@@ -65,6 +65,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/* 视频占盒子的宽度100% */
+video {
+  width: 100% !important;
+}
+
 .knowledge-tree {
   margin-top: 10px;
 
@@ -83,12 +88,13 @@ export default {
       margin: 10px;
     }
 
-    width: 450px;
+    width: 420px;
   }
 
   .right {
     flex: 1;
-    padding: 20px;
+    max-width: 770px;
+    padding: 10px;
 
     .title {
       font-size: 18px;

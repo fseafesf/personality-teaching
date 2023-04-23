@@ -1,5 +1,8 @@
 <template>
-  <div class="pt-editor" style="border: 1px solid #ccc; border-radius: 5px">
+  <div
+    class="pt-editor"
+    style="border: 1px solid #ccc; border-radius: 5px; overflow: auto"
+  >
     <Toolbar
       style="border-bottom: 1px solid #ccc"
       :editor="editor"
@@ -20,6 +23,8 @@
 
 <script>
 import Vue from 'vue'
+import COS from 'cos-js-sdk-v5'
+
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { uploadImageApi } from '@/services/modules/common/upload'
 
@@ -64,7 +69,7 @@ export default Vue.extend({
           'bgColor', // 取消背景色
           'todo', // 取消待办
           'emotion', // 取消表情
-          'group-video', // 取消视频
+          // 'group-video', // 取消视频
           'fullScreen', // 取消全屏
           'insertTable' // 取消表格
         ]
@@ -76,6 +81,7 @@ export default Vue.extend({
       // 编辑器配置上传图片接口
       editorConfig: {
         MENU_CONF: {
+          // 图片上传
           uploadImage: {
             // server:
             //   'http://teach.komorebi-nxj.cn/api/teacher/point/uploadImage',
@@ -140,6 +146,60 @@ export default Vue.extend({
 
               // 3.这个必须要 不然readObj.onload不起作用
               readObj.readAsDataURL(file)
+            }
+          },
+
+          // 视频生成
+          uploadVideo: {
+            // 自定义上传
+            async customUpload(file, insertFn) {
+              console.log(file)
+              // 1.获取cos密钥
+              let cos = new COS({
+                SecretId: 'AKIDsXx1yhNvKWdYFiwxjIchcLo11lGbjbFn',
+                SecretKey: 'zkHeqpdEajeKptpX2HVUN3XoulU1LUjn'
+              })
+
+              // 2.上传视频 uploadFile方法上传文件时，如果上传的文件大小大于等于5MB，则会自动分片上传 默认的分片大小为8MB。但是可以通过在options参数中设置partSize属性来自定义分片大小
+              cos.uploadFile(
+                {
+                  Bucket: 'video-1309614912',
+                  Region: 'ap-guangzhou' /* 存储桶所在地域，必须字段 */,
+                  Key: 'test1.mp4', // 文件名
+                  Body: file, // 上传文件对象
+                  SliceSize: 1024 * 1024 * 5, // 大于5M分块上传
+                  onProgress: function (progressData) {
+                    console.log(JSON.stringify(progressData))
+                  },
+                  onFileFinish: function (err, data, options) {
+                    console.log(options.Key + '上传' + (err ? '失败' : '完成'))
+                  }
+                },
+                (err, data) => {}
+              )
+
+              // 3.获取视频url
+              cos.getObjectUrl(
+                {
+                  Bucket: 'video-1309614912',
+                  Region: 'ap-guangzhou' /* 存储桶所在地域，必须字段 */,
+                  Key: 'test1.mp4', // 文件名
+                  Sign: true /* 获取带签名的对象 URL */
+                },
+                function (err, data) {
+                  if (err) return console.log(err)
+                  /* url为对象访问 url */
+                  var url = data.Url
+                  /* 复制 downloadUrl 的值到浏览器打开会自动触发下载 */
+                  var downloadUrl =
+                    url +
+                    (url.indexOf('?') > -1 ? '&' : '?') +
+                    'response-content-disposition=attachment' // 补充强制下载的参数
+
+                  // 最后插入视频标签
+                  insertFn(downloadUrl)
+                }
+              )
             }
           }
         }
