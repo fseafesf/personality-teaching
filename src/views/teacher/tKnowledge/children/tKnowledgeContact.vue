@@ -117,18 +117,22 @@ export default {
   overflow: auto;
 
   .contact-content {
-    display: flex;
-    gap: 15px;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    min-height: 84vh;
+
+    .contact-middle {
+      margin: auto;
+    }
 
     .contact-left,
     .contact-right,
     .contact-result {
       width: 350px;
-      min-height: 84vh;
       background: #fff;
       border-radius: 5px;
+      margin-bottom: 20px;
     }
 
     .contact-result {
