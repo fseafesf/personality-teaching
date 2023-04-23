@@ -30,7 +30,9 @@ const tKnowledge = {
     },
 
     PointByIdActive(context, id) {
-      // context.commit('changeCurrentNode', id)
+      // 用来记录当前高亮知识点 保证切换后仍然保持高亮
+      context.commit('changeCurrentNode', id)
+
       getPointById(id).then((res) => {
         res ? context.commit('changePointDetail', res.data) : ''
       })
