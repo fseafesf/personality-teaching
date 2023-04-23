@@ -11,6 +11,11 @@ img {
   max-width: 850px;
 }
 
+/* 视频占盒子的宽度70% */
+video {
+  width: 70%;
+}
+
 .wrap-v1 {
   width: 1200px;
 }

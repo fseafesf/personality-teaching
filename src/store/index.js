@@ -20,7 +20,7 @@ export default new Vuex.Store({
   state: {
     isLoading: false, // 控制loading组件
     headerData: getCache('headerData') || [], // header数据
-    userinfo: '',
+    // userinfo: '',
     typeOptions: [
       // 添加、编辑、搜索题目的题型映射
       {

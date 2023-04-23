@@ -65,11 +65,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/* 视频占盒子的宽度100% */
-video {
-  width: 100% !important;
-}
-
 .knowledge-tree {
   margin-top: 10px;
 
