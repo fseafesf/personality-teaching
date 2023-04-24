@@ -11,6 +11,7 @@
     />
 
     <Editor
+      class=""
       :style="`height: ${height}px; overflow-y: hidden`"
       v-bind:value="editorValue"
       :defaultConfig="editorConfig"
@@ -54,7 +55,7 @@ export default Vue.extend({
   },
   data() {
     // self用来实现在data中调用method的方法
-    // let self = this
+    let self = this
     return {
       editor: null,
       // html: '<p>hello</p>', html从props中获取默认内容展示在编辑器上
@@ -93,11 +94,7 @@ export default Vue.extend({
           uploadVideo: {
             // 自定义上传
             async customUpload(file, insertFn) {
-              uploadVideo(file, insertFn)
-            },
-            // 上传进度的回调函数
-            onProgress(progress) {
-              console.log('progress', progress)
+              uploadVideo(self.editor, file, insertFn)
             }
           }
         }
@@ -127,3 +124,33 @@ export default Vue.extend({
 </script>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
+<style>
+.w-e-progress-bar {
+  height: 5px;
+  background-color: rgb(10, 251, 10);
+}
+
+/* .w-e-progress-bar::after {
+  content: '✔';
+  right: 0;
+  top: 0;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 50%;
+  background-color: rgb(10, 251, 10);
+} */
+
+/* .w-e-textarea-video-container::after {
+  content: '✔';
+  right: 0;
+  top: 0;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 50%;
+  background-color: rgb(10, 251, 10);
+} */
+</style>

@@ -191,7 +191,7 @@ export default {
 
 <style lang="less" scoped>
 .tree {
-  height: 100%;
+  // height: 100%;
 
   .custom-tree-container {
     border-radius: 5px;
