@@ -11,9 +11,11 @@ img {
   max-width: 850px;
 }
 
-/* 视频占盒子的宽度70% */
+/* 视频占盒子的宽度70% 并让视频居中 */
 video {
+  display: block;
   width: 70%;
+  margin: 0 auto !important;
 }
 
 .wrap-v1 {

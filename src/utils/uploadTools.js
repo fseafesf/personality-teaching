@@ -1,5 +1,6 @@
 import COS from 'cos-js-sdk-v5'
 import { uploadImageApi } from '@/services/modules/common/upload'
+import { getCosKey } from '@/services'
 
 
 /*                               将base64转成file文件方法                                     */
@@ -84,34 +85,36 @@ export function uploadImg(file, insertFn) {
 export function uploadVideo(editor, file, insertFn) {
   // 1.获取cos密钥
   let cos = new COS({
-    SecretId: 'AKIDlXKtCI9mGXdVBdnY6UhjaEfrpZ7kdVDi',
-    SecretKey: 'QlwsqfHrQmx752qaFj170d03zrsjw22o'
   })
+
+  // getCosKey().then(res => {
+  //   console.log(JSON.stringify(res))
+  // })
 
   //  2.判断视频是否存在
   // const res = FileExist(cos, file)
   // console.log(res, 'FileExist')
 
-  // 3.上传视频 uploadFile方法上传文件时，如果上传的文件大小大于等于5MB，则会自动分片上传 默认的分片大小为8MB。但是可以通过在options参数中设置partSize属性来自定义分片大小
-  cos.uploadFile(
-    {
-      Bucket: 'video-1309614912',
-      Region: 'ap-guangzhou' /* 存储桶所在地域，必须字段 */,
-      Key: file.name, // 文件名
-      Body: file, // 上传文件对象
-      SliceSize: 1024 * 1024 * 5, // 大于5M分块上传
-      onProgress: function (progressData) {
-        console.log(JSON.stringify(progressData))
-        editor.showProgressBar(progressData.percent * 100)
-      },
-      onFileFinish: function (err, data, options) {
-        console.log(options.Key + '上传' + (err ? '失败' : '完成'))
-        if (!err) {
-        }
-      }
-    },
-    (err, data) => { }
-  )
+  // 3.上传视频 uploadFile方法上传文件时，如果上传的文件大小大于等于5MB，则会自动分片上传 但是可以通过在options参数中设置partSize属性来自定义分片大小
+  // cos.uploadFile(
+  //   {
+  //     Bucket: 'video-1309614912',
+  //     Region: 'ap-guangzhou' /* 存储桶所在地域，必须字段 */,
+  //     Key: file.name, // 文件名
+  //     Body: file, // 上传文件对象
+  //     SliceSize: 1024 * 1024 * 5, // 大于5M分块上传
+  //     onProgress: function (progressData) {
+  //       console.log(JSON.stringify(progressData))
+  //       editor.showProgressBar(progressData.percent * 100)
+  //     },
+  //     onFileFinish: function (err, data, options) {
+  //       console.log(options.Key + '上传' + (err ? '失败' : '完成'))
+  //       if (!err) {
+  //       }
+  //     }
+  //   },
+  //   (err, data) => { }
+  // )
 
   // 4.最后插入视频标签
   const videoURL = getFileURL(cos, file)
