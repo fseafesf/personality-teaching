@@ -266,7 +266,7 @@ export default {
 
 <style lang="less" scoped>
 .topic {
-  margin-top: 10px;
+  margin: 10px 0 20px 0;
 
   .search {
     height: 46px;

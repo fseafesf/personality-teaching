@@ -81,9 +81,11 @@ export function uploadImg(file, insertFn) {
 
 
 /*                             上传视频                                   */
-export function uploadVideo(file, insertFn) {
+export function uploadVideo(editor, file, insertFn) {
   // 1.获取cos密钥
   let cos = new COS({
+    SecretId: 'AKIDlXKtCI9mGXdVBdnY6UhjaEfrpZ7kdVDi',
+    SecretKey: 'QlwsqfHrQmx752qaFj170d03zrsjw22o'
   })
 
   //  2.判断视频是否存在
@@ -100,18 +102,20 @@ export function uploadVideo(file, insertFn) {
       SliceSize: 1024 * 1024 * 5, // 大于5M分块上传
       onProgress: function (progressData) {
         console.log(JSON.stringify(progressData))
+        editor.showProgressBar(progressData.percent * 100)
       },
       onFileFinish: function (err, data, options) {
         console.log(options.Key + '上传' + (err ? '失败' : '完成'))
         if (!err) {
-          // 4.最后插入视频标签
-          const videoURL = getFileURL(cos, file)
-          insertFn(videoURL)
         }
       }
     },
     (err, data) => { }
   )
+
+  // 4.最后插入视频标签
+  const videoURL = getFileURL(cos, file)
+  insertFn(videoURL)
 }
 
 

@@ -66,8 +66,7 @@ export default {
 
 <style lang="less" scoped>
 .knowledge-tree {
-  margin-top: 10px;
-
+  margin: 10px 0 20px 0;
   display: flex;
   gap: 10px;
 
