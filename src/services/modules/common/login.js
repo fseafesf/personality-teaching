@@ -8,6 +8,12 @@ export function teacherLogin(data) {
   })
 }
 
+export function getCosKey(data) {
+  return ptRequest.get({
+    url: '/teacher/key'
+  })
+}
+
 // export function changePwd(data) {
 //   return ptRequest.put({
 //     url: '/pwd',
