@@ -10,14 +10,13 @@ const tReview = {
     reviewPages: [],
 
     // 发布的试卷对应的班级
-    reviewClasses: [
-
-    ],
+    reviewClasses: [],
 
     // 班级对应的学生，
-    reviewStudents: [
+    reviewStudents: [],
 
-    ],
+    // 当前评阅试卷学生的答案
+    studentAnswers: '用map来存储',
 
     // 当前评阅试卷的每道题分数
     currentPageScore: new Map(),
@@ -122,6 +121,11 @@ const tReview = {
     clearTotalObjectiveScore(state) {
       state.totalObjectiveScore = 0
     },
+
+    // 存入学生答案
+    storeAnswer(state,value){
+      state.studentAnswers = value
+    }
 
 
   },

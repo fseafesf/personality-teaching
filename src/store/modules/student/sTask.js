@@ -22,13 +22,18 @@ const sTask = {
         /**
          * @param {object} 传入一个对象 包括题目id和作答答案
          */
+        // 存储学生答案
         setStudentAnswer(state, param) {
+            // console.log('执行第一次了');
             state.studentAnswers.set(param.question_id, param.value)
+            // console.log(param.value);
+            // console.log(state.studentAnswers);
         },
 
         /**
          * @param {object} 传入一个对象 包括题目id和作答状态
          */
+        // 存储学生已作答题目
         setAnswersFinished(state, param) {
             state.answersFinished.set(param.question_id, param.value)
         },
