@@ -72,7 +72,6 @@ export function mapTree2(list) {
   list.forEach(item => {
     // 给每个知识点映射id与label elementui的树需要
     map[item.knp_id] = { ...item, id: item.knp_id, label: item.name, children: [] }
-
     // 给第一层添加对应的层级level
     if (item.parent_knp_id === item.knp_id) {
       map[item.knp_id].level = 1
