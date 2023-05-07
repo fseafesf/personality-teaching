@@ -62,7 +62,7 @@ export default {
   watch: {
     pointsData: {
       deep: true,
-      //immediate:true,
+
       handler() {
         this.getClassChartData()
         this.classChartFn()
