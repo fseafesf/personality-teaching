@@ -7,6 +7,17 @@ body {
   font-family: 'Helvetica Neue';
 }
 
+img {
+  max-width: 850px;
+}
+
+/* 视频占盒子的宽度70% 并让视频居中 */
+video {
+  display: block;
+  width: 70%;
+  margin: 0 auto !important;
+}
+
 .wrap-v1 {
   width: 1200px;
 }
@@ -43,7 +54,7 @@ body {
 }
 
 /* 全局修改Tree组件的选中背景颜色 */
-.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
   background-color: hsla(210, 94%, 50%, 0.2) !important;
 }
 
@@ -60,8 +71,4 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-}
-
-img{
-  max-width: 850px;
 }

@@ -28,6 +28,7 @@
               :index="index"
               :problem="item"
               :status="status"
+              :reviewAnswer="reviewAnswer"
             >
             </ReviewCard>
           </template>
@@ -49,13 +50,15 @@
           </div>
           <div class="review-foot">
             <div class="total">
-              <span>总分:{{ this.totalScore }}  </span>
+              <span>总分:{{ this.totalScore }} </span>
               <span>客观题总分:{{ this.totalObjectiveScore }}</span>
             </div>
 
             <div class="operate">
               <el-button size="mini" @click="complete">完成批阅</el-button>
-              <el-button size="mini" :disabled="disabled" @click="nextPage">下一份</el-button>
+              <el-button size="mini" :disabled="disabled" @click="nextPage"
+                >下一份</el-button
+              >
             </div>
           </div>
         </div>
@@ -92,7 +95,8 @@ export default {
       answers: '',
       times: '',
       startRendering: false,
-      timer: null
+      timer: null,
+      reviewAnswer:''
     }
   },
 
@@ -116,7 +120,6 @@ export default {
 
     this.init(false)
 
-
     // 未批改 的 直接全部初始为0分  -1未提交 0已批改完成 1未批改 2未批改完
     //   if (this.status == 1) {
     //     this.init(false)
@@ -132,7 +135,8 @@ export default {
       'initStatus', // 初始未批改试卷的状态
       'initCorrectedScore', // 初始批改过的试卷的分数
       'initCorrectedStatus', // 初始批改过的试卷的状态
-      'clearTotalScore'
+      'clearTotalScore',
+      'storeAnswer'
     ]),
     ...mapActions('tReview', ['getInitStudents']),
 
@@ -146,21 +150,21 @@ export default {
 
     //获取试卷信息
     async getPageInfo(param) {
-      console.log(param);
-      await searchPage(this.examId).then(
-        (res) => {
-          // console.log(res) 
-          this.exam_name = res.data.exam_name
-          this.problemList = breakGroup(JSON.parse(res.data.questions))
-          if (!param.correctd) {
-            // 未批改过则进行题目初始
-            this.initScore(this.problemList)
-            this.initStatus(this.problemList)
-          }
+      // console.log(param);
+      await searchPage(this.examId).then((res) => {
+        // console.table(res.data.questions)
+        this.exam_name = res.data.exam_name
+        this.problemList = breakGroup(JSON.parse(res.data.questions))
+        // console.log(this.problemList);
+        if (!param.correctd) {
+          // 未批改过则进行题目初始
+          this.initScore(this.problemList)
+          this.initStatus(this.problemList)
         }
-      )
+      })
     },
 
+    // 获取学生题目回答
     async getStudentScore(param) {
       await getStudentsAnswer({
         exam_id: this.examId,
@@ -169,6 +173,22 @@ export default {
         console.log(res.data.answers)
         this.answers = res.data.answers
         this.times = res.data.times
+
+        // 将返回的学生答案存入map中
+        let answersArr = Object.entries(JSON.parse(this.answers)).map((item)=>{
+          return item[1]
+        })
+        console.log(answersArr);
+        let myMap = answersArr.reduce((acc,[question_id,value])=>{
+          acc.set(question_id,value)
+          return acc
+        },new Map())
+
+        this.storeAnswer(('storeAnswer',myMap))
+        this.reviewAnswer = this.$store.state.tReview.studentAnswers
+        // console.log(this.$store.state.tReview.studentAnswers);
+
+        
         if (param.corrected) {
           // 批改过 则用保存到的数据进行初始化
           console.log('corrected')
@@ -178,6 +198,7 @@ export default {
       })
     },
 
+    // 批阅试卷完成
     complete() {
       let status = 0
       let count = 0
@@ -214,6 +235,7 @@ export default {
       }
     },
 
+    // 确认批阅
     confirmComplete(data) {
       updateReview(data).then((res) => {
         if (res.code === 0) {
@@ -226,6 +248,7 @@ export default {
       })
     },
 
+    // 批阅下一份试卷
     nextPage() {
       let index = this.reviewStudents.findIndex((item) => {
         console.log(this.studentId, item.student_id)
@@ -250,7 +273,6 @@ export default {
         }
       })
     },
-
     //返回上级
     back() {
       this.$router.go(-1)
@@ -293,7 +315,7 @@ export default {
       'totalScore', // 总分
       'totalObjectiveScore', // 客观题总分
       'reviewStudents',
-      'currentProblemStatus'
+      'currentProblemStatus',
     ]),
     ...mapGetters('tReview', ['TotalScore', 'TotalObjectiveScore'])
   },
@@ -393,8 +415,8 @@ export default {
     margin: 160px auto;
     border-radius: 5px;
     border: 2px solid rgba(0, 0, 0, 0.3);
-    transition: all .3s;
-    &:hover{
+    transition: all 0.3s;
+    &:hover {
       border: 2px solid #4498ee;
     }
     .total {

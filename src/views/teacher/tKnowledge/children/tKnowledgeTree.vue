@@ -56,7 +56,7 @@ export default {
       return this.$store.state.tKnowledge.pointDetail.info
     },
 
-    // 获取选中的当前知识点id
+    // 获取选中的当前知识点id 用于高亮
     currentNode() {
       return this.$store.state.tKnowledge.currentNode
     }
@@ -66,8 +66,7 @@ export default {
 
 <style lang="less" scoped>
 .knowledge-tree {
-  margin-top: 10px;
-
+  margin: 10px 0 20px 0;
   display: flex;
   gap: 10px;
 
@@ -83,12 +82,13 @@ export default {
       margin: 10px;
     }
 
-    width: 450px;
+    width: 420px;
   }
 
   .right {
     flex: 1;
-    padding: 20px;
+    max-width: 770px;
+    padding: 10px;
 
     .title {
       font-size: 18px;

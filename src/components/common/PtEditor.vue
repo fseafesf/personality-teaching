@@ -1,5 +1,8 @@
 <template>
-  <div class="pt-editor" style="border: 1px solid #ccc; border-radius: 5px">
+  <div
+    class="pt-editor"
+    style="border: 1px solid #ccc; border-radius: 5px; overflow: auto"
+  >
     <Toolbar
       style="border-bottom: 1px solid #ccc"
       :editor="editor"
@@ -8,6 +11,7 @@
     />
 
     <Editor
+      class=""
       :style="`height: ${height}px; overflow-y: hidden`"
       v-bind:value="editorValue"
       :defaultConfig="editorConfig"
@@ -21,7 +25,8 @@
 <script>
 import Vue from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import { uploadImageApi } from '@/services/modules/common/upload'
+
+import { uploadImg, uploadVideo } from '@/utils/uploadTools'
 
 // 可以直接v-model双向绑定使用
 export default Vue.extend({
@@ -64,7 +69,7 @@ export default Vue.extend({
           'bgColor', // 取消背景色
           'todo', // 取消待办
           'emotion', // 取消表情
-          'group-video', // 取消视频
+          // 'group-video', // 取消视频
           'fullScreen', // 取消全屏
           'insertTable' // 取消表格
         ]
@@ -76,70 +81,20 @@ export default Vue.extend({
       // 编辑器配置上传图片接口
       editorConfig: {
         MENU_CONF: {
+          // 图片上传
           uploadImage: {
-            // server:
-            //   'http://teach.komorebi-nxj.cn/api/teacher/point/uploadImage',
             fieldName: 'file',
-
             // 自定义上传 并压缩
             async customUpload(file, insertFn) {
-              console.log(file, 'file')
+              uploadImg(file, insertFn)
+            }
+          },
 
-              // 1.定义文件阅读器 获取图片文件原本数据
-              const readObj = new FileReader()
-
-              // 2.压缩图片
-              readObj.onload = async () => {
-                // 获取图片原始的base64数据
-                // console.log(readObj.result, 'readObj.result')
-
-                // 2.1 创建canvas于img标签 通过canvas压缩图片
-                let canvas = document.createElement('canvas')
-                let img = document.createElement('img')
-
-                // 2.2 给img标签赋值原本的base64数据
-                img.src = readObj.result
-
-                // 2.3 开始压缩
-                img.onload = async () => {
-                  // 压缩从如下宽高 宽度、高度看需求
-                  // 2.3.1 定义压缩起始位置 压缩多少宽高
-                  // 获取图片的宽高 通过宽高比例进行压缩 如果把300下调成100 压更模糊 更小 反之亦然
-                  // console.log(img.width, img.height)
-                  canvas.width = 300
-                  canvas.height = 300 * (img.height / img.width)
-                  let ctx = canvas.getContext('2d')
-                  // 0 0 代表左上角开始 300代表宽高
-                  ctx.drawImage(img, 0, 0, 300, 300 * (img.height / img.width))
-
-                  // 2.3.2 压缩语法 压缩后返回新的base64
-                  // canvas.toDataURL(type,encoderOptions)
-                  // toDataURL用于将canvas对象转为base64位编码
-                  // type表示图片格式 默认为image/png
-                  // encoderOptions 0到1之间取值，用于表示图片质量
-                  let newImgBase64 = canvas.toDataURL(file.type, 10 / 100)
-                  // console.log(newImgBase64)
-
-                  // 2.3.3 调用dataURLtoFile方法 把压缩后的base64转为file文件
-                  const newFile = self.dataURLtoFile(
-                    newImgBase64,
-                    file.name,
-                    file.type
-                  )
-                  console.log(newFile, 'newFile')
-
-                  // 2.3.4 创建form表单 把压缩后的文件放大form中发请求上传图片
-                  const form = new FormData()
-                  form.append('file', newFile, newFile.name)
-                  const res = await uploadImageApi(form)
-
-                  // 2.3.5 调用wangEditor的inserFn方法把路径插入到img标签
-                  insertFn(res.data.url, '', '')
-                }
-              }
-
-              // 3.这个必须要 不然readObj.onload不起作用
-              readObj.readAsDataURL(file)
+          // 视频生成
+          uploadVideo: {
+            // 自定义上传
+            async customUpload(file, insertFn) {
+              uploadVideo(self.editor, file, insertFn)
             }
           }
         }
@@ -155,22 +110,6 @@ export default Vue.extend({
     onChange(editor) {
       // console.log('onChange', editor.getHtml()) // onChange 时获取编辑器最新内容
       this.$emit('change', this.editor.getHtml())
-    },
-
-    // 将base64转成file文件方法
-    dataURLtoFile(dataurl, filename, type) {
-      // 获取到base64编码
-      const arr = dataurl.split(',')
-      // 将base64编码转为字符串
-      const bstr = window.atob(arr[1])
-      let n = bstr.length
-      const u8arr = new Uint8Array(n) // 创建初始化为0的，包含length个元素的无符号整型数组
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n)
-      }
-      return new File([u8arr], filename, {
-        type: type
-      })
     }
   },
 
@@ -185,3 +124,33 @@ export default Vue.extend({
 </script>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
+<style>
+.w-e-progress-bar {
+  height: 5px;
+  background-color: rgb(10, 251, 10);
+}
+
+/* .w-e-progress-bar::after {
+  content: '✔';
+  right: 0;
+  top: 0;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 50%;
+  background-color: rgb(10, 251, 10);
+} */
+
+/* .w-e-textarea-video-container::after {
+  content: '✔';
+  right: 0;
+  top: 0;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 50%;
+  background-color: rgb(10, 251, 10);
+} */
+</style>

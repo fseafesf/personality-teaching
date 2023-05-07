@@ -5,7 +5,7 @@
       <span>该题答案:</span>
     </div>
     <div class="student-answer">
-      <span>学生答案:</span>
+      <span>学生答案:{{reviewAnswer.get(this.problem.question_id)}}</span>
     </div>
     <div class="review-operate">
       <div class="review-score">
@@ -99,6 +99,9 @@ export default {
     },
     status: {    
       type: Number   
+    },
+    reviewAnswer: {
+      type: Map
     }
   },
   methods: {

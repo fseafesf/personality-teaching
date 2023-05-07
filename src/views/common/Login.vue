@@ -80,7 +80,7 @@ export default {
     // 点击发起登录请求
     sendLogin() {
       if (this.username === '' || this.password === '') {
-        alert('输入内容不能为空！')
+        this.$message.error('输入内容不能为空')
       } else {
         let headerData = tHeaderData
 

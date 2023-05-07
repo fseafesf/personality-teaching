@@ -103,7 +103,8 @@
 
     <!-- 添加、编辑子页面 -->
     <!--
-      这样做的好处是该页面不会被卸载 所以currentPage、size等参数会保留 当我们编辑、添加题目的时候还是在当前页面 不会被重置 可以省去很多代码
+      这样做的好处是该页面不会被卸载 所以currentPage、size等参数会保留 
+      当我们编辑、添加题目的时候还是在当前页面 不会被重置 可以省去很多代码
       缺点：需要我们在tTable中的mouted发请求获取数据才能保证添加、编辑会重新刷新一次
     -->
     <router-view></router-view>
@@ -266,7 +267,7 @@ export default {
 
 <style lang="less" scoped>
 .topic {
-  margin-top: 10px;
+  margin: 10px 0 20px 0;
 
   .search {
     height: 46px;
