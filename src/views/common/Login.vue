@@ -34,7 +34,6 @@
       </div>
 
       <!-- 其它 -->
-
     </div>
     <div id="clock">
       <div id="time">{{ time }}</div>
@@ -74,7 +73,7 @@ export default {
   },
   methods: {
     storeuserinfo() {
-      sessionStorage.setItem('username',this.username)
+      sessionStorage.setItem('username', this.username)
     },
 
     // 点击发起登录请求
@@ -91,7 +90,7 @@ export default {
             password: encrypt(this.password)
           }).then((res) => {
             console.log(res)
-            setCache('studentId',res.data)
+            setCache('studentId', res.data)
             // 如果登录成功
             if (res.code === 0) {
               headerData = sHeaderData
@@ -113,7 +112,6 @@ export default {
               setCache('headerData', headerData)
               this.storeuserinfo()
               this.$router.replace({ path: '/home' }) //账号密码正确则成功跳转
-              console.log('pwd',encrypt(this.password));
             }
           })
         }
@@ -233,7 +231,6 @@ export default {
     width: 150px;
   }
 }
-
 
 #clock {
   position: absolute;

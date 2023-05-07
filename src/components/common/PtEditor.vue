@@ -126,6 +126,8 @@ export default Vue.extend({
 <style src="@wangeditor/editor/dist/css/style.css"></style>
 <style>
 .w-e-progress-bar {
+  position: relative;
+  z-index: 99;
   height: 5px;
   background-color: rgb(10, 251, 10);
 }

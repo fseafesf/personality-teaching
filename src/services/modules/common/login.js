@@ -1,4 +1,5 @@
 import ptRequest from '../../request'
+import axios from 'axios'
 
 // 教师登录
 export function teacherLogin(data) {
@@ -9,9 +10,10 @@ export function teacherLogin(data) {
 }
 
 export function getCosKey(data) {
-  return ptRequest.get({
-    url: '/teacher/key'
-  })
+  // return ptRequest.get({
+  //   url: '/teacher/key'
+  // })
+  return axios.get('http://localhost:3000/auth/key')
 }
 
 // export function changePwd(data) {
