@@ -72,7 +72,7 @@ export default {
         this.studentChartFn()
       }
     },
-     source: {
+    source: {
       deep: true,
       handler(newVal) {
         if (newVal) {
