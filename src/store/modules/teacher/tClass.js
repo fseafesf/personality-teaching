@@ -76,6 +76,7 @@ const tClass = {
     // 查询班级学生列表
     async getStuListActions(store) {
       let res = await getStuListAPI(store.state.classId, store.state.stuListPage)
+      console.log(res);
       if (res.code === 0) {
         store.commit("getStuList", res)
       }

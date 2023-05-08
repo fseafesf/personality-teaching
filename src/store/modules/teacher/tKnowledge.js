@@ -11,6 +11,7 @@ const tKnowledge = {
   mutations: {
     changePoints(state, data) {
       state.points = data
+      //console.log(state.points);
     },
     changePointOnes(state, data) {
       state.ponitOnes = data
@@ -26,6 +27,7 @@ const tKnowledge = {
     PointListActive(context) {
       getPointList().then((res) => {
         res ? context.commit('changePoints', mapTree2(res.data.list)) : ''
+        
       })
     },
 
@@ -34,6 +36,7 @@ const tKnowledge = {
       context.commit('changeCurrentNode', id)
 
       getPointById(id).then((res) => {
+        
         res ? context.commit('changePointDetail', res.data) : ''
       })
     },

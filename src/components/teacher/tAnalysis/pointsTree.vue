@@ -2,21 +2,27 @@
   <div class="tree">
     <div class="custom-tree-container">
       <div class="block">
-        <el-tree
-          :data="treeData"
-          ref="tree"
-          node-key="id"
-          default-expand-all
-        >
-        <span class="custom-tree-node" slot-scope="{ node, data }">
+        <el-tree v-if="treeData.length > 0" :data="treeData" ref="tree" node-key="id" default-expand-all>
+
+          <span class="custom-tree-node" slot-scope="{ node, data }">
             <div class="label">
               <span>{{ node.label }}</span>
             </div>
-            <el-progress class="progressbar" v-if="percentage >= 90" :text-inside="true" :stroke-width="20" :percentage="percentage" status="success"></el-progress>
-          <el-progress class="progressbar" v-else-if="percentage >= 70" :text-inside="true" :stroke-width="20" :percentage="percentage"></el-progress>
-          <el-progress class="progressbar" v-else-if="percentage >= 60" :text-inside="true" :stroke-width="20" :percentage="percentage" status="warning"></el-progress>
-          <el-progress class="progressbar" v-else-if ="percentage < 60" :text-inside="true" :stroke-width="20" :percentage="percentage" status="exception"></el-progress>
+            <el-progress class="progressbar" v-if="data.percentage >= 90" :text-inside="true" :stroke-width="20"
+    :percentage="data.percentage || 0" status="success"></el-progress>
+
+  <el-progress class="progressbar" v-else-if="data.percentage >= 70" :text-inside="true" :stroke-width="20"
+    :percentage="data.percentage || 0" status="success"></el-progress>
+
+  <el-progress class="progressbar" v-else-if="data.percentage >= 60" :text-inside="true" :stroke-width="20"
+    :percentage="data.percentage || 0" status="warning"></el-progress>
+
+  <el-progress class="progressbar" v-else :text-inside="true" :stroke-width="20"
+    :percentage="data.percentage || 0" status="exception"></el-progress>
+
+
           </span>
+
         </el-tree>
       </div>
     </div>
@@ -25,6 +31,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import axios from 'axios'
+import { searchStudentAPI, PointPercentageUpdate } from '@/services/modules/teacher/tAnalysis.js'
 export default {
   data() {
     return {
@@ -33,18 +41,25 @@ export default {
   },
   mounted() {
     this.$store.dispatch('PointListActive')
+    PointPercentageUpdate(this.$store)
   },
-
   computed: {
     ...mapState({
       tKnowledge: (state) => state.tKnowledge
     }),
     treeData() {
-      return this.tKnowledge.points
+      const points = JSON.parse(JSON.stringify(this.tKnowledge.points))
+      return points
     }
   },
+  methods: {
+    
+  }
+
 }
 </script>
+
+
 
 <style lang="less" scoped>
 .tree {

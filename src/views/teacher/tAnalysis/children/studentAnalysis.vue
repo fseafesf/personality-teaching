@@ -39,7 +39,8 @@
 </template>
 
 <script>
-import { searchStudentAPI } from '@/services/modules/teacher/tAnalysis.js'
+import { searchStudentAPI, updatePointListPercentage } from '@/services/modules/teacher/tAnalysis.js'
+
 import PointTree from "@/components/teacher/tAnalysis/pointsTree.vue"
 
 export default {
