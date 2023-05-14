@@ -33,7 +33,7 @@
         <el-table-column prop="major" label="专业"></el-table-column>
         <el-table-column prop="phone_number" label="联系电话"></el-table-column>
       </el-table>
-      <PointTree v-if="studentName"></PointTree>
+      <PointTree v-if="studentName" :studentInfo="this.studentInfo"></PointTree>
     </div>         
   </div>
 </template>
@@ -75,6 +75,7 @@ export default {
     },
     handleSelect(item) {
       this.studentName = item.name
+      this.studentInfo.splice(0,1)
       this.studentInfo.push(item)
       this.keyword = ""
     }

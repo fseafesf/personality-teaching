@@ -31,23 +31,43 @@ function setPercentageForPoint(point, knpList) {
   }
 }
 
-export function PointPercentageUpdate(context) {
-  return new Promise((resolve, reject) => {
-    axios
-      .get("http://localhost:3000/data")
-      .then((res) => {
-        const knpList = res.data;
-        const points = JSON.parse(JSON.stringify(context.state.tKnowledge.points));
-        points.forEach((point) => setPercentageForPoint(point, knpList));
-        console.log(points);
-        context.commit("changePoints", points);
-        resolve(points);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
+export const PointPercentageUpdate = (context,student_id) => {
+  return ptRequest.get({
+    url: "/teacher/analyse/student",
+    params: {
+      student_id
+    }
+  })
+  .then((res) => {
+      const knpList = res.data;
+      const points = JSON.parse(JSON.stringify(context.state.tKnowledge.points));
+      points.forEach((point) => setPercentageForPoint(point, knpList));
+      console.log(points);
+      context.commit("changePoints", points);
+      return points;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+// export function PointPercentageUpdate(context) {
+//   return new Promise((resolve, reject) => {
+//     axios
+//       .get("http://localhost:3000/data")
+//       .then((res) => {
+//         const knpList = res.data;
+//         const points = JSON.parse(JSON.stringify(context.state.tKnowledge.points));
+//         points.forEach((point) => setPercentageForPoint(point, knpList));
+//         //console.log(points);
+//         context.commit("changePoints", points);
+//         resolve(points);
+//       })
+//       .catch((error) => {
+//         reject(error);
+//       });
+//   });
+// }
 
 
 

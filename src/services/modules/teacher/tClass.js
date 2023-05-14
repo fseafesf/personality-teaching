@@ -217,3 +217,13 @@ export const modifyStudentAPI = ({ name, student_no, college, major, phone_numbe
     }
   })
 }
+
+// 更新班级学情
+export const getClassStudyDetailAPI = (teacher_id) => {
+  return ptRequest.get({
+    url: "/teacher/analyse/class",
+    params: {
+      teacher_id
+    }
+  })
+}
