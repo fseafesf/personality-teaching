@@ -70,6 +70,7 @@ export default {
       }
     }
   },
+  
   mounted() {
     this.getClassListFn()
     this.$store.dispatch('PointListAction') 

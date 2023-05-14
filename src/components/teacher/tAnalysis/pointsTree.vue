@@ -36,12 +36,15 @@ import { searchStudentAPI, PointPercentageUpdate } from '@/services/modules/teac
 export default {
   data() {
     return {
-      percentage: 90
+      percentage: 90,
+    
     }
   },
+  props: ['studentInfo'],
   mounted() {
     this.$store.dispatch('PointListActive')
-    PointPercentageUpdate(this.$store)
+    PointPercentageUpdate(this.$store, this.studentInfo[0].student_id)
+    //console.log(this.studentInfo[0].student_id);
   },
   computed: {
     ...mapState({
@@ -51,6 +54,16 @@ export default {
       const points = JSON.parse(JSON.stringify(this.tKnowledge.points))
       return points
     }
+  },
+  watch: {
+     studentInfo: {
+      deep: true,
+      handler(newVal) {
+        
+        PointPercentageUpdate(this.$store, newVal[0].student_id)
+        console.log('aaa');
+      }
+    },
   },
   methods: {
     
