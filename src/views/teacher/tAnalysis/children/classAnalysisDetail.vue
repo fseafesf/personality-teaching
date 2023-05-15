@@ -21,13 +21,17 @@
     <div class="classEchart">
       <div class="classAnalysis" id="classAna" ref="classChartRef"></div>
     </div>
-    <div class="studentAnalysis" id="studentAna"></div>
+    <div id="tableContainer">
+      <div class="studentAnalysis" id="studentAna"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import * as echarts from 'echarts'
 import { mapState } from 'vuex'
+import Vue from 'vue';
+import { getStuListAPI, getClassStudyDetailAPI, getTeacherInfoAPI } from '@/services/modules/teacher/tClass.js'
 export default {
   name: 'classAnalysisDetail',
   props: ['className'],
@@ -35,53 +39,102 @@ export default {
     return {
       keyword: '',
       source: [],
-      searchResult: [],   
-      stuAnaList: [
-        {pointName: '数据结构', stuName: '魏羡', score: 85},
-        {pointName: '数据结构', stuName: '蓝战', score: 95},
-        {pointName: '数据结构', stuName: '左柚', score: 83},
-        {pointName: '数据结构', stuName: '顾薇', score: 77},
-        {pointName: '数据结构', stuName: '肖太阳', score: 100},
-        {pointName: '数据结构', stuName: '王月亮', score: 95},
-        {pointName: '数据结构', stuName: '张璐妮', score: 73},
-      ]
+      newSource: [['掌握情况', '知识点']],
+      searchResult: [],
+      stuAnaList: [],
+      knowledgePoint: [],   //当前选中的所有知识点
+      teacher_id: ' ',
+      classScores: [],   //所有班级的所有知识点分数
+      selectedScores: []        //当前班级选中的知识点分数
+      
     }
   },
-  mounted() {
-    this.classChartFn()
-    this.studentChartFn()
+
+  async mounted() {
+    this.classChartFn();
+    const result = await getTeacherInfoAPI();
+    this.teacher_id = result.data.teacher_id;
+    await getClassStudyDetailAPI(this.teacher_id).then(result => {
+      this.classScores = result.data
+    })
+
   },
+
   computed: {
     ...mapState({
       tAnalysis: (state) => state.tAnalysis
     }),
     pointsData() {
       return this.tAnalysis.checkedPoints
-    }
+    },
+    classId() {
+      return this.$route.query.id
+    },
   },
   watch: {
     pointsData: {
       deep: true,
       handler() {
-        this.getClassChartData()
-        this.classChartFn()
         if (this.tAnalysis.checkedPoints.length == 0) {
           this.source = []
         }
+        this.getClassChartData()
+        this.classChartFn()
+        this.studentChartFn()
       }
     },
-    source: {
+   source: {
       deep: true,
-      handler() {
-        this.classChartFn()
+      handler(newVal) {
+        if (newVal) {
+          this.knowledgePoint = newVal.map(item => item[1]);
+          this.knowledgePoint.shift(); // 删掉第一个元素(知识点)
+          if (this.classId && this.source.map(item => item[1]).length != 0) {
+            this.fetchStuList(this.classId)
+          }
+        }
+
+       let knpNames = this.source.slice(1).map(x => x[1])
+        let scores = {};
+        for (let knpName of knpNames) {
+          let knpObj = this.classScores.find(x => x.KnpName === knpName);
+          scores[knpName] = knpObj ? knpObj.Class_id[this.className] : null;
+        }
+
+        this.updateSourceWithScores(scores)
+         this.classChartFn()
+        this.studentChartFn()
+      }
+    },
+  
+    classId: {
+      deep: true,
+      immediate: true,
+      handler(newVal) {
+        if (newVal && this.source.map(item => item[1]).length != 0) {
+          this.fetchStuList(newVal)
+        }
+
       }
     }
+
   },
   methods: {
     // 重置
     resetFn() {
       this.keyword = ''
     },
+    fetchStuList(classId) {
+      getStuListAPI(classId, { page_num: 1, page_size: 10 }).then((res) => {
+        this.stuAnaList = res.data.map((item) => ({
+          pointName: '数据结构',
+          stuName: item.name,
+          score: 0,
+        }));
+        this.studentChartFn()
+      });
+    },
+
     // 查找知识点
     querySearch(queryString, cb) {
       this.searchResult = this.tAnalysis.pointsList.filter(point => {
@@ -93,10 +146,24 @@ export default {
       this.tAnalysis.checkedPoints.push(item)
       this.tAnalysis.selectedId = item.id
       this.keyword = ""
+
+
     },
-    // 添加数据到班级统计表中
+    //更新选中知识点的分数
+    updateSourceWithScores( scores) {
+   
+      const newSource = [['掌握情况', '知识点']];
+       for (let key in scores) {
+        newSource.push([scores[key]*100, key]);
+      }
+
+      this.newSource = newSource
+      console.log(this.newSource);
+      
+    },
+     // 添加数据到班级统计表中
     getClassChartData() {
-      let classChartData = [['掌握情况', '知识点']]
+       let classChartData = [['掌握情况', '知识点']]
       let score = 0
       this.pointsData.forEach((point) => {
         let classData = []
@@ -105,31 +172,40 @@ export default {
         classChartData.push(classData)
         this.source = classChartData
       })
+      this.source=classChartData
     },
+
     // 班级掌握情况
     classChartFn() {
       let classChart = echarts.getInstanceByDom(
         this.$refs.classChartRef
       )
-      if (!classChart){
+      if (!classChart) {
         classChart = echarts.init(document.getElementById('classAna'))
       }
       let classChartOption = {}
       if (this.source.length > 0) {
-        classChartOption = {
+         classChartOption = {
           dataset: {
-            source: this.source
+            source: this.newSource,
           },
           grid: { containLabel: true },
           xAxis: {
             name: '知识点',
             type: 'category',
             axisLabel: {
-              interval: 0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
-              rotate: 38 //调整数值改变倾斜的幅度（范围-90到90）
-            }
+              interval: 0,
+              rotate: 20,
+            },
           },
-          yAxis: { name: '掌握情况' },
+          yAxis: {
+            name: '掌握情况',
+            min: 0,
+            max: 100,
+            axisLabel: {
+              interval: 25,
+            },
+          },
           visualMap: {
             orient: 'vertical',
             left: 'left',
@@ -139,52 +215,47 @@ export default {
             text: ['熟练', '不熟练'],
             dimension: 0,
             inRange: {
-              color: ['#FD665F', '#FFCE34', '#65B581']
-            }
+              color: ['#FD665F', '#FFCE34', '#65B581'],
+            },
           },
           series: [
             {
               type: 'bar',
               encode: {
                 x: '知识点',
-                y: '掌握情况'
-              }
-            }
-          ]
-        }
+                y: '掌握情况',
+              },
+            },
+          ],
+        };
       } else {
         classChartOption = {
           title: {
-            text: "请选择知识点查看班级学情分析",
-            x: "center",
-            y: "center",
+            text: '请选择知识点查看班级学情分析',
+            x: 'center',
+            y: 'center',
             textStyle: {
               fontSize: 16,
-              fontWeight: "normal"
-            }
-          }
-        }
+              fontWeight: 'normal',
+            },
+          },
+        };
       }
-      // 不进行合并
+      classChart.clear() // 清除旧的数据
       classChart.setOption(classChartOption, true)
     },
-    // 学生掌握情况
+
     studentChartFn() {
+    const tableContainer = document.getElementById('tableContainer')
+      const tableHeight = 900 // 固定容器高度
+      const rowCount = this.stuAnaList.length // 获取行数，即学生人数
+      const tableHeightWithPadding = tableHeight - rowCount * 30 // 假设每个单元格高度为30px，减去所有单元格高度，得到表格的高度
       const studentChart = echarts.init(document.getElementById('studentAna'))
-      const knowledgePoint = [
-        '知识点1',
-        '知识点2',
-        '知识点3',
-        '知识点4',
-        '知识点5',
-        '知识点6',
-        '知识点7',
-        '知识点8'
-      ]
       let student = []
       this.stuAnaList.forEach(stu => {
         student.push(stu.stuName)
       })
+      
       const data = [
         [0, 0, 70],
         [0, 1, 80],
@@ -249,13 +320,20 @@ export default {
         tooltip: {
           position: 'top'
         },
-        grid: {
-          height: '90%',
-          top: '5%'
+       grid: {
+          height: `${tableHeightWithPadding}px`,
+          top: '1%',
+          right: '10%',
         },
         xAxis: {
           type: 'category',
-          data: knowledgePoint,
+          data: this.knowledgePoint,
+          axisLabel: {
+            interval: 0,
+            rotate: 20,
+            fontSize: 12,
+            priority: 1, // 设置高优先级
+          },
           splitArea: {
             show: true
           }
@@ -265,6 +343,9 @@ export default {
           data: student,
           splitArea: {
             show: true
+          },
+          axisLabel: {
+            interval: 0,
           }
         },
         visualMap: {
@@ -289,6 +370,10 @@ export default {
                 shadowBlur: 10,
                 shadowColor: 'rgba(0, 0, 0, 0.5)'
               }
+            },
+            itemStyle: {
+              borderWidth: 1,
+              borderColor: '#ccc'
             }
           }
         ],
@@ -296,6 +381,7 @@ export default {
       }
       studentChart.setOption(studentChartOption)
     },
+
     // 清空班级统计图数据
     clearChartFn() {
       this.source = []
@@ -329,6 +415,20 @@ export default {
   min-height: 600px;
 }
 .studentAnalysis {
-  height: 400px;
+  z-index: 99;
+  position: relative;
+  min-height: 1000px;
+  width: 1000px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.studentAnalysis td {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+#tableContainer{
+   height: 1200px; /* 您希望的表格高度值 */
 }
 </style>

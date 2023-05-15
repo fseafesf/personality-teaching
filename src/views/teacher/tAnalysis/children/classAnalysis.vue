@@ -2,7 +2,7 @@
   <div class="class">
     <div class="left">
       <el-dropdown>
-        <span class="el-dropdown-link">
+        <span class="el-dropdown-link" >
           选择班级<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown" class="menu">
@@ -26,16 +26,17 @@
       </el-dropdown>
 
       <div class="pointTree">
-        <el-tree
-          :data="analysisTreeData"
-          ref="tree"
-          :show-checkbox="true"
-          node-key="id"
-          default-expand-all
-          :check-strictly="true"
-          @check="checkHandler"
-          v-if="$route.query.id"
-        >
+       <el-tree
+        :data="analysisTreeData"
+        ref="tree"
+        :show-checkbox="true"
+        node-key="id"
+        default-expand-all
+        :check-strictly="true"
+        @check="checkHandler"
+        v-if="$route.query.id"
+      >
+
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <div class="label">
               <span>{{ node.label }}</span>
@@ -69,10 +70,21 @@ export default {
       }
     }
   },
+  
   mounted() {
     this.getClassListFn()
     this.$store.dispatch('PointListAction') 
     // console.log(this.$route.query.id)
+     this.$watch('$route', () => {
+      const selectedPoints = this.$route.query.points;
+      const analysisDetail = this.$refs.analysisDetail;
+       if (analysisDetail) {
+        analysisDetail.setKnowledgePoint(selectedPoints);
+      }
+    });
+  },
+  created() {
+     this.$router.replace({ name: 'classAnalysis', query: {} });
   },
   computed: {
     ...mapState({
@@ -123,6 +135,7 @@ export default {
   methods: {
     ...mapActions(['getClassInfoActions']),
     ...mapMutations(['checkedPointsMutation', 'PointListMutation']),
+
     getClassId(val) {
       // 获取班级id
       this.class_id = val
