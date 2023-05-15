@@ -28,6 +28,7 @@
         <div class="preview-title">
           <EditTitle :editTitle.sync="pageTitle"></EditTitle>
         </div>
+        <h2 class="score-total">题量：<span>20</span> 总分：<span>150</span></h2>
         <Card
           v-for="(item, index) in problemsList"
           :key="item.type"
@@ -105,9 +106,15 @@ export default {
         val: getCache("selectProblem"),
       });
     }
+    // if (!!getCache("everyScore")) {
+    //   this.setPageData({
+    //     key: "everyScore",
+    //     val: getCache("everyScore"),
+    //   });
+    // }
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
-      searchPage(this.$cookies.get("session_key"), this.pageId).then((res) => {
+      searchPage(this.pageId).then((res) => {
         // console.log(res);
         this.setPageData({
           key: "title",
@@ -122,6 +129,7 @@ export default {
           key: "selectProblem",
           val: breakGroup(JSON.parse(res.data.questions)),
         });
+        // console.log("///////",res.data.questions)
         this.setPageData({
           key: "comment",
           val: res.data.comment,
@@ -248,7 +256,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("tTest", ["page"]),
+    ...mapState("tTest", ["page","everyScore"]),
     createD() {
       return !!getCache("exam_id");
     },
@@ -335,13 +343,17 @@ export default {
     .preview-list {
       background: #fff;
       margin-top: 20px;
+      .score-total{
+        margin-left: 40px;
+        margin-top: 20px;
+      }
       .preview-title {
         display: flex;
         justify-content: center;
         height: 50px;
         line-height: 50px;
-        width: 200px;
-        margin-left: 40%;
+        width: 400px;
+        margin-left: 30%;
       }
     }
     .preview-menu {

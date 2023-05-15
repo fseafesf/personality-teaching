@@ -5,6 +5,9 @@
         <span> {{ index + 1 }}、</span>
         <span></span>
         <span v-html="this.HTMLDecode(typeProblem.context)"></span>
+        <span>（</span>
+        <span>{{everyScore.get(this.typeProblem.question_id)}}</span>
+        <span>分）</span>
       </div>
       <slot name="Answer">
         <div class="answer-option"></div>
@@ -20,7 +23,7 @@
           解析
         </span>
       </div>
-      <div class="set-score">
+      <div class="set-score" @click="setAnswerScore">
         <span>
           <i class="el-icon-s-data"></i>
           设定得分
@@ -43,6 +46,7 @@ export default {
   name: 'answer',
   data() {
     return {
+      score: 0,
       typeArr: ["单选", "多选", "判断","填空" , "简答"],
       typeIndex: ["一", "二", "三", "四", "五"],
     }
@@ -57,7 +61,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
+    ...mapMutations('tTest', ['addProblem', 'deleteProblem','setScore']),
     HTMLDecode,
     handleDelete() {
       this.$confirm(`此操作将删除${this.typeArr[this.typeProblem.type - 1]}题第${this.index + 1}题
@@ -81,10 +85,37 @@ export default {
         })
       })
       .catch(() => {})
-    }
+    },
+    setAnswerScore(){
+      // console.log("////////",this.$store.state.page);
+      this.$prompt('请输入分数', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+
+          this.$message({
+            type: 'success',
+            message: '此题分数为: ' + value
+          });
+          // this.score = value;
+          this.setScore({
+            question_id: this.typeProblem.question_id,
+            value: value
+          })
+          // this.score = this.everyScore.get(this.typeProblem.question_id)
+          // console.log("你好",this.score);
+          console.log(this.everyScore);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
+    },
+
   },
   computed: {
-    ...mapState('tTest', ['page'])
+    ...mapState('tTest', ['page','everyScore'])
   }
 }
 </script>

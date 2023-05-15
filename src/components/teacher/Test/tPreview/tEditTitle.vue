@@ -1,6 +1,7 @@
 <template>
   <div class="input-title-container" @click="this.changeFocus">
-    <div className="input-title-value" v-show="focus">{{ this.editTitle }}</div>
+    <div className="input-title-value " v-show="focus">{{ this.editTitle }}</div>
+    <i v-show="focus" class="el-icon-edit"></i>
     <div v-show="!focus">
       <input
         ref="inputRef"
@@ -50,6 +51,8 @@ export default {
 
 <style lang="less" scoped>
 .input-title-container {
+  display: flex;
+  justify-content: space-between;
   color: #3d4757;
   input {
     outline: none;
@@ -57,7 +60,6 @@ export default {
     border: none;
     letter-spacing: 0;
     font-size: 20px !important;
-    text-align: center;
     padding: 0;
     box-sizing: border-box;
     background-color: initial;
@@ -79,6 +81,11 @@ export default {
     font-size: 20px !important;
     font-weight: 700;
     line-height: 26px;
+  }
+  .el-icon-edit {
+    line-height: 50px; 
+    color: #5198e0;
+    font-size: 18px; 
   }
 }
 </style>

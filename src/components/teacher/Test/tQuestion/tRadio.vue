@@ -5,6 +5,9 @@
         <span> {{ index + 1 }}、</span>
         <span></span>
         <span v-html="this.HTMLDecode( typeProblem.context)"></span>
+        <span>（</span>
+        <span>{{everyScore.get(this.typeProblem.question_id)}}</span>
+        <span>分）</span>
       </div>
       <slot name="Radio">
         <div class="radio-option">
@@ -29,9 +32,9 @@
           解析
         </span>
       </div>
-      <div class="set-score">
+      <div class="set-score" @click="setRadioScore">
         <span>
-          <i class="el-icon-s-data"></i>
+          <i class="el-icon-s-data" ></i>
           设定得分
         </span>
       </div>
@@ -53,6 +56,8 @@ export default {
   name: 'radio',
   data() {
      return {
+      score: 0, 
+      // value:"",
       typeArr: ["单选", "多选", "判断","填空" , "简答"],
       typeIndex: ["一", "二", "三", "四", "五"],
     }
@@ -67,10 +72,17 @@ export default {
       default: () => ({})
     }
   },
-  methods: {
-    ...mapMutations('tTest', ['addProblem', 'deleteProblem']),
+  created(){
+    // console.log(this.everyScore);
+    // this.score = this.everyScore.get(this.typeProblem.question_id)
+    // console.log("*************",this.typeProblem.question_id)
+      
+    },
+  methods: {  
+    ...mapMutations('tTest', ['addProblem', 'deleteProblem','setScore']),
     toSelect,
     HTMLDecode,
+    //删除题目
     handleDelete() {
       this.$confirm(`此操作将删除${this.typeArr[this.typeProblem.type - 1]}题第${this.index + 1}题
       "${this.typeProblem.context.slice(0,10)}", 是否继续?`, '提示', {
@@ -79,7 +91,7 @@ export default {
         type: 'warning'
       })
       .then(() => {
-        // console.log(this.typeProblem.question_id)
+        console.log("*/*/*/*",this.typeProblem.question_id)
         // console.log(this.page.selectProblem)
         let index = this.page.selectProblem.findIndex((item) => {
         // console.log(item.question_id === this.typeProblem.question_id)
@@ -93,10 +105,41 @@ export default {
         })
       })
       .catch(() => {})
+    },
+    //单独设定分数
+    setRadioScore(){
+      // console.log("////////",this.$store.state.page);
+      this.$prompt('请输入分数', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+
+          this.$message({
+            type: 'success',
+            message: '此题分数为: ' + value
+          });
+          // this.score = value;
+          this.setScore({
+            question_id: this.typeProblem.question_id,
+            value: value
+          })
+          // this.score = this.everyScore.get(this.typeProblem.question_id)
+          // console.log("你好",this.score);
+          console.log("llllllll",this.everyScore);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
     }
   },
   computed: {
-    ...mapState('tTest', ['page'])
+    ...mapState('tTest', ['page',"everyScore"]),
+    // changeScore(){
+    //   this.score = this.everyScore.get(this.typeProblem.question_id)
+    //   return this.score
+    // }
   }
 }
 </script>

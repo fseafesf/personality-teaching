@@ -87,7 +87,7 @@ export default {
       examId: String,
       classId: String,
       studentId: String,
-      status: Number,
+      status: Number,//批改状态
       problemList: [],
       distance: 0,
       disabled: false,
@@ -152,10 +152,10 @@ export default {
     async getPageInfo(param) {
       // console.log(param);
       await searchPage(this.examId).then((res) => {
-        // console.table(res.data.questions)
+        console.table("--------",JSON.parse(res.data.questions))
         this.exam_name = res.data.exam_name
         this.problemList = breakGroup(JSON.parse(res.data.questions))
-        // console.log(this.problemList);
+        console.log("999999999",this.problemList);
         if (!param.correctd) {
           // 未批改过则进行题目初始
           this.initScore(this.problemList)

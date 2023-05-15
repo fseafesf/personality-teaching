@@ -41,6 +41,7 @@ export default {
   beforeCreate() {},
   created() {
     // console.log('card-执行')
+         
     this.currentView = this.typeComponent[this.problem.type - 1]
     if (this.status === 1) {
       if ([1, 2, 3].includes(this.problem.type)) {
@@ -48,6 +49,7 @@ export default {
           question_id: this.problem.question_id,
           value: true
         })
+              //  console.log("5555555",this.problem.question_id)
         this.scoreDisabled = this.currentProblemStatus.get(
           this.problem.question_id
         )
@@ -111,7 +113,7 @@ export default {
       'setObjectiveScore', // 更改客观题批改分数
       'changeTotalScore', // 改变总分
       'changeTotalObjectiveScore', // 改变客观题总分
-      'setStatus' // 更改题目批改状态
+      'setStatus' // 更改题目批改状态 
     ]),
     handler(newVal, oldVal) {
       if (newVal.trim() !== '') {
