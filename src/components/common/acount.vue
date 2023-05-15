@@ -63,6 +63,7 @@ export default {
     logout() {
       cookies.remove("session_key");
       clearCache('navBarData')
+      clearCache("studentId")
       router.push({ path: "/login" });
     },
     changepwd() {
