@@ -48,7 +48,6 @@ export default {
   created() {
     this.studentID = getCache('studentId')
     this.getInitExamList(this.studentID)
-    console.log(this.examList)
   },
   methods: {
     // ...mapMutations('sTask'),

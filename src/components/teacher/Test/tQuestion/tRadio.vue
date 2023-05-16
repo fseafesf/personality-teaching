@@ -6,7 +6,7 @@
         <span></span>
         <span v-html="this.HTMLDecode( typeProblem.context)"></span>
         <span>（</span>
-        <span>{{everyScore.get(this.typeProblem.question_id)}}</span>
+        <span>{{ this.everyScore.get(typeProblem.question_id) }}</span>
         <span>分）</span>
       </div>
       <slot name="Radio">
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState ,mapGetters} from 'vuex'
 import { toSelect } from '@/utils/transfrom'
 import { HTMLDecode } from '@/utils/htmlUtil'
 export default {
@@ -123,6 +123,7 @@ export default {
             question_id: this.typeProblem.question_id,
             value: value
           })
+          console.log(this.everyScore)
           // this.score = this.everyScore.get(this.typeProblem.question_id)
           // console.log("你好",this.score);
           console.log("llllllll",this.everyScore);
@@ -136,10 +137,14 @@ export default {
   },
   computed: {
     ...mapState('tTest', ['page',"everyScore"]),
+    ...mapGetters('tTest',['getObject']),
     // changeScore(){
     //   this.score = this.everyScore.get(this.typeProblem.question_id)
     //   return this.score
     // }
+    changeScore(){
+      return this.everyScore.get(this.typeProblem.question_id)
+    }
   }
 }
 </script>

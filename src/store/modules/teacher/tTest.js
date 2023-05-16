@@ -1,5 +1,6 @@
 import { getQuestionList, getPageList, getClassAPI, getStuListAPI } from '@/services'
 import _, { reject } from 'lodash'
+import { reactive, toRefs } from 'vue';
 
 const tTest = {
   namespaced: true,
@@ -137,7 +138,11 @@ const tTest = {
     }
   },
   getters: {
-
+    getObject:(state) => () => {
+      return [...state.everyScore.values()].reduce((pre, cur) => {
+        return pre + (+cur)
+      }, 0)
+    }
   }
 }
 

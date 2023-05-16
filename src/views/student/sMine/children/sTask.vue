@@ -79,6 +79,9 @@ export default {
       if (this.status == 0) {
         await this.getFinishedInfo()
       }
+      else{
+        this.startRendering = true
+      }
     })
   },
   methods: {
@@ -94,6 +97,7 @@ export default {
     back() {
       this.$router.go(-1)
     },
+
     async getPageInfo() {
       await this.getInitExamList(this.studentID)
       let exam = this.examList.filter((item) => {
@@ -102,6 +106,7 @@ export default {
       this.questions = breakGroup(JSON.parse(exam[0].questions))
       console.log(this.questions)
     },
+
     async getFinishedInfo() {
       await getAnswers({
         exam_id: this.examID,
@@ -120,6 +125,7 @@ export default {
         this.startRendering = true
       })
     },
+    
     handlerClick(index) {
       if (!!this.timer) {
         clearInterval(this.timer)

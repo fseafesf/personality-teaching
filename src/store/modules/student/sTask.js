@@ -64,7 +64,7 @@ const sTask = {
         getInitExamList({ commit }, payload) {
             return new Promise((reslove, reject) => {
                 getExamList(payload).then((res) => {
-                    console.log(res)
+                    console.log(Object.values(res.data))
                     commit('init', {
                         key: 'examList',
                         value: Object.values(res.data)

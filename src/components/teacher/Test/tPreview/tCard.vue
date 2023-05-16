@@ -12,7 +12,9 @@
         class="el-input__inner" 
         style="width:70px;font-size: 18px; text-align: center;padding:0"
         v-model="score"
-        maxlength="10">
+        maxlength="10"
+        @change="this.changeScore"
+        >
         <span> 分，共</span>
         <span>{{typeProblemTotalScore}}</span>
         <span>分）</span>
@@ -29,6 +31,7 @@
             :index="index"
             v-show="typeProblem.data.length !== 0"
             :typeProblem="item"
+            ref="child"
           ></div>
         </transition-group>
       </vuedraggable>
@@ -86,9 +89,15 @@ export default {
           question_id: this.typeProblem.data[i].question_id,
           value: this.score
         })
+        
       }
+     
       // this.score = this.everyScore.get(this.typeProblem.question_id);
       this.$watch('score', this.handler)
+    },
+
+    changeScore(){
+      this.setTypeProblemScore()
     },
     
     handler(newVal, oldVal) {
@@ -99,6 +108,12 @@ export default {
             question_id: this.typeProblem.data[i].question_id,
             value: this.score
           })
+          console.log(this.everyScore.get(this.typeProblem.data[i].question_id))
+          if(i == this.typeProblem.data.length - 1){
+            console.log(this.$refs)
+            
+            
+          }
         }
         console.log("监听到了",this.everyScore);
         console.log(3333);
