@@ -51,23 +51,16 @@ export const PointPercentageUpdate = (context,student_id) => {
     });
 };
 
-// export function PointPercentageUpdate(context) {
-//   return new Promise((resolve, reject) => {
-//     axios
-//       .get("http://localhost:3000/data")
-//       .then((res) => {
-//         const knpList = res.data;
-//         const points = JSON.parse(JSON.stringify(context.state.tKnowledge.points));
-//         points.forEach((point) => setPercentageForPoint(point, knpList));
-//         //console.log(points);
-//         context.commit("changePoints", points);
-//         resolve(points);
-//       })
-//       .catch((error) => {
-//         reject(error);
-//       });
-//   });
-// }
+//展示当前班级所有学生所有知识点分数
+export const getStudentsScoresAPI = (class_id) => {
+  return ptRequest.get({
+    url: "/teacher/analyse/AllStudent",
+    params: {
+      class_id
+    }
+  })
+}
+
 
 
 
