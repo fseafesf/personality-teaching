@@ -3,7 +3,7 @@
     <div class="left">作业</div>
     <div class="right">
       <div class="task-name">{{ this.eaxmInfo.exam_name || "无标题" }}</div>
-      <div class="task-info">未交</div>
+      <div class="task-info">{{ status == 0 ? "已提交" : "未提交"}}</div>
     </div>
   </div>
 </template>
@@ -17,6 +17,9 @@ export default {
     eaxmInfo: {
       type: Object,
       default: () => ({})
+    },
+    status:{
+      type:Number
     }
   }
 }

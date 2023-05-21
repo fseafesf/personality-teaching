@@ -1,5 +1,6 @@
 import { getQuestionList, getPageList, getClassAPI, getStuListAPI } from '@/services'
 import _, { reject } from 'lodash'
+import { reactive, toRefs } from 'vue';
 
 const tTest = {
   namespaced: true,
@@ -17,13 +18,19 @@ const tTest = {
     // 所有的试卷
     pages: [],
 
+    // 当前试卷每道题分数
+    everyScore: new Map(),
+    //当前试卷总分
+    totalScore: 0,
+
     // TODO : keepAlive选择加入
     keepAlivePage: [],
 
     // 班级列表
     classes: [],
     // 学生列表
-    students: []
+    students: [],
+    
   }),
   mutations: {
     //初始试卷
@@ -68,7 +75,17 @@ const tTest = {
     //清除卷子信息
     clearPageData(state, param) {
       state.page[param.key] = param.val
-    }
+    },
+
+    // param传入批阅分数时的题目id以及分数
+    setScore(state, param) {
+      state.everyScore.set(param.question_id, param.value)
+    },
+    
+    //用来清空map
+    clearScore(state) {
+      state.evevryScore.clear()
+    },
   },
   actions: {
     getInitPages(context, payload) {
@@ -79,7 +96,6 @@ const tTest = {
         }).catch(err => reject(err))
       })
     },
-
     getProblems(context, payload) {
       return new Promise((reslove, reject) => {
         getQuestionList(payload?.type,
@@ -122,7 +138,11 @@ const tTest = {
     }
   },
   getters: {
-
+    getObject:(state) => () => {
+      return [...state.everyScore.values()].reduce((pre, cur) => {
+        return pre + (+cur)
+      }, 0)
+    }
   }
 }
 

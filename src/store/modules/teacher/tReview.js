@@ -56,7 +56,6 @@ const tReview = {
         // console.log(param)
         state.currentPageScore.set(param[0], param[1])
       }
-
     },
 
     // param 传入当前批阅试卷的题目数组

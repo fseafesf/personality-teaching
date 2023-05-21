@@ -19,6 +19,19 @@ const sTask = {
             }
             state[param.key] = _.cloneDeep(param.value)
         },
+
+        initFinishedAnswer(state,params){
+            for(const param of params){
+                state.studentAnswers.set(param[0],param[1])
+            }
+        },
+
+        initFinishedStatus(state, params) {
+            for (const param of params) {
+              console.log(param)
+              state.answersFinished.set(param[0], param[1])
+            }
+          },
         /**
          * @param {object} 传入一个对象 包括题目id和作答答案
          */
@@ -51,10 +64,10 @@ const sTask = {
         getInitExamList({ commit }, payload) {
             return new Promise((reslove, reject) => {
                 getExamList(payload).then((res) => {
-                    console.log(res)
+                    console.log(Object.values(res.data))
                     commit('init', {
                         key: 'examList',
-                        value: res.data
+                        value: Object.values(res.data)
                     })
                     reslove('success')
                 }).catch(err => reject(err))
