@@ -211,7 +211,7 @@ export const modifyStudentAPI = ({ name, student_no, college, major, phone_numbe
       student_no,
       college,
       major,
-      phone_number,
+      phone_number, 
       student_id
 
     }
@@ -224,6 +224,15 @@ export const getClassStudyDetailAPI = (teacher_id) => {
     url: "/teacher/analyse/class",
     params: {
       teacher_id
+    }
+  })
+}
+
+export const getAllStudentsScoresAPI = (class_id) => {
+  return ptRequest.get({
+    url: "/teacher/analyse/AllStudent",
+    params: {
+      class_id
     }
   })
 }

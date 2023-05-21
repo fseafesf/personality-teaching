@@ -22,7 +22,7 @@
       <div class="classAnalysis" id="classAna" ref="classChartRef"></div>
     </div>
     <div id="tableContainer">
-      <div class="studentAnalysis" id="studentAna"></div>
+      <div class="studentAnalysis" id="studentAna" ref="studentChartRef"></div>
     </div>
   </div>
 </template>
@@ -31,33 +31,35 @@
 import * as echarts from 'echarts'
 import { mapState } from 'vuex'
 import Vue from 'vue';
-import { getStuListAPI, getClassStudyDetailAPI, getTeacherInfoAPI } from '@/services/modules/teacher/tClass.js'
+import { getStuListAPI, getClassStudyDetailAPI, getTeacherInfoAPI, getAllStudentsScoresAPI } from '@/services/modules/teacher/tClass.js'
+import { login } from '@/services/modules/common/home';
 export default {
   name: 'classAnalysisDetail',
   props: ['className'],
   data() {
     return {
       keyword: '',
-      source: [],
+      source: [], 
       newSource: [['掌握情况', '知识点']],
       searchResult: [],
       stuAnaList: [],
       knowledgePoint: [],   //当前选中的所有知识点
       teacher_id: ' ',
       classScores: [],   //所有班级的所有知识点分数
-      selectedScores: []        //当前班级选中的知识点分数
-      
+      selectedScores: [],        //当前班级选中的知识点分数
+      allStudentsScores: []     //当前班级所有学生所有知识点分数
     }
   },
 
   async mounted() {
+    this.fetchStuList(this.classId)
     this.classChartFn();
     const result = await getTeacherInfoAPI();
     this.teacher_id = result.data.teacher_id;
     await getClassStudyDetailAPI(this.teacher_id).then(result => {
       this.classScores = result.data
     })
-
+    
   },
 
   computed: {
@@ -80,7 +82,7 @@ export default {
         }
         this.getClassChartData()
         this.classChartFn()
-        this.studentChartFn()
+      
       }
     },
    source: {
@@ -89,34 +91,44 @@ export default {
         if (newVal) {
           this.knowledgePoint = newVal.map(item => item[1]);
           this.knowledgePoint.shift(); // 删掉第一个元素(知识点)
-          if (this.classId && this.source.map(item => item[1]).length != 0) {
-            this.fetchStuList(this.classId)
-          }
         }
-
+        //scores保存当前班级所选知识点的分数
        let knpNames = this.source.slice(1).map(x => x[1])
         let scores = {};
         for (let knpName of knpNames) {
           let knpObj = this.classScores.find(x => x.KnpName === knpName);
           scores[knpName] = knpObj ? knpObj.Class_id[this.className] : null;
         }
-
         this.updateSourceWithScores(scores)
-         this.classChartFn()
-        this.studentChartFn()
+        this.classChartFn()
+
+        //保存当前班级所有选中的知识点的学生分数
+        const matchingObjs = []
+        this.knowledgePoint.forEach(knpName => {
+          const matchingObj = this.allStudentsScores.find(obj => obj.KnpName === knpName);
+          matchingObjs.push(matchingObj)
+        })
+        
+        // console.log(matchingObjs);
+        this.studentChartFn(matchingObjs)
       }
     },
   
     classId: {
       deep: true,
       immediate: true,
-      handler(newVal) {
+      async handler(newVal) {
         if (newVal && this.source.map(item => item[1]).length != 0) {
-          this.fetchStuList(newVal)
+          await this.fetchStuList(newVal);
         }
-
+       await getAllStudentsScoresAPI(this.classId).then(res => {
+          this.allStudentsScores = res.data;
+       });
+        //触发source更新使得切换班级后表格自动更新
+        this.$set(this, 'source', this.source.slice());
       }
     }
+
 
   },
   methods: {
@@ -124,15 +136,14 @@ export default {
     resetFn() {
       this.keyword = ''
     },
-    fetchStuList(classId) {
-      getStuListAPI(classId, { page_num: 1, page_size: 10 }).then((res) => {
+   async fetchStuList(classId) {
+     await getStuListAPI(classId, { page_num: 1, page_size: 10 }).then((res) => {
         this.stuAnaList = res.data.map((item) => ({
-          pointName: '数据结构',
+          studentId:item.student_id,
           stuName: item.name,
-          score: 0,
         }));
-        this.studentChartFn()
       });
+      //this.studentChartFn(this.stuAnaList)
     },
 
     // 查找知识点
@@ -149,7 +160,7 @@ export default {
 
 
     },
-    //更新选中知识点的分数
+    //更新班级选中知识点的分数
     updateSourceWithScores( scores) {
    
       const newSource = [['掌握情况', '知识点']];
@@ -158,7 +169,6 @@ export default {
       }
 
       this.newSource = newSource
-      console.log(this.newSource);
       
     },
      // 添加数据到班级统计表中
@@ -245,142 +255,116 @@ export default {
       classChart.setOption(classChartOption, true)
     },
 
-    studentChartFn() {
-    const tableContainer = document.getElementById('tableContainer')
+    studentChartFn(matchingObjs) {
+      const tableContainer = document.getElementById('tableContainer')
       const tableHeight = 900 // 固定容器高度
       const rowCount = this.stuAnaList.length // 获取行数，即学生人数
       const tableHeightWithPadding = tableHeight - rowCount * 30 // 假设每个单元格高度为30px，减去所有单元格高度，得到表格的高度
-      const studentChart = echarts.init(document.getElementById('studentAna'))
+     
+      let studentChart = echarts.getInstanceByDom(
+        this.$refs.studentChartRef
+      )
+      if (!studentChart) {
+        studentChart= echarts.init(document.getElementById('studentAna'))
+      }
       let student = []
       this.stuAnaList.forEach(stu => {
         student.push(stu.stuName)
       })
-      
-      const data = [
-        [0, 0, 70],
-        [0, 1, 80],
-        [0, 2, 60],
-        [0, 3, 50],
-        [0, 4, 40],
-        [0, 5, 30],
-        [0, 6, 77],
-        [0, 7, 87],
-        [1, 0, 66],
-        [1, 1, 77],
-        [1, 2, 88],
-        [1, 3, 55],
-        [1, 4, 68],
-        [1, 5, 79],
-        [1, 6, 84],
-        [1, 7, 82],
-        [2, 0, 55],
-        [2, 1, 89],
-        [2, 2, 100],
-        [2, 3, 85],
-        [2, 4, 95],
-        [2, 5, 77],
-        [2, 6, 89],
-        [2, 7, 100],
-        [3, 0, 48],
-        [3, 1, 75],
-        [3, 2, 83],
-        [3, 3, 84],
-        [3, 4, 88],
-        [3, 5, 65],
-        [3, 6, 61],
-        [3, 7, 62],
-        [4, 0, 55],
-        [4, 1, 48],
-        [4, 2, 91],
-        [4, 3, 93],
-        [4, 4, 87],
-        [4, 5, 81],
-        [4, 6, 70],
-        [4, 7, 60],
-        [5, 0, 77],
-        [5, 1, 23],
-        [5, 2, 45],
-        [5, 3, 67],
-        [5, 4, 68],
-        [5, 5, 79],
-        [5, 6, 74],
-        [5, 7, 88],
-        [6, 0, 48],
-        [6, 1, 75],
-        [6, 2, 80],
-        [6, 3, 93],
-        [6, 4, 99],
-        [6, 5, 93],
-        [6, 6, 68],
-        [6, 7, 69]
-      ].map(function (item) {
-        return [item[1], item[0], item[2] || '-']
-      })
-      const studentChartOption = {
-        tooltip: {
-          position: 'top'
-        },
-       grid: {
-          height: `${tableHeightWithPadding}px`,
-          top: '1%',
-          right: '10%',
-        },
-        xAxis: {
-          type: 'category',
-          data: this.knowledgePoint,
-          axisLabel: {
-            interval: 0,
-            rotate: 20,
-            fontSize: 12,
-            priority: 1, // 设置高优先级
+
+      const knowledgePoints = this.knowledgePoint
+      const data = [];
+      for (var i = 0; i < this.stuAnaList.length; i++) {
+        for (var j = 0; j < this.knowledgePoint.length; j++) {
+          //console.log(matchingObjs[j].Studentname);
+          data.push([j, i, 100 * (matchingObjs[j]?.Studentname?.[this.stuAnaList[i].studentId] || 0).toFixed(2)]);
+
+        }
+      }
+     // console.log(data);
+      let studentChartOption={}
+      if (data.length > 0) {
+       studentChartOption = {
+          tooltip: {
+            position: 'top'
           },
-          splitArea: {
-            show: true
-          }
-        },
-        yAxis: {
-          type: 'category',
-          data: student,
-          splitArea: {
-            show: true
+          grid: {
+            height: `${tableHeightWithPadding}px`,
+            top: '1%',
+            right: '10%',
           },
-          axisLabel: {
-            interval: 0,
-          }
-        },
-        visualMap: {
-          min: 0,
-          max: 100,
-          text: ['熟练', '不熟练'],
-          calculable: true,
-          orient: 'vertical',
-          left: 'left',
-          top: 'center'
-        },
-        series: [
-          {
-            name: 'Punch Card',
-            type: 'heatmap',
-            data: data,
-            label: {
+          xAxis: {
+            type: 'category',
+            data: knowledgePoints,
+            axisLabel: {
+              interval: 0,
+              rotate: 20,
+              fontSize: 12,
+              priority: 1, // 设置高优先级
+            },
+            splitArea: {
+              show: true
+            }
+          },
+          yAxis: {
+            type: 'category',
+            data: student,
+            splitArea: {
               show: true
             },
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            },
-            itemStyle: {
-              borderWidth: 1,
-              borderColor: '#ccc'
+            axisLabel: {
+              interval: 0,
             }
-          }
-        ],
-        gradientColor: ['red', 'yellow', 'green']
+          },
+          visualMap: {
+            min: 0,
+            max: 100,
+            text: ['熟练', '不熟练'],
+            calculable: true,
+            orient: 'vertical',
+            left: 'left',
+            top: 'center'
+          },
+          series: [
+            {
+              name: 'Punch Card',
+              type: 'heatmap',
+              data: data,
+              label: {
+                show: true
+              },
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              },
+              itemStyle: {
+                borderWidth: 1,
+                borderColor: '#ccc'
+              }
+            }
+          ],
+          gradientColor: ['red', 'yellow', 'green']
+        }
+     } else {
+        studentChartOption = {
+          title: {
+            text: '请选择知识点查看班级学情分析',
+            x: 'center',
+            y: 'center',
+            textStyle: {
+              fontSize: 16,
+              fontWeight: 'normal',
+            },
+          },
+        };
       }
+      studentChart.clear() // 清除旧的数据
+
       studentChart.setOption(studentChartOption)
     },
+
 
     // 清空班级统计图数据
     clearChartFn() {
