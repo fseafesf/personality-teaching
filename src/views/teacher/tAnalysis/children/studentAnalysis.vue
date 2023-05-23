@@ -75,6 +75,7 @@ export default {
     },
     handleSelect(item) {
       this.studentName = item.name
+      console.log(item);
       this.studentInfo.splice(0,1)
       this.studentInfo.push(item)
       this.keyword = ""

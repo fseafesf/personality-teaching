@@ -17,13 +17,25 @@ export default {
     problem: {
       type: Object,
       default: () => ({})
+    },
+    status: {
+      type: Number
+    }
+  },
+  created() {
+    if (this.status == 0) {
+      this.finished = this.answersFinished.get(this.problem.question_id)
     }
   },
   methods: {
     ...mapMutations('sTask', ['setAnswersFinished'])
   },
   computed: {
-    ...mapState('sTask', ['currentProblem', 'studentAnswers']),
+    ...mapState('sTask', [
+      'currentProblem',
+      'studentAnswers',
+      'answersFinished'
+    ]),
     currentQuestion() {
       return () => this.currentProblem
     }

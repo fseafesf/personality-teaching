@@ -21,8 +21,12 @@
         <el-radio v-model="radio" label="3">未完成</el-radio>
       </div>
 
-      <div class="task-item" v-for="(value, key) in this.examList" :key="key">
-        <STaskItem :eaxm-info="value" @click.native="taskItemClick(key)" />
+      <div class="task-item" v-for="item in this.examList" :key="item.exam_id">
+        <STaskItem
+          :eaxm-info="item"
+          :status="0"
+          @click.native="taskItemClick(item.exam_id, item.status)"
+        />
       </div>
     </div>
   </div>
@@ -48,17 +52,18 @@ export default {
   methods: {
     // ...mapMutations('sTask'),
     ...mapActions('sTask', ['getInitExamList']),
-    taskItemClick(key) {
+    taskItemClick(key, status) {
       this.$router.push({
         path: '/student/task',
         query: {
-          exam_id: key
+          exam_id: key,
+          status
         }
       })
     }
   },
   computed: {
-    ...mapState('sTask', ['examList','studentAnswers'])
+    ...mapState('sTask', ['examList', 'studentAnswers'])
   }
 }
 </script>

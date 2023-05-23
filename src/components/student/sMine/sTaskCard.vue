@@ -42,7 +42,7 @@
             v-for="(item, index) in spaceNumbers"
             :key="index"
           >
-            <span>第{{ index + 1 }}空:</span>
+            <span>第{{ item}}空:</span>
             <el-input
               v-model="fillAnswers[index]"
               placeholder="请输入内容"
@@ -97,7 +97,17 @@ export default {
     this.currentView = this.typeComponent[this.problem.type - 1]
     if (this.problem.type == 4) {
       this.initFill()
+      
     }
+    // if(this.status == 0){
+    //   this.radio = this.studentAnswers.get(this.problem.question_id)
+
+    //   this.judge = this.studentAnswers.get(this.problem.question_id)
+
+    //   this.fillAnswers = this.studentAnswers.get(this.problem.question_id)
+
+    //   this.content = this.studentAnswers.get(this.problem.question_id)
+    // }
   },
   props: {
     problem: {
@@ -106,6 +116,9 @@ export default {
     },
     index: {
       type: Number
+    },
+    status:{
+      type:Number
     }
   },
   methods: {
@@ -118,7 +131,7 @@ export default {
       let reg = /(\(\))|(\_+)|(\（\）)/g
       let length = this.problem.context.match(reg).length
       this.spaceNumbers = length
-      this.fillAnswers = new Array(length).fill('')
+      this.fillAnswers = new Array(length).fill("")
     },
     handleRadio(value) {
       this.outSet(value)
@@ -154,7 +167,9 @@ export default {
       this.changeCurrentProblem(param)
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('sTask',['studentAnswers'])
+  },
   components: {
     Radio: () => import('@/components/teacher/Test/tQuestion/tRadio.vue'),
     Multi: () => import('@/components/teacher/Test/tQuestion/tMulti.vue'),

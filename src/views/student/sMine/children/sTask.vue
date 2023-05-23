@@ -9,27 +9,33 @@
         <span class="back-content">返回主页</span>
       </div>
       <div class="left wrap-v6" ref="leftRef">
-        <sTaskCard
-          v-for="(item, index) in this.questions"
-          :problem="item"
-          :key="item.question_id"
-          :index="index"
-          ref="modal"
-        ></sTaskCard>
+        <template v-if="startRendering">
+          <sTaskCard
+            v-for="(item, index) in this.questions"
+            :problem="item"
+            :key="item.question_id"
+            :index="index"
+            :status="status"
+            ref="modal"
+          ></sTaskCard>
+        </template>
       </div>
 
       <div class="right wrap-v7" ref="rightRef">
         <div class="title">题目列表</div>
         <div class="option-index">
-          <sTaskRecord
-            class="index"
-            v-for="(item, index) in this.questions"
-            :problem="item"
-            :key="item.question_id"
-            @click.native="handlerClick(index)"
-          >
-            {{ index + 1 }}</sTaskRecord
-          >
+          <template v-if="startRendering">
+            <sTaskRecord
+              class="index"
+              v-for="(item, index) in this.questions"
+              :problem="item"
+              :key="item.question_id"
+              :status="status"
+              @click.native="handlerClick(index)"
+            >
+              {{ index + 1 }}</sTaskRecord
+            >
+          </template>
         </div>
         <div class="operate" @click="submit">提交</div>
       </div>
@@ -42,7 +48,7 @@ import TopBar from '@/components/common/TopBar.vue'
 import sTaskCard from '@/components/student/sMine/sTaskCard.vue'
 import sTaskRecord from '@/components/student/sMine/sTaskRecord.vue'
 import { mapActions, mapMutations, mapState } from 'vuex'
-import { uploadAnswer } from '@/services'
+import { uploadAnswer, getAnswers } from '@/services'
 import { breakGroup } from '@/utils/groupByType'
 import { toSelect } from '@/utils/transfrom'
 import { getCache } from '@/utils/localstorage'
@@ -53,10 +59,13 @@ export default {
     return {
       studentID: '',
       examID: String,
+      status: Number,
       questions: [],
       toSelect,
       radio: 'A',
       distance: 0,
+
+      startRendering: false,
 
       // 定时器
       timer: null
@@ -65,24 +74,58 @@ export default {
   created() {
     this.studentID = getCache('studentId')
     this.examID = this.$route.query.exam_id
-    this.getPageInfo().then(() => {
-      this.questions = breakGroup(
-        JSON.parse(this.examList[this.examID].questions)
-      )
+    this.status = +this.$route.query.status
+    this.getPageInfo().then(async () => {
+      if (this.status == 0) {
+        await this.getFinishedInfo()
+      }
+      else{
+        this.startRendering = true
+      }
     })
   },
   methods: {
     ...mapActions('sTask', ['getInitExamList']),
+    ...mapMutations('sTask', [
+      'initFinishedAnswer',
+      'initFinishedStatus',
+      'setAnswersFinished'
+    ]),
     goback() {
       this.$router.push('/student/mine')
     },
     back() {
       this.$router.go(-1)
     },
+
     async getPageInfo() {
       await this.getInitExamList(this.studentID)
+      let exam = this.examList.filter((item) => {
+        return item.exam_id === this.examID
+      })
+      this.questions = breakGroup(JSON.parse(exam[0].questions))
+      console.log(this.questions)
     },
 
+    async getFinishedInfo() {
+      await getAnswers({
+        exam_id: this.examID,
+        student_id: this.studentID,
+        status: this.status
+      }).then((res) => {
+        console.log(res)
+        // this.initFinishedAnswer(JSON.parse(res.data[0].answer))
+        for (let key of this.studentAnswers.keys()) {
+          this.setAnswersFinished({
+            question_id: key,
+            value: true
+          })
+          // console.log(key)
+        }
+        this.startRendering = true
+      })
+    },
+    
     handlerClick(index) {
       if (!!this.timer) {
         clearInterval(this.timer)

@@ -82,15 +82,15 @@ export default {
         this.$message.error('输入内容不能为空')
       } else {
         let headerData = tHeaderData
-
+        
         // 学生登录
         if (this.activeName === 'student') {
           studentLogin({
             username: this.username,
             password: encrypt(this.password)
           }).then((res) => {
-            console.log(res)
-            setCache('studentId', res.data)
+            // console.log(res)
+            setCache('studentId',res.data)
             // 如果登录成功
             if (res.code === 0) {
               headerData = sHeaderData

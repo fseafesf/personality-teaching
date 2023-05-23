@@ -29,6 +29,7 @@
             :index="index"
             v-show="typeProblem.data.length !== 0"
             :typeProblem="item"
+            ref="child"
           ></div>
         </transition-group>
       </vuedraggable>
@@ -79,9 +80,15 @@ export default {
           question_id: this.typeProblem.data[i].question_id,
           value: this.input
         })
+        
       }
+     
       // this.score = this.everyScore.get(this.typeProblem.question_id);
       this.$watch('input', this.handler)
+    },
+
+    changeScore(){
+      this.setTypeProblemScore()
     },
     
     handler(newVal, oldVal) {
