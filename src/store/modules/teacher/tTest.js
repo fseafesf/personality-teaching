@@ -1,5 +1,6 @@
 import { getQuestionList, getPageList, getClassAPI, getStuListAPI } from '@/services'
 import _, { reject } from 'lodash'
+import Vue from 'vue'
 
 const tTest = {
   namespaced: true,
@@ -7,6 +8,7 @@ const tTest = {
     name: 'test',
     // 初始化题目
     problems: [],
+    
     // 每当添加 或者 编辑时 填充当前卷子的信息到这里
     page: {
       title: '',
@@ -19,8 +21,9 @@ const tTest = {
 
     // 当前试卷每道题分数
     everyScore: new Map(),
+
     //当前试卷总分
-    totalScore: 0,
+    // totalScore: 0,
 
     // TODO : keepAlive选择加入
     keepAlivePage: [],
@@ -78,7 +81,9 @@ const tTest = {
 
     // param传入批阅分数时的题目id以及分数
     setScore(state, param) {
-      state.everyScore.set(param.question_id, param.value)
+      const newMap = new Map(state.everyScore);
+      newMap.set(param.question_id, param.value);
+      state.everyScore = newMap;
     },
     
     //用来清空map
@@ -137,7 +142,12 @@ const tTest = {
     }
   },
   getters: {
-
+    TotalScore: (state) => () => {
+      // console.log(state.currentPageScore)
+      return [...state.everyScore.values()].reduce((pre, cur) => {
+        return pre + (+cur)
+      }, 0)
+    },
   }
 }
 

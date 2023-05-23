@@ -11,10 +11,10 @@
         type="text" 
         class="el-input__inner" 
         style="width:70px;font-size: 18px; text-align: center;padding:0"
-        v-model="score"
+        v-model="input"
         maxlength="10">
         <span> 分，共</span>
-        <span>{{typeProblemTotalScore}}</span>
+        <span>{{getTypeProblemScore()}}</span>
         <span>分）</span>
       </h3>
     </div>
@@ -39,25 +39,20 @@
 <script>
 import Problem from "components/teacher/Test/tTest/tproblem.vue";
 import vuedraggable from "vuedraggable";
-import { mapState } from "vuex";
-import { mapMutations } from 'vuex';
+import { mapState , mapMutations , mapGetters} from "vuex";
 
 export default {
   name: "card",
   data() {
     return {
-      // value: 0,
-      score: 0,
+      // score: 0,
+      input: 0,
       currentView: "",
       typeArr: ["单选", "多选", "判断", "填空", "简答"],
       typeComponent: ["Radio", "Multi", "Judge", "Fill", "Answer"],
     };
   },
   created() {
-    // this.typeProblemList = this.typeProblem.data
-    // this.typeProblemList = this.typeProblemList.filter(key => key == question_id)
-    // console.log("////////",this.typeProblemList);
-    
     //阻止浏览器默认的拖放行为
     document.body.ondrop = (event) => {
       event.stopPropagation();
@@ -66,8 +61,6 @@ export default {
     this.currentView = this.typeComponent[this.typeProblem.type - 1];
 
     this.setTypeProblemScore()
-    
-    // this.$watch('score', this.handler)
   },
   methods: {
     ...mapMutations('tTest', ['setScore']),
@@ -84,11 +77,11 @@ export default {
       {
         this.setScore({
           question_id: this.typeProblem.data[i].question_id,
-          value: this.score
+          value: this.input
         })
       }
       // this.score = this.everyScore.get(this.typeProblem.question_id);
-      this.$watch('score', this.handler)
+      this.$watch('input', this.handler)
     },
     
     handler(newVal, oldVal) {
@@ -97,15 +90,20 @@ export default {
         {
           this.setScore({
             question_id: this.typeProblem.data[i].question_id,
-            value: this.score
+            value: this.input
           })
-        }
-        console.log("监听到了",this.everyScore);
-        console.log(3333);
-        // this.changeTotalScore(this.TotalScore())
-        // console.log(this.TotalScore())
+        } 
+        // console.log("监听到了",this.everyScore);
       }
     },
+
+    getTypeProblemScore() {
+      let typeProblemScore = 0
+      this.typeProblem.data.forEach(ele => {
+        typeProblemScore += (+this.everyScore.get(ele.question_id))
+      });
+      return typeProblemScore
+    }
   },
   props: {
     typeProblem: {
@@ -120,15 +118,6 @@ export default {
   },
   computed: {
     ...mapState("tTest", ["page","everyScore"]),
-    typeProblemTotalScore(){
-      let totalScore = 0
-      for(let item of this.everyScore){
-        totalScore = item.value + totalScore 
-      }
-      // console.log("66666666",this.everyScore);
-      
-      return totalScore
-    },
   },
   components: {
     Problem,

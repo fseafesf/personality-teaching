@@ -12,7 +12,7 @@ export async function getPageList(cookie, page = 1, page_size = 10) {
         .catch(err => err)
 }
 
-export function createPage(cookie, data) {
+export function createPage(data) {
     return sxRequest.post({
         url: `/teacher/exam`,
         data
@@ -47,7 +47,8 @@ export function searchPage(data) {
     })
 }
 
-export function modifyPage(cookie, data) {
+//修改试卷
+export function modifyPage(data) {
     return sxRequest.put({
         url: '/teacher/exam',
         data

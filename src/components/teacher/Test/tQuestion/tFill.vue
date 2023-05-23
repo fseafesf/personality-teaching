@@ -46,7 +46,6 @@ export default {
   name: 'fill',
   data() {
      return {
-      score: 0,
       typeArr: ["单选", "多选", "判断","填空" , "简答"],
       typeIndex: ["一", "二", "三", "四", "五"],
     }
@@ -87,7 +86,6 @@ export default {
       .catch(() => {})
     },
     setFillScore(){
-      // console.log("////////",this.$store.state.page);
       this.$prompt('请输入分数', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -97,14 +95,11 @@ export default {
             type: 'success',
             message: '此题分数为: ' + value
           });
-          // this.score = value;
           this.setScore({
             question_id: this.typeProblem.question_id,
             value: value
           })
-          // this.score = this.everyScore.get(this.typeProblem.question_id)
-          // console.log("你好",this.score);
-          console.log(this.everyScore);
+          // this.$forceUpdate()
         }).catch(() => {
           this.$message({
             type: 'info',

@@ -6,8 +6,8 @@
         <span></span>
         <span v-html="this.HTMLDecode( typeProblem.context)"></span>
         <span>（</span>
-        <span>{{everyScore.get(this.typeProblem.question_id)}}</span>
-        <span>分）</span>
+        <span>{{this.everyScore.get(this.typeProblem.question_id)}}</span>
+        <span>分）</span> 
       </div>
       <slot name="Radio">
         <div class="radio-option">
@@ -49,15 +49,13 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState , mapGetters } from 'vuex'
 import { toSelect } from '@/utils/transfrom'
 import { HTMLDecode } from '@/utils/htmlUtil'
 export default {
   name: 'radio',
   data() {
      return {
-      score: 0, 
-      // value:"",
       typeArr: ["单选", "多选", "判断","填空" , "简答"],
       typeIndex: ["一", "二", "三", "四", "五"],
     }
@@ -73,11 +71,7 @@ export default {
     }
   },
   created(){
-    // console.log(this.everyScore);
-    // this.score = this.everyScore.get(this.typeProblem.question_id)
-    // console.log("*************",this.typeProblem.question_id)
-      
-    },
+  },
   methods: {  
     ...mapMutations('tTest', ['addProblem', 'deleteProblem','setScore']),
     toSelect,
@@ -108,7 +102,6 @@ export default {
     },
     //单独设定分数
     setRadioScore(){
-      // console.log("////////",this.$store.state.page);
       this.$prompt('请输入分数', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -118,14 +111,11 @@ export default {
             type: 'success',
             message: '此题分数为: ' + value
           });
-          // this.score = value;
           this.setScore({
             question_id: this.typeProblem.question_id,
             value: value
           })
-          // this.score = this.everyScore.get(this.typeProblem.question_id)
-          // console.log("你好",this.score);
-          console.log("llllllll",this.everyScore);
+          // this.$forceUpdate()
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -135,12 +125,9 @@ export default {
     }
   },
   computed: {
-    ...mapState('tTest', ['page',"everyScore"]),
-    // changeScore(){
-    //   this.score = this.everyScore.get(this.typeProblem.question_id)
-    //   return this.score
-    // }
-  }
+    ...mapState('tTest', ['page','everyScore']),
+    ...mapGetters('tTest', []),
+  },
 }
 </script>
 

@@ -28,7 +28,7 @@
         <div class="preview-title">
           <EditTitle :editTitle.sync="pageTitle"></EditTitle>
         </div>
-        <h2 class="score-total">题量：<span>20</span> 总分：<span>150</span></h2>
+        <h2 class="score-total">题量：<span>{{ this.page.selectProblem.length }}</span> &nbsp;&nbsp;&nbsp;&nbsp;总分：<span>{{ this.TotalScore() }}</span></h2>
         <Card
           v-for="(item, index) in problemsList"
           :key="item.type"
@@ -77,7 +77,7 @@ import EditTitle from "components/teacher/Test/tPreview/tEditTitle.vue";
 import EditComment from "components/teacher/Test/tPreview/tEditComment.vue";
 import Score from "components/teacher/Test/tPreview/tScore.vue";
 import { group, breakGroup } from "utils/groupByType";
-import { mapActions, mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState , mapGetters} from "vuex";
 import vuedraggable from "vuedraggable";
 import { createPage, searchPage, modifyPage } from "@/services";
 import { setCache, getCache, clearCache } from "@/utils/localstorage";
@@ -94,28 +94,28 @@ export default {
   },
   created() {
     if (!!getCache("title")) {
+      // console.log(getCache("title"));
       this.pageTitle = getCache("title");
     }
     if (!!getCache("comment")) {
-      console.log(getCache("comment"));
+      // console.log(getCache("comment"));
       this.pageComment = getCache("comment");
     }
     if (!!getCache("selectProblem")) {
+      // console.log(getCache("selectProblem"));
       this.setPageData({
         key: "selectProblem",
         val: getCache("selectProblem"),
       });
     }
     // if (!!getCache("everyScore")) {
-    //   this.setPageData({
-    //     key: "everyScore",
-    //     val: getCache("everyScore"),
-    //   });
+    //   this.everyScore = new Map(getCache("everyScore"))
     // }
+    // setCache("everyScore",[...this.everyScore])
     this.pageId = this.$route.query.id;
     if (!!this.pageId) {
       searchPage(this.pageId).then((res) => {
-        // console.log(res);
+        // console.log("1111111111",res.data);
         this.setPageData({
           key: "title",
           val: res.data.exam_name,
@@ -172,10 +172,12 @@ export default {
       clearCache("title");
       clearCache("selectProblem");
       clearCache("comment");
+      // clearCache("everyScore");
       this.$router.replace({
         path: "/teacher/examHome",
       });
     },
+    //继续选题
     back() {
       this.$router
         .replace({
@@ -183,14 +185,14 @@ export default {
         })
         .catch((err) => console.log(err));
     },
+    //保存试卷
     save() {
-      console.log(this.problemsList);
       let data = new FormData();
-      console.log(this.pageTitle);
       data.append("exam_name", this.pageTitle);
       data.append("questions", JSON.stringify(this.problemsList));
       data.append("comment", this.pageComment);
-      createPage(this.$cookies.get("session_key"), data).then((res) => {
+      // data.append("every_score",JSON.stringify([...this.everyScore.entries()]));
+      createPage(data).then((res) => {
         console.log(res, "创建试卷");
         if (res.code === 0) {
           this.clearPageData({
@@ -213,19 +215,22 @@ export default {
           clearCache("title");
           clearCache("selectProblem");
           clearCache("comment");
+          // clearCache("everyScore");
           this.$router.replace({
             path: "/teacher/examHome/examPaper",
           });
         }
       });
     },
+    //完成修改
     modify() {
       let data = new FormData();
       data.append("exam_name", this.pageTitle);
       data.append("exam_id", this.page.exam_id);
       data.append("questions", JSON.stringify(this.problemsList));
       data.append("comment", this.pageComment);
-      modifyPage(this.$cookies.get("session_key"), data).then((res) => {
+      // data.append("every_score",JSON.stringify([...this.everyScore.entries()]));
+      modifyPage(data).then((res) => {
         console.log(res);
         if (res.code === 0) {
           this.clearPageData({
@@ -248,6 +253,7 @@ export default {
           clearCache("title");
           clearCache("selectProblem");
           clearCache("comment");
+          // clearCache("everyScore");
           this.$router.replace({
             path: "/teacher/examHome/examPaper",
           });
@@ -256,7 +262,8 @@ export default {
     },
   },
   computed: {
-    ...mapState("tTest", ["page","everyScore"]),
+    ...mapState("tTest", ["page","everyScore","problems"]),
+    ...mapGetters("tTest", ['TotalScore']),
     createD() {
       return !!getCache("exam_id");
     },
